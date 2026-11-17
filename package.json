@@ -39,5 +39,13 @@
   },
   "publishConfig": {
     "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/howtomakeaname/dsh-memory-service.git"
+  },
+  "homepage": "https://github.com/howtomakeaname/dsh-memory-service#readme",
+  "bugs": {
+    "url": "https://github.com/howtomakeaname/dsh-memory-service/issues"
   }
 }
