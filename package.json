@@ -22,7 +22,8 @@
     "INSTALL.md",
     "docs",
     "bench",
-    "client.js"
+    "client.js",
+    "CHANGELOG.md"
   ],
   "scripts": {
     "test": "node --test",
