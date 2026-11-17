@@ -246,7 +246,10 @@ window.__ModuleLoader__.load({
             const base = { title: draft.title, description: draft.description, body: draft.body, type: draft.type, scope: draft.scope };
             const result = draft.id ? await api("update", { ...base, id: draft.id, expectedRevision: draft.revision }) : await api("save", base);
             if (result && result.conflict) { setError(t("conflict")); setDraft({ ...draft, revision: result.latest.revision }); return; }
-            setDraft(null); setSelectedId(result?.note?.id || selectedId); refresh();
+            const savedId = result?.note?.id || draft.id;
+            setDraft(null);
+            await load(scope, query.trim());
+            if (savedId) setSelectedId(savedId);
           } catch (failure) { setError(String(failure.message || failure)); }
         };
         const copyId = async (id) => {
