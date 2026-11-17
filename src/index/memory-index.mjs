@@ -11,6 +11,7 @@ export class MemoryIndex {
     fs.mkdirSync(path.dirname(this.file), { recursive: true });
     this.db = new DatabaseSync(this.file);
     this.hasFts = true;
+    this.db.exec("PRAGMA busy_timeout = 15000;");
     this.db.exec("PRAGMA journal_mode = WAL;");
     this.db.exec("CREATE TABLE IF NOT EXISTS notes (id TEXT PRIMARY KEY, scope TEXT NOT NULL, path TEXT, title TEXT, description TEXT, body TEXT, type TEXT, status TEXT, hash TEXT, updated_at TEXT, revision INTEGER);");
     try {
