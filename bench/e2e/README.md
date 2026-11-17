@@ -84,6 +84,16 @@ tasks 6, passed 6
 
 每条 direct 摄取 466–509 个 turn note，真实 DSH 新会话查询，LLM judge 判定通过。
 
+## agent 模式冒烟
+
+示例 fixture：
+
+~~~bash
+node bench/e2e/run.mjs --tasks bench/e2e/fixtures/long-horizon.sample.jsonl --limit 1 --mode agent
+~~~
+
+结果：1/1 通过。模型中转时调用了 memory_save，并正确写入 pnpm 约定；查询会话回答 pnpm。
+
 ## 边界
 
 - 这不是官方 benchmark 分数；样本、摄取方式、judge 都和官方不同。
