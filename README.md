@@ -185,3 +185,11 @@ node scripts/e2e-profile.mjs --profile bench-memt-headless
 ~~~
 
 4 条 typed preference 记忆 → synthesize profile → 新会话推荐；3/3 PASS。
+
+## 抽取→偏好 e2e
+
+~~~bash
+node scripts/e2e-preference-extraction.mjs --profile bench-memt-headless
+~~~
+
+真实会话陈述偏好 → flush → 新会话推荐；4/4 PASS。

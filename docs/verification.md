@@ -92,3 +92,11 @@ node scripts/e2e-profile.mjs --profile bench-memt-headless
 ~~~
 
 结果 3/3 PASS：4 条 typed preference 记忆经 profile 合成后，回答“Netflix 上有个人经历叙事的轻松单口喜剧专场”，没有推荐恐怖片。
+
+## 8. 抽取到偏好推荐 e2e
+
+~~~bash
+node scripts/e2e-preference-extraction.mjs --profile bench-memt-headless
+~~~
+
+结果 4/4 PASS：第一会话只陈述偏好、禁止工具调用；第二会话 flush；第三会话回答“叙事型单口喜剧专场”，且没有推荐恐怖片。这条链路验证的是抽取 → typed preference → synthesize profile → 回答。
