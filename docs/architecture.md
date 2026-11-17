@@ -16,6 +16,8 @@ src/
 │   ├── note.mjs                  # Markdown frontmatter ↔ note
 │   ├── index-file.mjs            # MEMORY.md 生成
 │   ├── journal.mjs               # 追加审计事件
+│   ├── schema.mjs                # schema version
+│   ├── backup.mjs                # 备份/恢复（不含可重建索引）
 │   └── memory-service.mjs        # 领域服务：upsert/list/get/search/forget/context
 ├── index/
 │   ├── fts-query.mjs             # 查询分词

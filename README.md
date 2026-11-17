@@ -62,6 +62,8 @@ node src/cli.mjs forget <id> --scope workspace:demo
 node src/cli.mjs rebuild
 node src/cli.mjs flush
 node src/cli.mjs doctor
+node src/cli.mjs backup --target /tmp/memory-backup
+node src/cli.mjs restore --source /tmp/memory-backup --target /tmp/memory-restore
 ```
 
 ## Claude Code 兼容
@@ -105,7 +107,7 @@ node scripts/e2e-real.mjs --profile bench-memt-headless
 
 ```bash
 node --test
-# 29 tests, 29 pass
+# 32 tests, 32 pass
 ```
 
 ## 宿主接口
@@ -139,3 +141,7 @@ LongMemEval/LoCoMo/GateMem 风格任务的真实 DSH 端到端 harness 见 [benc
 ## UI
 
 DSH 设置页复用、官方图标和宿主 API 见 [docs/ui.md](docs/ui.md)。
+
+## 数据版本与备份
+
+记忆库带 schema version；`backup` 只复制 Markdown/来源/journal，`restore` 后强制重建索引。详见 [docs/operations.md](docs/operations.md)。
