@@ -107,7 +107,7 @@ node scripts/e2e-real.mjs --profile bench-memt-headless
 
 ```bash
 node --test
-# 35 tests, 35 pass
+# 36 tests, 36 pass
 ```
 
 ## 宿主接口
@@ -165,3 +165,7 @@ node scripts/e2e-pure-extraction.mjs --profile bench-memt-headless
 ## CI
 
 GitHub Actions 跑 `npm test`、`npm run check`、`npm pack --dry-run`；`prepublishOnly` 也会强制执行测试和检查。
+
+## 检索策略
+
+为什么正则只能做触发/兜底、偏好为什么需要类型化写入，见 [docs/retrieval.md](docs/retrieval.md)。
