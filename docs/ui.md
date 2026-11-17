@@ -22,6 +22,10 @@
 
 ![冲突详情与保留版本](screenshots/memory-conflict-final.png)
 
+### Claude Code 导入
+
+![从 Claude Code 导入记忆](screenshots/claude-import-final.png)
+
 截图来自真实 DSH Web：
 
 - DSH web app `0.2.2-rc.3`
@@ -109,9 +113,19 @@ POST /memory-service/api/save
 POST /memory-service/api/update
 POST /memory-service/api/forget
 POST /memory-service/api/flush
+POST /memory-service/api/claudeDiscover
+POST /memory-service/api/claudeImport
 ~~~
 
 实现：`src/api.mjs`。路由通过 `ctx.inject(['webServer'])` 懒挂载；headless profile 没有 webServer 时自动跳过。
+
+## Claude Code 导入
+
+- 工具栏“从 Claude Code 导入”打开官方 `Modal`；
+- 通过 `claudeDiscover` 列出 `~/.claude/projects/*/memory` 和全局 memory；
+- 选择项目、导入 scope（当前工作区/全局）、是否覆盖本地修改；
+- `claudeImport` 只接受发现列表中存在的 source，不能传任意路径；
+- 导入后显示新增/更新/跳过/冲突计数，并刷新列表。
 
 ## 验证方式
 

@@ -140,6 +140,8 @@ LongMemEval/LoCoMo/GateMem 风格任务的真实 DSH 端到端 harness 见 [benc
 
 ## UI
 
+设置页支持搜索、scope、单条详情、冲突解决、工具卡片和 **Claude Code 记忆导入**。
+
 DSH 设置页复用、单条记忆详情、工具调用卡片和截图见 [docs/ui.md](docs/ui.md)。
 
 ![记忆设置页](docs/screenshots/memory-settings-list-final.png)

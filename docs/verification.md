@@ -123,3 +123,7 @@ v1 root 初始化时自动迁移到 v2：legacy note 补 `description_auto`，�
 - 类型/scope 使用 DSH `Menu` 下拉，工具栏筛选组/操作组分开，不再堆叠。
 
 截图见 [docs/ui.md](ui.md)。
+
+## 12. Claude Code 导入 UI
+
+在真实 Settings 中：临时 Claude memory fixture → 发现项目 → 选择 → 导入 → 显示“新增 1”并刷新列表；验证后删除临时 fixture。API 只接受发现列表中的 source。
