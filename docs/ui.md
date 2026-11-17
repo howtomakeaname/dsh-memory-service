@@ -15,7 +15,7 @@ DSH 的记忆插件前端不是独立页面，而是注册到宿主设置页：
 
 `Button`、`Input`、`Tag`、`Pill`、`Switch`、`StateDot`、`SegmentedTabs`、`SettingsForm`、`SettingsValueField`、`Modal`、`Toast`、`Tooltip`，以及大量 `Icon...`。
 
-当前页面用了官方的设置页外壳、locale、设计变量和图标；表单控件还是原生 input/select/textarea，因为 `SettingsForm` 绑定的是宿主 settings namespace，不适合直接编辑记忆 CRUD 数据。后续可以把编辑表单迁到 `SettingsValueField`，把按钮迁到 `Button`，需要先确认它们的 props 契约。
+当前页面已用官方的设置页外壳、locale、设计变量、`Button`、`Input`、`Tag` 和 `Icon*OutlineRegular`。多行正文和 select 仍是原生控件，因为 primitives 没有对应组件；`SettingsForm` 绑定的是宿主 settings namespace，不适合直接编辑记忆 CRUD 数据，所以没有硬套。
 
 ## 页面能力
 
@@ -81,7 +81,7 @@ POST /memory-service/api/flush
 未做：
 
 - 没有在真实 Web 设置页里截图验收；
-- 没有确认 `Button`/`SettingsValueField` 的完整 props 契约，所以还没替换原生控件；
+- `Button`/`Input`/`Tag` 的 props 已从官方 bundle 确认并接入；`SettingsValueField` 未接入；
 - 没有 Web 端 e2e（headless 仍是主路径）。
 
 下一步：把包装进一个 web test profile，启动真实 web，检查设置页布局/按钮/图标，再决定哪些原生控件替换为 primitives。
