@@ -257,13 +257,22 @@ export class MemoryService {
     return notes.length;
   }
 
-  context({ scope, query = "", budgetTokens = 1200 } = {}) {
+  context({ scope, query = "", extraQueries = [], budgetTokens = 1200 } = {}) {
     const s = this.normalizeScope(scope);
     const allNotes = this.list(s, { allScopes: false });
     const all = allNotes.filter((n) => n.status === "active");
     const conflicts = allNotes.filter((n) => n.status === "conflicted");
     const stable = all.filter((n) => STABLE_TYPES.has(n.type)).slice(0, 20);
-    let recalled = query ? this.search(query, { scope: s, limit: 10 }).map((r) => this.get(r.id, { scope: r.scope })).filter(Boolean) : [];
+    const queries = [...new Set([query, ...(Array.isArray(extraQueries) ? extraQueries : [])].map((q) => String(q || "").trim()).filter(Boolean))];
+    const recalled = [];
+    const recalledIds = new Set();
+    for (const q of queries) {
+      for (const note of this.search(q, { scope: s, limit: 10 })) {
+        if (recalledIds.has(note.id)) continue;
+        recalledIds.add(note.id);
+        recalled.push(note);
+      }
+    }
     const seen = new Set();
     const picked = [];
     let chars = 0;

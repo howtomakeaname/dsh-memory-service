@@ -7,6 +7,7 @@ import { createSessionState } from "./state.mjs";
 import { CaptureQueue } from "../capture/queue.mjs";
 import { createLlmClient } from "../capture/llm.mjs";
 import { createExtractor } from "../capture/extract.mjs";
+import { createQueryExpander } from "../retrieval/query-expander.mjs";
 import { createMemoryApiRoute } from "../api.mjs";
 
 export const name = "memory-service";
@@ -39,6 +40,7 @@ export function apply(ctx, rawConfig = {}) {
   const stateOf = createSessionState();
   const llm = createLlmClient(ctx, config.llm || {}, log);
   const extractor = llm.available ? createExtractor({ llm, log, minConfidence: config.minConfidence }) : null;
+  const queryExpander = llm.available && config.queryExpansion ? createQueryExpander({ llm, log }) : null;
   const extractEveryTurns = config.extractEveryTurns;
   let queue = null;
   if (service) {
@@ -150,7 +152,7 @@ export function apply(ctx, rawConfig = {}) {
     }
 
     ctx.on("session/event", createCaptureHandler({ service, queue, capture, extractor, extractEveryTurns, log, stateOf }));
-    ctx.on("agent/pre-step", createPreStepHandler({ service, budgetTokens, log, stateOf }));
+    ctx.on("agent/pre-step", createPreStepHandler({ service, budgetTokens, log, stateOf, queryExpander }));
     ctx.effect(() => {
       const disposers = createTools({ ctx, service, root, queue, extractor });
       return () => { for (const dispose of disposers) { try { dispose?.(); } catch { /* ignore */ } } };
