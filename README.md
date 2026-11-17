@@ -142,7 +142,7 @@ LongMemEval/LoCoMo/GateMem 风格任务的真实 DSH 端到端 harness 见 [benc
 
 DSH 设置页复用、单条记忆详情、工具调用卡片和截图见 [docs/ui.md](docs/ui.md)。
 
-![记忆设置页](docs/screenshots/memory-settings-list.png)
+![记忆设置页](docs/screenshots/memory-settings-list-final.png)
 
 ## 数据版本与备份
 

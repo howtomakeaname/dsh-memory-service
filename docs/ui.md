@@ -4,23 +4,23 @@
 
 ### Settings → 记忆
 
-![记忆设置页列表](screenshots/memory-settings-list.png)
+![记忆设置页列表](screenshots/memory-settings-list-final.png)
 
 ### 单条记忆详情
 
-![单条记忆详情](screenshots/memory-detail.png)
+![单条记忆详情](screenshots/memory-detail-final.png)
 
 ### 工具调用卡片
 
-![memory_save 工具卡片](screenshots/memory-tool-card.png)
+![memory_save 工具卡片](screenshots/memory-tool-card-final.png)
 
 ### DSH Menu 下拉
 
-![类型下拉复用 DSH Menu](screenshots/memory-dropdown.png)
+![类型下拉复用 DSH Menu](screenshots/memory-dropdown-final.png)
 
 ### 冲突详情
 
-![冲突详情与保留版本](screenshots/memory-conflict.png)
+![冲突详情与保留版本](screenshots/memory-conflict-final.png)
 
 截图来自真实 DSH Web：
 
