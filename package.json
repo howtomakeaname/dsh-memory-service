@@ -11,7 +11,8 @@
     ".": "./src/plugin.mjs",
     "./core": "./src/index.mjs",
     "./store": "./src/store.mjs",
-    "./claude": "./src/adapters/claude.mjs"
+    "./claude": "./src/adapters/claude.mjs",
+    "./client": "./client.js"
   },
   "files": [
     "src",
@@ -43,8 +44,7 @@
       "inject": [
         "@deepseek-ai/dsh-client-runtime",
         "@deepseek-ai/dsh-client-ui-settings",
-        "@deepseek-ai/dsh-client-locale",
-        "@deepseek-ai/dsh-client-ui-primitives"
+        "@deepseek-ai/dsh-client-locale"
       ]
     }
   },
