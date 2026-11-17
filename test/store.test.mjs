@@ -131,3 +131,12 @@ test("store: same key with different values becomes a resolvable conflict", () =
   assert.equal(service.listConflicts("workspace:proj-conflict").length, 0);
   service.close();
 });
+
+test("store: typed preference is stable without lexical overlap", () => {
+  const root = tmp();
+  const service = new MemoryService({ root, workspaceId: "proj-pref" }).init();
+  service.upsert({ scope: "workspace:proj-pref", title: "Comedy taste", description: "likes", body: "I love stand-up comedy specials with storytelling.", type: "preference" });
+  const context = service.context({ scope: "workspace:proj-pref", query: "what should I watch tonight?" });
+  assert.match(context.text, /Comedy taste/);
+  service.close();
+});

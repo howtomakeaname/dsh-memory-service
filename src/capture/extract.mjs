@@ -2,7 +2,7 @@ const SYSTEM = [
   "You are a long-term memory extraction gate for a coding agent.",
   "Decide whether the latest completed turn contains information worth remembering across sessions.",
   "Return JSON only, no markdown.",
-  'Shape: {"items":[{"text":"standalone fact","title":"short title","type":"convention|feedback|project|reference|fact|user","scope":"workspace|global","confidence":0.0,"evidence":"exact user quote"}]}',
+  'Shape: {"items":[{"text":"standalone fact","title":"short title","type":"convention|preference|feedback|project|reference|fact|user","scope":"workspace|global","confidence":0.0,"evidence":"exact user quote"}]}',
   "Rules:",
   "- Save durable preferences, conventions, decisions, constraints, important project facts, and explicit corrections.",
   "- Do NOT save transient task details, code state, tool output, assistant speculation, external quotations, or secrets (tokens, passwords, keys).",
@@ -15,7 +15,7 @@ const SYSTEM = [
   "- At most 5 items."
 ].join("\n");
 
-const TYPES = new Set(["convention", "feedback", "project", "reference", "fact", "user"]);
+const TYPES = new Set(["convention", "preference", "feedback", "project", "reference", "fact", "user"]);
 
 function parseJson(text) {
   const raw = String(text || "").trim();

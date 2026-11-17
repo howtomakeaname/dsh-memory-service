@@ -263,7 +263,7 @@ export class MemoryService {
     const all = allNotes.filter((n) => n.status === "active");
     const conflicts = allNotes.filter((n) => n.status === "conflicted");
     const stable = all.filter((n) => STABLE_TYPES.has(n.type)).slice(0, 20);
-    const recalled = query ? this.search(query, { scope: s, limit: 10 }).map((r) => this.get(r.id, { scope: r.scope })).filter(Boolean) : [];
+    let recalled = query ? this.search(query, { scope: s, limit: 10 }).map((r) => this.get(r.id, { scope: r.scope })).filter(Boolean) : [];
     const seen = new Set();
     const picked = [];
     let chars = 0;

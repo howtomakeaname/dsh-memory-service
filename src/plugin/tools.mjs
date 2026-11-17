@@ -31,7 +31,7 @@ export function createTools({ ctx, service, root, queue, extractor }) {
   disposers.push(ctx.tools.register({
     name: "memory_save",
     description: "Save a durable preference, convention, decision or fact to DSH long-term memory. Do not save transient task details.",
-    parameters: { type: "object", additionalProperties: false, properties: { text: { type: "string" }, title: { type: "string" }, description: { type: "string" }, type: { type: "string", enum: ["user", "feedback", "project", "reference", "convention", "fact"] }, scope: { type: "string", enum: ["workspace", "global"] }, key: { type: "string", description: "Stable fact key, e.g. project.package_manager; same key with a different value becomes a conflict." }, pinned: { type: "boolean" } }, required: ["text"] },
+    parameters: { type: "object", additionalProperties: false, properties: { text: { type: "string" }, title: { type: "string" }, description: { type: "string" }, type: { type: "string", enum: ["user", "preference", "feedback", "project", "reference", "convention", "fact"] }, scope: { type: "string", enum: ["workspace", "global"] }, key: { type: "string", description: "Stable fact key, e.g. project.package_manager; same key with a different value becomes a conflict." }, pinned: { type: "boolean" } }, required: ["text"] },
     output: textOutput(),
     execute: async (args, exec) => {
       const text = String(args?.text || "").trim();
@@ -58,7 +58,7 @@ export function createTools({ ctx, service, root, queue, extractor }) {
   disposers.push(ctx.tools.register({
     name: "memory_update",
     description: "Update an existing memory with optimistic concurrency. Read it first and pass the current revision; a stale revision is rejected.",
-    parameters: { type: "object", additionalProperties: false, properties: { id: { type: "string" }, expectedRevision: { type: "integer" }, text: { type: "string" }, title: { type: "string" }, description: { type: "string" }, type: { type: "string", enum: ["user", "feedback", "project", "reference", "convention", "fact"] }, scope: { type: "string", enum: ["workspace", "global"] } }, required: ["id", "expectedRevision"] },
+    parameters: { type: "object", additionalProperties: false, properties: { id: { type: "string" }, expectedRevision: { type: "integer" }, text: { type: "string" }, title: { type: "string" }, description: { type: "string" }, type: { type: "string", enum: ["user", "preference", "feedback", "project", "reference", "convention", "fact"] }, scope: { type: "string", enum: ["workspace", "global"] } }, required: ["id", "expectedRevision"] },
     output: textOutput(),
     execute: async (args, exec) => {
       const scope = scopeFor(args, exec);

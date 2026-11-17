@@ -41,7 +41,7 @@ window.__ModuleLoader__.load({
       confirmDelete: "Forget this memory?", error: "Operation failed", conflict: "Revision conflict: another session changed this memory. Reload and retry.",
       queue: "Capture queue", pending: "pending", failed: "failed", notes: "notes", active: "active", conflicts: "conflicts", extractor: "Model extraction"
     };
-    const TYPES = ["convention", "feedback", "project", "reference", "fact", "user"];
+    const TYPES = ["convention", "preference", "feedback", "project", "reference", "fact", "user"];
 
     function installStyle() {
       if (typeof document === "undefined" || document.getElementById(STYLE_ID)) return;
