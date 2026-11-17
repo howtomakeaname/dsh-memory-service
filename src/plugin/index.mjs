@@ -1,5 +1,5 @@
-import os from "node:os";
 import { MemoryService } from "../store.mjs";
+import { normalizeConfig } from "../config.mjs";
 import { createCaptureHandler } from "./capture.mjs";
 import { createPreStepHandler } from "./inject.mjs";
 import { createTools } from "./tools.mjs";
@@ -15,10 +15,11 @@ export const inject = ["tools", "agents", "sessions"];
 const TAG = "[dsh-memory-service]";
 
 export function apply(ctx, rawConfig = {}) {
-  const config = rawConfig && typeof rawConfig === "object" ? rawConfig : {};
-  const root = config.root || process.env.DSH_MEMORY_HOME || os.homedir() + "/.dsh/memory-service";
-  const capture = config.capture !== false;
-  const budgetTokens = Number(config.budgetTokens || 1200);
+  const normalized = normalizeConfig(rawConfig);
+  const config = normalized.config;
+  const root = config.root;
+  const capture = config.capture;
+  const budgetTokens = config.budgetTokens;
   const log = (level, message) => {
     try {
       const logger = ctx.logger || console;
@@ -26,6 +27,7 @@ export function apply(ctx, rawConfig = {}) {
       fn?.(TAG + " " + message);
     } catch { /* ignore */ }
   };
+  for (const warning of normalized.warnings) log("warn", warning);
 
   let service = null;
   try {
@@ -36,8 +38,8 @@ export function apply(ctx, rawConfig = {}) {
 
   const stateOf = createSessionState();
   const llm = createLlmClient(ctx, config.llm || {}, log);
-  const extractor = llm.available ? createExtractor({ llm, log, minConfidence: Number(config.minConfidence || 0.55) }) : null;
-  const extractEveryTurns = Number(config.extractEveryTurns || 1);
+  const extractor = llm.available ? createExtractor({ llm, log, minConfidence: config.minConfidence }) : null;
+  const extractEveryTurns = config.extractEveryTurns;
   let queue = null;
   if (service) {
     try {
