@@ -28,7 +28,7 @@ test("plugin: registers tools and injects recalled memory", async () => {
   const root = tmp();
   const f = fakeCtx();
   apply(f.ctx, { root, capture: true });
-  assert.deepEqual([...f.tools.keys()].sort(), ["memory_flush", "memory_forget", "memory_get", "memory_save", "memory_search", "memory_stats", "memory_update"]);
+  assert.deepEqual([...f.tools.keys()].sort(), ["memory_conflicts", "memory_flush", "memory_forget", "memory_get", "memory_resolve", "memory_save", "memory_search", "memory_stats", "memory_update"]);
 
   const save = f.tools.get("memory_save");
   const saved = await save.execute({ text: "The project uses pnpm for dependency management.", title: "Package manager", type: "convention" }, { agent: { session: { id: "s1", header: { cwd: "/tmp/proj-a" } } } });
@@ -104,5 +104,26 @@ test("plugin: global scope get/update works from a workspace session", async () 
   assert.match(got.text, /Chinese/);
   const updated = await f.tools.get("memory_update").execute({ id, expectedRevision: 1, scope: "global", text: "Always answer in Chinese, concise" }, exec);
   assert.match(updated.text, /revision 2/);
+  f.dispose();
+});
+
+test("plugin: exposes conflicts and resolves them", async () => {
+  const root = tmp();
+  const f = fakeCtx();
+  apply(f.ctx, { root, capture: true });
+  const exec = { agent: { session: { id: "s6", header: { cwd: "/tmp/proj-conflict" } } } };
+  const a = await f.tools.get("memory_save").execute({ text: "Use pnpm", title: "Package manager", type: "convention", key: "project.package_manager" }, exec);
+  const b = await f.tools.get("memory_save").execute({ text: "Use bun", title: "Package manager", type: "convention", key: "project.package_manager" }, exec);
+  assert.match(b.text, /conflict:/);
+  const conflicts = await f.tools.get("memory_conflicts").execute({}, exec);
+  assert.match(conflicts.text, /pnpm/);
+  const ids = conflicts.text.match(/#[a-zA-Z0-9-]+/g) || [];
+  assert.ok(ids.length >= 2);
+  const winner = ids[0].slice(1);
+  const loser = ids[1].slice(1);
+  const resolved = await f.tools.get("memory_resolve").execute({ winnerId: winner, loserId: loser }, exec);
+  assert.match(resolved.text, /resolved:/);
+  const after = await f.tools.get("memory_conflicts").execute({}, exec);
+  assert.match(after.text, /no memory found/);
   f.dispose();
 });

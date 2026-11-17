@@ -115,3 +115,19 @@ test("store: concurrent services serialize CAS updates", () => {
   assert.equal(s2.get(note.id, { scope: "workspace:proj-lock" }).body, "first writer");
   s1.close(); s2.close();
 });
+
+test("store: same key with different values becomes a resolvable conflict", () => {
+  const root = tmp();
+  const service = new MemoryService({ root, workspaceId: "proj-conflict" }).init();
+  const first = service.upsert({ scope: "workspace:proj-conflict", key: "project.package_manager", title: "Package manager", body: "Use pnpm", type: "convention" });
+  const second = service.upsert({ scope: "workspace:proj-conflict", key: "project.package_manager", title: "Package manager", body: "Use bun", type: "convention" });
+  assert.equal(second.status, "conflicted");
+  assert.equal(service.get(first.id, { scope: "workspace:proj-conflict" }).status, "conflicted");
+  assert.equal(service.listConflicts("workspace:proj-conflict").length, 2);
+  assert.match(service.context({ scope: "workspace:proj-conflict", query: "package manager" }).text, /未解决的记忆冲突/);
+  service.resolveConflict(second.id, first.id, { scope: "workspace:proj-conflict" });
+  assert.equal(service.get(second.id, { scope: "workspace:proj-conflict" }).status, "active");
+  assert.equal(service.get(first.id, { scope: "workspace:proj-conflict" }).status, "superseded");
+  assert.equal(service.listConflicts("workspace:proj-conflict").length, 0);
+  service.close();
+});

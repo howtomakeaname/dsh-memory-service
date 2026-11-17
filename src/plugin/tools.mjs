@@ -31,13 +31,14 @@ export function createTools({ ctx, service, root, queue, extractor }) {
   disposers.push(ctx.tools.register({
     name: "memory_save",
     description: "Save a durable preference, convention, decision or fact to DSH long-term memory. Do not save transient task details.",
-    parameters: { type: "object", additionalProperties: false, properties: { text: { type: "string" }, title: { type: "string" }, description: { type: "string" }, type: { type: "string", enum: ["user", "feedback", "project", "reference", "convention", "fact"] }, scope: { type: "string", enum: ["workspace", "global"] }, pinned: { type: "boolean" } }, required: ["text"] },
+    parameters: { type: "object", additionalProperties: false, properties: { text: { type: "string" }, title: { type: "string" }, description: { type: "string" }, type: { type: "string", enum: ["user", "feedback", "project", "reference", "convention", "fact"] }, scope: { type: "string", enum: ["workspace", "global"] }, key: { type: "string", description: "Stable fact key, e.g. project.package_manager; same key with a different value becomes a conflict." }, pinned: { type: "boolean" } }, required: ["text"] },
     output: textOutput(),
     execute: async (args, exec) => {
       const text = String(args?.text || "").trim();
       if (!text) return { text: "memory_save: text is required" };
       const scope = args?.scope === "global" ? "global" : scopeFromExec(exec);
-      const note = service.upsert({ scope, title: String(args?.title || text.slice(0, 80)), description: String(args?.description || ""), body: text, type: args?.type || "fact", metadata: { pinned: args?.pinned === true, capture: "tool" } });
+      const note = service.upsert({ scope, key: args?.key, title: String(args?.title || text.slice(0, 80)), description: String(args?.description || ""), body: text, type: args?.type || "fact", metadata: { pinned: args?.pinned === true, capture: "tool" } });
+      if (note.status === "conflicted") return { text: "conflict: #" + note.id + " conflicts with #" + (note.metadata?.conflict_with || "") + "; both are hidden from recall until memory_resolve" };
       return { text: "saved #" + note.id + " revision " + note.revision + " (" + scope + ")" };
     }
   }));
@@ -113,6 +114,33 @@ export function createTools({ ctx, service, root, queue, extractor }) {
   }));
 
   disposers.push(ctx.tools.register({
+    name: "memory_conflicts",
+    description: "List unresolved semantic conflicts (same fact key, different values). Resolve them with memory_resolve instead of guessing.",
+    parameters: { type: "object", additionalProperties: false, properties: { scope: { type: "string", enum: ["workspace", "global"] } } },
+    output: textOutput(),
+    execute: async (args, exec) => {
+      const rows = service.listConflicts(scopeFor(args, exec));
+      return { text: renderRows(rows) };
+    }
+  }));
+
+  disposers.push(ctx.tools.register({
+    name: "memory_resolve",
+    description: "Resolve a semantic conflict by choosing the winner; the loser becomes superseded. Read both with memory_get first.",
+    parameters: { type: "object", additionalProperties: false, properties: { winnerId: { type: "string" }, loserId: { type: "string" }, scope: { type: "string", enum: ["workspace", "global"] } }, required: ["winnerId", "loserId"] },
+    output: textOutput(),
+    execute: async (args, exec) => {
+      const scope = scopeFor(args, exec);
+      try {
+        const resolved = service.resolveConflict(String(args?.winnerId || ""), String(args?.loserId || ""), { scope });
+        return { text: "resolved: winner #" + resolved.winner.id + " active, loser #" + resolved.loser.id + " superseded" };
+      } catch (error) {
+        return { text: "resolve failed: " + (error instanceof Error ? error.message : String(error)) };
+      }
+    }
+  }));
+
+  disposers.push(ctx.tools.register({
     name: "memory_stats",
     description: "Show DSH long-term memory counts and storage path.",
     parameters: { type: "object", additionalProperties: false, properties: {} },
@@ -120,7 +148,7 @@ export function createTools({ ctx, service, root, queue, extractor }) {
     execute: async () => {
       const rows = service.list("global", { allScopes: true, includeForgotten: true });
       const pending = queue ? queue.stats().pending : 0;
-      return { text: "notes=" + rows.length + " active=" + rows.filter((n) => n.status === "active").length + " pending=" + pending + " extractor=" + (extractor ? "on" : "off") + " root=" + root };
+      return { text: "notes=" + rows.length + " active=" + rows.filter((n) => n.status === "active").length + " conflicts=" + rows.filter((n) => n.status === "conflicted").length + " pending=" + pending + " extractor=" + (extractor ? "on" : "off") + " root=" + root };
     }
   }));
 

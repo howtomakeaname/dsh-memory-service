@@ -30,7 +30,7 @@ window.__ModuleLoader__.load({
       edit: "编辑", delete: "遗忘", save: "保存", cancel: "取消", titleField: "标题", descriptionField: "描述",
       bodyField: "正文", typeField: "类型", scopeField: "作用域", revision: "版本", updated: "更新于",
       confirmDelete: "确定遗忘这条记忆？", error: "操作失败", conflict: "版本冲突：内容已被其他会话修改，请重试。",
-      queue: "捕获队列", pending: "待处理", failed: "失败", notes: "笔记", active: "有效", extractor: "模型抽取"
+      queue: "捕获队列", pending: "待处理", failed: "失败", notes: "笔记", active: "有效", conflicts: "冲突", extractor: "模型抽取"
     };
     const en = {
       section: "Memory", title: "Memory service", description: "Manage DSH long-term memory: browse, search, create, edit and forget by scope; drain the capture queue.",
@@ -39,7 +39,7 @@ window.__ModuleLoader__.load({
       edit: "Edit", delete: "Forget", save: "Save", cancel: "Cancel", titleField: "Title", descriptionField: "Description",
       bodyField: "Body", typeField: "Type", scopeField: "Scope", revision: "Revision", updated: "Updated",
       confirmDelete: "Forget this memory?", error: "Operation failed", conflict: "Revision conflict: another session changed this memory. Reload and retry.",
-      queue: "Capture queue", pending: "pending", failed: "failed", notes: "notes", active: "active", extractor: "Model extraction"
+      queue: "Capture queue", pending: "pending", failed: "failed", notes: "notes", active: "active", conflicts: "conflicts", extractor: "Model extraction"
     };
     const TYPES = ["convention", "feedback", "project", "reference", "fact", "user"];
 
@@ -124,7 +124,7 @@ window.__ModuleLoader__.load({
         return h("div", { className: "dms_page" },
           h("div", { className: "dms_head" }, h("div", { className: "dms_title" }, t("title")), h("div", { className: "dms_desc" }, t("description"))),
           status ? h("div", { className: "dms_stats" },
-            stat(t("notes"), status.notes), stat(t("active"), status.active),
+            stat(t("notes"), status.notes), stat(t("active"), status.active), stat(t("conflicts"), status.conflicts || 0),
             stat(t("pending"), status.capture?.pending || 0), stat(t("failed"), status.capture?.failed || 0),
             stat(t("extractor"), status.extractor ? "on" : "off")) : null,
           h("form", { className: "dms_toolbar", onSubmit: submitSearch },

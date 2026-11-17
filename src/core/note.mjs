@@ -21,6 +21,7 @@ export function noteFromFile(file, scope) {
     supersedes: data.supersedes ? String(data.supersedes) : null,
     supersededBy: data.superseded_by ? String(data.superseded_by) : null,
     sourceRefs: Array.isArray(data.source_refs) ? data.source_refs.map(String) : [],
+    key: data.key ? String(data.key) : null,
     metadata: meta,
     createdAt: String(data.created_at || meta.created || meta.modified || ""),
     updatedAt: String(data.updated_at || meta.modified || ""),
@@ -43,6 +44,7 @@ export function serializeNote(note) {
     superseded_by: note.supersededBy || undefined,
     created_at: note.createdAt || undefined,
     updated_at: note.updatedAt || undefined,
+    key: note.key || undefined,
     source_refs: note.sourceRefs && note.sourceRefs.length ? note.sourceRefs : undefined,
     metadata: { node_type: "memory", type: note.type, modified: note.updatedAt || new Date().toISOString(), ...(note.metadata || {}) }
   }, note.body);

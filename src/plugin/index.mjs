@@ -68,6 +68,7 @@ export function apply(ctx, rawConfig = {}) {
           root, defaultScope: service.defaultScope(), workspaces: service.listWorkspaces(),
           notes: service.list("global", { allScopes: true, includeForgotten: true }).length,
           active: service.list("global", { allScopes: true }).length,
+          conflicts: service.list("global", { allScopes: true }).filter((note) => note.status === "conflicted").length,
           capture: queue ? queue.stats() : null, extractor: Boolean(extractor)
         }),
         list: (payload) => {

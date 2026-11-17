@@ -131,10 +131,30 @@ export class MemoryService {
       supersedes: input.supersedes ?? existing?.supersedes ?? null,
       supersededBy: null,
       sourceRefs: input.sourceRefs || existing?.sourceRefs || [],
+      key: input.key != null ? String(input.key).trim() : (existing?.key || null),
       metadata: { ...(existing?.metadata || {}), ...(input.metadata || {}) },
       createdAt: existing?.createdAt || now,
       updatedAt: now
     };
+    if (!existing && note.key && !input.supersedes) {
+      const peers = this.list(scope, { allScopes: false }).filter((peer) => peer.id !== note.id && peer.key === note.key && peer.status === "active");
+      const same = peers.find((peer) => peer.body.trim() === note.body.trim());
+      if (same) return same;
+      if (peers.length > 0) {
+        note.status = "conflicted";
+        note.metadata = { ...note.metadata, conflict_with: peers.map((peer) => peer.id).join(",") };
+        this.#write(note);
+        for (const peer of peers) {
+          peer.status = "conflicted";
+          peer.metadata = { ...peer.metadata, conflict_with: note.id };
+          peer.revision += 1;
+          peer.updatedAt = now;
+          this.#write(peer);
+        }
+        note.conflict = true;
+        return note;
+      }
+    }
     this.#write(note);
     if (note.supersedes) {
       const old = this.get(note.supersedes, { scope });
@@ -170,6 +190,30 @@ export class MemoryService {
     this.index.remove(note.id);
     this.#journal({ event: "forget", id: note.id, scope: note.scope });
     return note;
+  }
+
+  listConflicts(scope) {
+    return this.list(scope || "global", { allScopes: !scope }).filter((note) => note.status === "conflicted");
+  }
+
+  resolveConflict(winnerId, loserId, { scope } = {}) {
+    const winner = this.get(winnerId, { scope });
+    const loser = this.get(loserId, { scope });
+    if (!winner || !loser) throw new Error("conflict resolution: memory not found");
+    const now = new Date().toISOString();
+    const clean = (note) => { const { conflict_with, ...rest } = note.metadata || {}; return rest; };
+    winner.status = "active";
+    winner.metadata = clean(winner);
+    winner.revision += 1;
+    winner.updatedAt = now;
+    this.#write(winner);
+    loser.status = "superseded";
+    loser.supersededBy = winner.id;
+    loser.metadata = clean(loser);
+    loser.revision += 1;
+    loser.updatedAt = now;
+    this.#write(loser);
+    return { winner, loser };
   }
 
   search(query, { scope, limit = 10 } = {}) {
@@ -213,7 +257,9 @@ export class MemoryService {
 
   context({ scope, query = "", budgetTokens = 1200 } = {}) {
     const s = this.normalizeScope(scope);
-    const all = this.list(s, { allScopes: false }).filter((n) => n.status === "active");
+    const allNotes = this.list(s, { allScopes: false });
+    const all = allNotes.filter((n) => n.status === "active");
+    const conflicts = allNotes.filter((n) => n.status === "conflicted");
     const stable = all.filter((n) => STABLE_TYPES.has(n.type)).slice(0, 20);
     const recalled = query ? this.search(query, { scope: s, limit: 10 }).map((r) => this.get(r.id, { scope: r.scope })).filter(Boolean) : [];
     const seen = new Set();
@@ -227,12 +273,17 @@ export class MemoryService {
       picked.push(n);
       chars += block.length;
     }
+    const conflictText = conflicts.length
+      ? "存在未解决的记忆冲突（不要自行选一个，先向用户确认）：\n" + conflicts.map((n) => "- #" + n.id + " [" + n.type + "] " + n.title + ": " + n.body.replace(/\s+/g, " ").slice(0, 240)).join("\n")
+      : "";
+    const bodyText = picked.map((n) => "- [" + n.type + "] " + n.title + ": " + n.description + (n.body ? "\n  " + n.body.replace(/\s+/g, " ").slice(0, 280) : "")).join("\n");
     return {
       stable,
+      conflicts,
       recalled: picked.filter((n) => !stable.includes(n)),
       notes: picked,
-      text: picked.map((n) => "- [" + n.type + "] " + n.title + ": " + n.description + (n.body ? "\n  " + n.body.replace(/\s+/g, " ").slice(0, 280) : "")).join("\n"),
-      tokens: Math.ceil(chars / 4)
+      text: [conflictText, bodyText].filter(Boolean).join("\n\n"),
+      tokens: Math.ceil((chars + conflictText.length) / 4)
     };
   }
 
