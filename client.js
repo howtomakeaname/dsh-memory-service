@@ -18,6 +18,10 @@ window.__ModuleLoader__.load({
       const { variant, ...rest } = props || {};
       return h("button", { className: "dms_btn " + (variant === "primary" ? "primary" : ""), ...rest }, iconName ? icon(iconName) : null, " ", label);
     }
+    function iconButton(label, props, iconName) {
+      if (Button) return h(Button, { size: "sm", variant: "ghost", ...props, icon: icon(iconName), "aria-label": label, title: label });
+      return h("button", { className: "dms_btn", "aria-label": label, title: label, ...props }, iconName ? icon(iconName) : null);
+    }
     function textField(props) {
       const { icon: leading, ...rest } = props || {};
       if (Input) return h(Input, { ...rest, icon: leading });
@@ -39,12 +43,12 @@ window.__ModuleLoader__.load({
       section: "记忆", title: "记忆服务", description: "管理 DSH 的长期记忆：按作用域查看、搜索、新增、编辑、遗忘，并处理捕获队列。",
       workspace: "当前工作区", workspaceShort: "工作区", allShort: "全部", global: "全局", all: "全部工作区", search: "搜索", searchPlaceholder: "搜索标题、描述或正文…",
       refresh: "刷新", flush: "处理队列", newMemory: "新增记忆", loading: "加载中…", empty: "没有匹配的记忆。",
-      emptyHint: "试试换一个作用域，或新增一条记忆。", edit: "编辑", delete: "遗忘", save: "保存", cancel: "取消",
+      emptyHint: "试试换一个作用域，或新增一条记忆。", formHint: "保存一条可跨会话复用的记忆。", edit: "编辑", delete: "遗忘", save: "保存", cancel: "取消",
       back: "返回列表", titleField: "标题", descriptionField: "一句话描述", bodyField: "正文", typeField: "类型", scopeField: "作用域",
       revision: "版本", updated: "更新于", id: "ID", copyId: "复制 ID", copied: "已复制",
       confirmDelete: "确定遗忘这条记忆？", error: "操作失败", conflict: "版本冲突：内容已被其他会话修改，请重试。",
       queue: "捕获队列", pending: "待处理", failed: "失败", notes: "笔记", active: "有效", conflicts: "冲突",
-      extractor: "模型抽取", on: "开启", off: "关闭", allScopes: "全部", detail: "记忆详情",
+      extractor: "模型抽取", on: "开启", off: "关闭", allScopes: "全部", detail: "记忆详情", status: "状态", showConflicts: "只看冲突", allMemories: "全部记忆", resolveKeep: "保留此版本", conflictWith: "冲突对象", resolved: "已解决", argumentsLabel: "参数", resultLabel: "结果", errorLabel: "错误",
       sourceRefs: "来源", noDescription: "（无描述）", noBody: "（无正文）", memory: "记忆",
       toolSearch: "搜索记忆", toolSave: "保存记忆", toolGet: "读取记忆", toolUpdate: "更新记忆",
       toolForget: "遗忘记忆", toolFlush: "处理捕获队列", toolConflicts: "查看记忆冲突",
@@ -54,12 +58,12 @@ window.__ModuleLoader__.load({
       section: "Memory", title: "Memory service", description: "Manage DSH long-term memory: browse, search, create, edit and forget by scope; drain the capture queue.",
       workspace: "Current workspace", workspaceShort: "Workspace", allShort: "All", global: "Global", all: "All workspaces", search: "Search", searchPlaceholder: "Search title, description or body…",
       refresh: "Refresh", flush: "Drain queue", newMemory: "New memory", loading: "Loading…", empty: "No matching memories.",
-      emptyHint: "Try another scope, or create a memory.", edit: "Edit", delete: "Forget", save: "Save", cancel: "Cancel",
+      emptyHint: "Try another scope, or create a memory.", formHint: "Save a durable memory for future sessions.", edit: "Edit", delete: "Forget", save: "Save", cancel: "Cancel",
       back: "Back to list", titleField: "Title", descriptionField: "One-line description", bodyField: "Body", typeField: "Type", scopeField: "Scope",
       revision: "Revision", updated: "Updated", id: "ID", copyId: "Copy ID", copied: "Copied",
       confirmDelete: "Forget this memory?", error: "Operation failed", conflict: "Revision conflict: another session changed this memory. Reload and retry.",
       queue: "Capture queue", pending: "pending", failed: "failed", notes: "notes", active: "active", conflicts: "conflicts",
-      extractor: "Model extraction", on: "on", off: "off", allScopes: "all", detail: "Memory detail",
+      extractor: "Model extraction", on: "on", off: "off", allScopes: "all", detail: "Memory detail", status: "Status", showConflicts: "Conflicts", allMemories: "All memories", resolveKeep: "Keep this version", conflictWith: "Conflicts with", resolved: "Resolved", argumentsLabel: "Arguments", resultLabel: "Result", errorLabel: "Error",
       sourceRefs: "Sources", noDescription: "(no description)", noBody: "(empty body)", memory: "Memory",
       toolSearch: "Search memory", toolSave: "Save memory", toolGet: "Read memory", toolUpdate: "Update memory",
       toolForget: "Forget memory", toolFlush: "Drain capture queue", toolConflicts: "Memory conflicts",
@@ -98,13 +102,16 @@ window.__ModuleLoader__.load({
         ".dms_detail{display:flex;flex-direction:column;gap:14px;border:1px solid var(--dsw-alias-border-l2,#333);border-radius:8px;background:var(--dsw-alias-bg-layer-1,#181818);padding:16px;}",
         ".dms_detailTop{display:flex;gap:8px;align-items:center;justify-content:space-between;}.dms_detailTitle{font-size:17px;line-height:24px;font-weight:600;overflow-wrap:anywhere;}",
         ".dms_detailActions{display:flex;gap:6px;align-items:center;flex:none;}.dms_meta{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:12px;color:var(--dsw-alias-label-tertiary,#888);}",
+        ".dms_detailDesc{font-size:13px;line-height:20px;color:var(--dsw-alias-label-secondary,#aaa);}",
         ".dms_body{font-size:13px;line-height:21px;color:var(--dsw-alias-label-primary,#ddd);white-space:pre-wrap;overflow-wrap:anywhere;border-top:1px solid var(--dsw-alias-border-l2,#333);padding-top:12px;}",
         ".dms_detailFoot{font-size:11px;line-height:18px;color:var(--dsw-alias-label-tertiary,#888);word-break:break-all;}",
         ".dms_form{display:flex;flex-direction:column;gap:10px;border:1px solid var(--dsw-alias-border-l2,#333);border-radius:8px;padding:14px;background:var(--dsw-alias-bg-layer-1,#181818);}",
         ".dms_field{display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--dsw-alias-label-secondary,#aaa);}.dms_formRow{display:flex;gap:10px;flex-wrap:wrap;}",
+        ".dms_conflict{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;border:1px solid var(--dsw-alias-state-error-primary,#e74c3c);border-radius:6px;padding:9px 10px;background:var(--dsw-alias-bg-layer-3,#222);font-size:12px;line-height:18px;color:var(--dsw-alias-label-secondary,#bbb);}",
         ".dms_error{color:var(--dsw-alias-state-error-primary,#e74c3c);font-size:13px;line-height:19px;}.dms_empty{display:flex;flex-direction:column;gap:6px;align-items:center;padding:42px 12px;color:var(--dsw-alias-label-tertiary,#888);text-align:center;border:1px dashed var(--dsw-alias-border-l2,#333);border-radius:8px;}",
         ".dms_empty b{font-size:14px;color:var(--dsw-alias-label-secondary,#aaa);font-weight:500;}.dms_emptyIcon{opacity:.7;}",
         ".dms_toolBody{display:flex;flex-direction:column;gap:8px;padding:8px 0 2px 26px;}.dms_toolLabel{font-size:11px;color:var(--dsw-alias-label-tertiary,#888);}.dms_toolPre{margin:0;padding:8px 10px;border-radius:6px;background:var(--dsw-alias-bg-layer-3,#222);color:var(--dsw-alias-label-secondary,#ccc);font-size:11px;line-height:17px;white-space:pre-wrap;overflow-wrap:anywhere;max-height:260px;overflow:auto;}",
+        "@media (max-width:720px){.dms_scope{width:100%;min-width:0;}.dms_detailTop{align-items:flex-start;flex-direction:column;}.dms_detailActions{flex-wrap:wrap;}.dms_summary{gap:10px 14px;}.dms_search{min-width:0;}}",
         ".dms_toolTitle{display:flex;gap:6px;align-items:center;min-width:0;}.dms_toolSummary{color:var(--dsw-alias-label-tertiary,#888);font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}"
       ].join("");
       document.head.appendChild(style);
@@ -150,8 +157,8 @@ window.__ModuleLoader__.load({
         const failed = block?.isError === true || Boolean(block?.error);
         const expandable = Boolean(args || output || failed);
         const children = h("div", { className: "dms_toolBody" },
-          args ? h("div", null, h("div", { className: "dms_toolLabel" }, "Arguments"), h("pre", { className: "dms_toolPre" }, JSON.stringify(args, null, 2))) : null,
-          output ? h("div", null, h("div", { className: "dms_toolLabel" }, failed ? "Error" : "Result"), h("pre", { className: "dms_toolPre" }, output.slice(0, 8000))) : null);
+          args ? h("div", null, h("div", { className: "dms_toolLabel" }, t("argumentsLabel")), h("pre", { className: "dms_toolPre" }, JSON.stringify(args, null, 2))) : null,
+          output ? h("div", null, h("div", { className: "dms_toolLabel" }, failed ? t("errorLabel") : t("resultLabel")), h("pre", { className: "dms_toolPre" }, output.slice(0, 8000))) : null);
         return h(DisclosureRow, {
           icon: icon(TOOL_ICONS[toolName] || "IconSparkleRegular", 14),
           title,
@@ -176,6 +183,7 @@ window.__ModuleLoader__.load({
         const [draft, setDraft] = React.useState(null);
         const [selectedId, setSelectedId] = React.useState(null);
         const [copied, setCopied] = React.useState(false);
+        const [onlyConflicts, setOnlyConflicts] = React.useState(false);
 
         const selected = items.find((item) => item.id === selectedId) || null;
 
@@ -193,8 +201,15 @@ window.__ModuleLoader__.load({
         }, [selectedId]);
 
         React.useEffect(() => { void load(scope, ""); }, [scope, load]);
-        const submitSearch = (event) => { event.preventDefault(); void load(scope, query.trim()); };
-        const refresh = () => { void load(scope, query.trim()); };
+        const submitSearch = (event) => { event.preventDefault(); setOnlyConflicts(false); void load(scope, query.trim()); };
+        const refresh = () => { setOnlyConflicts(false); void load(scope, query.trim()); };
+        const showConflicts = async () => {
+          if (onlyConflicts) { setOnlyConflicts(false); void load(scope, query.trim()); return; }
+          setLoading(true); setError("");
+          try { setStatus(await api("state")); setItems(await api("conflicts", { scope: scope === "all" ? "all" : scope })); setSelectedId(null); setOnlyConflicts(true); }
+          catch (failure) { setError(String(failure.message || failure)); }
+          finally { setLoading(false); }
+        };
         const flush = async () => { setError(""); try { await api("flush"); refresh(); } catch (failure) { setError(String(failure.message || failure)); } };
         const back = () => setSelectedId(null);
         const openDetail = (item) => { setSelectedId(item.id); setDraft(null); };
@@ -214,6 +229,17 @@ window.__ModuleLoader__.load({
         const copyId = async (id) => {
           try { await navigator.clipboard.writeText(id); setCopied(true); setTimeout(() => setCopied(false), 1400); } catch { /* ignore */ }
         };
+        const resolveSelected = async (item) => {
+          const peers = String(item?.metadata?.conflict_with || "").split(",").map((id) => id.trim()).filter(Boolean);
+          if (!peers.length) return;
+          setError("");
+          try {
+            await api("resolve", { winnerId: item.id, loserIds: peers, scope: item.scope === "global" ? "global" : "workspace" });
+            setOnlyConflicts(false);
+            await load(scope, query.trim());
+            setSelectedId(item.id);
+          } catch (failure) { setError(String(failure.message || failure)); }
+        };
 
         const scopeItems = [
           { value: "workspace", label: t("workspaceShort"), id: "dms-scope-workspace" },
@@ -227,38 +253,42 @@ window.__ModuleLoader__.load({
           action(t("search"), { type: "submit", variant: "primary" }, "IconSearchOutlineRegular"));
         const toolbar2 = h("div", { className: "dms_toolbar" },
           h("div", { className: "dms_scope" }, SegmentedTabs ? h(SegmentedTabs, { items: scopeItems, value: scope, onChange: (value) => { setScope(value); setSelectedId(null); }, label: t("scopeField"), size: "sm" }) : h("select", { className: "dms_select", value: scope, onChange: (event) => setScope(event.target.value) }, scopeItems.map((item) => h("option", { key: item.value, value: item.value }, item.label)))),
-          action(t("refresh"), { type: "button", onClick: refresh, variant: "ghost" }, "IconRefreshOutlineRegular"),
-          action(t("flush"), { type: "button", onClick: flush, variant: "ghost" }, "IconDatabaseOutlineRegular"),
-          action(t("newMemory"), { type: "button", onClick: startNew, variant: "ghost" }, "IconPlusOutlineRegular"));
+          (status?.conflicts || 0) > 0 ? action(onlyConflicts ? t("allMemories") : t("showConflicts") + " " + status.conflicts, { type: "button", onClick: showConflicts, variant: onlyConflicts ? "primary" : "ghost" }, "IconInfoOutlineRegular") : null,
+          iconButton(t("refresh"), { type: "button", onClick: refresh }, "IconRefreshOutlineRegular"),
+          iconButton(t("flush"), { type: "button", onClick: flush }, "IconDatabaseOutlineRegular"),
+          iconButton(t("newMemory"), { type: "button", onClick: startNew }, "IconPlusOutlineRegular"));
 
         const summary = status ? h("div", { className: "dms_summary" },
           metric(t("notes"), status.notes), metric(t("active"), status.active), metric(t("conflicts"), status.conflicts || 0),
           metric(t("pending"), status.capture?.pending || 0), metric(t("failed"), status.capture?.failed || 0),
           tag(t("extractor") + ": " + (status.extractor ? t("on") : t("off")), status.extractor ? "success" : "neutral")) : null;
 
+        const visibleItems = onlyConflicts ? items : items.filter((item) => item.status === "active");
         const list = loading ? h("div", { className: "dms_desc" }, shimmer(t("loading"))) :
-          items.length === 0 ? h("div", { className: "dms_empty" }, h("span", { className: "dms_emptyIcon" }, icon("IconDatabaseOutlineRegular", 24)), h("b", null, t("empty")), h("span", null, t("emptyHint"))) :
-          h("div", { className: "dms_list" }, items.map((item) => h("button", { type: "button", className: "dms_row", key: item.id, onClick: () => openDetail(item) },
+          visibleItems.length === 0 ? h("div", { className: "dms_empty" }, h("span", { className: "dms_emptyIcon" }, icon("IconDatabaseOutlineRegular", 24)), h("b", null, onlyConflicts ? t("resolved") : t("empty")), h("span", null, onlyConflicts ? t("emptyHint") : t("emptyHint"))) :
+          h("div", { className: "dms_list" }, visibleItems.map((item) => h("button", { type: "button", className: "dms_row", key: item.id, onClick: () => openDetail(item) },
             h("span", { className: "dms_rowIcon" }, typeIcon(item.type)),
             h("span", { className: "dms_rowMain" },
               h("span", { className: "dms_rowTitle" }, item.title || item.id),
               h("span", { className: "dms_rowDesc" }, item.description || item.body || t("noDescription")),
-              h("span", { className: "dms_rowMeta" }, tag(item.type), tag(item.scope), h("span", null, t("updated") + " " + fmtDate(item.updatedAt)))))));
+              h("span", { className: "dms_rowMeta" }, tag(item.type), tag(item.scope), item.status !== "active" ? tag(t("status") + ": " + item.status, "error") : null, h("span", null, t("updated") + " " + fmtDate(item.updatedAt)))))));
 
         const detail = selected ? h("div", { className: "dms_detail" },
           h("div", { className: "dms_detailTop" },
             h("div", { className: "dms_detailActions" }, action(t("back"), { type: "button", variant: "ghost", onClick: back }, "IconChevronLeftOutlineRegular")),
             h("div", { className: "dms_detailActions" },
-              action(t("copyId"), { type: "button", variant: "ghost", onClick: () => copyId(selected.id) }, copied ? "IconCheckOutlineRegular" : "IconCopyOutlineRegular"),
+              action(copied ? t("copied") : t("copyId"), { type: "button", variant: "ghost", onClick: () => copyId(selected.id) }, copied ? "IconCheckOutlineRegular" : "IconCopyOutlineRegular"),
               action(t("edit"), { type: "button", variant: "ghost", onClick: () => startEdit(selected) }, "IconEditOutlineRegular"),
               action(t("delete"), { type: "button", variant: "ghost", onClick: () => forget(selected) }, "IconTrashOutlineRegular"))),
           h("div", { className: "dms_detailTitle" }, selected.title || selected.id),
-          h("div", { className: "dms_meta" }, tag(selected.type), tag(selected.scope), h("span", null, t("revision") + " " + selected.revision), h("span", null, t("updated") + " " + fmtDate(selected.updatedAt))),
+          h("div", { className: "dms_meta" }, tag(selected.type), tag(selected.scope), selected.status !== "active" ? tag(t("status") + ": " + selected.status, selected.status === "conflicted" ? "error" : "neutral") : null, h("span", null, t("revision") + " " + selected.revision), h("span", null, t("updated") + " " + fmtDate(selected.updatedAt))),
+          selected.status === "conflicted" ? h("div", { className: "dms_conflict" }, h("span", null, t("conflictWith") + ": " + String(selected.metadata?.conflict_with || "")), action(t("resolveKeep"), { type: "button", variant: "primary", onClick: () => resolveSelected(selected) }, "IconCheckCircleOutlineRegular")) : null,
+          selected.description ? h("div", { className: "dms_detailDesc" }, selected.description) : null,
           h("div", { className: "dms_body" }, selected.body || t("noBody")),
           h("div", { className: "dms_detailFoot" }, t("id") + ": " + selected.id + (selected.sourceRefs && selected.sourceRefs.length ? " · " + t("sourceRefs") + ": " + selected.sourceRefs.join(", ") : ""))) : null;
 
         const form = draft ? h("div", { className: "dms_form" },
-          h("div", { className: "dms_head" }, h("div", { className: "dms_title" }, draft.id ? t("edit") : t("newMemory")), h("div", { className: "dms_desc" }, t("description"))),
+          h("div", { className: "dms_head" }, h("div", { className: "dms_title" }, draft.id ? t("edit") : t("newMemory")), h("div", { className: "dms_desc" }, t("formHint"))),
           h("label", { className: "dms_field" }, t("titleField"), textField({ value: draft.title, onChange: (event) => setDraft({ ...draft, title: event.target.value }) })),
           h("label", { className: "dms_field" }, t("descriptionField"), textField({ value: draft.description, onChange: (event) => setDraft({ ...draft, description: event.target.value }) })),
           h("label", { className: "dms_field" }, t("bodyField"), h("textarea", { className: "dms_textarea", value: draft.body, onChange: (event) => setDraft({ ...draft, body: event.target.value }) })),

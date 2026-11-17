@@ -73,7 +73,7 @@ export function apply(ctx, rawConfig = {}) {
         state: () => ({
           root, defaultScope: service.defaultScope(), workspaces: service.listWorkspaces(),
           notes: service.list("global", { allScopes: true, includeForgotten: true }).length,
-          active: service.list("global", { allScopes: true }).length,
+          active: service.list("global", { allScopes: true }).filter((note) => note.status === "active").length,
           conflicts: service.list("global", { allScopes: true }).filter((note) => note.status === "conflicted").length,
           capture: queue ? queue.stats() : null, extractor: Boolean(extractor)
         }),
@@ -92,6 +92,25 @@ export function apply(ctx, rawConfig = {}) {
           return service.search(query, { scope: payloadScope(payload), limit }).map(serialize);
         },
         get: (payload) => serialize(service.get(String(payload?.id || ""), { scope: payloadScope(payload) })),
+        conflicts: (payload) => {
+          const notes = payload?.scope === "all"
+            ? service.list("global", { allScopes: true }).filter((note) => note.status === "conflicted")
+            : service.listConflicts(payloadScope(payload));
+          return notes.map(serialize);
+        },
+        resolve: (payload) => {
+          const scope = payloadScope(payload);
+          const winnerId = String(payload?.winnerId || "");
+          const loserIds = (Array.isArray(payload?.loserIds) ? payload.loserIds : [payload?.loserId])
+            .map((id) => String(id || "")).filter((id) => id && id !== winnerId);
+          const losers = [];
+          for (const loserId of loserIds) {
+            const resolved = service.resolveConflict(winnerId, loserId, { scope });
+            losers.push(serialize(resolved.loser));
+          }
+          const winner = service.get(winnerId, { scope });
+          return { winner: serialize(winner), losers };
+        },
         save: (payload) => {
           const body = String(payload?.body || "").trim();
           if (!body) return { saved: false, error: "body is required" };
