@@ -121,11 +121,12 @@ export class MemoryService {
       throw new MemoryConflictError("Memory revision conflict for " + existing.id, existing);
     }
     const now = new Date().toISOString();
+    const descriptionProvided = input.description != null && String(input.description).trim() !== "";
     const note = {
       id: existing ? existing.id : (input.id || newNoteId(input.title || input.body || "memory")),
       scope,
       title: String(input.title || existing?.title || "Memory"),
-      description: String(input.description || ""),
+      description: descriptionProvided ? String(input.description).replace(/\s+/g, " ").slice(0, 200) : (existing && existing.metadata?.description_auto !== true && existing.metadata?.description_auto !== "true" ? existing.description : String(input.body || "").replace(/\s+/g, " ").slice(0, 200)),
       body: String(input.body || ""),
       type: TYPES.has(String(input.type)) ? String(input.type) : (existing?.type || "project"),
       status: input.status || "active",
@@ -134,7 +135,7 @@ export class MemoryService {
       supersededBy: null,
       sourceRefs: input.sourceRefs || existing?.sourceRefs || [],
       key: input.key != null ? String(input.key).trim() : (existing?.key || null),
-      metadata: { ...(existing?.metadata || {}), ...(input.metadata || {}) },
+      metadata: { ...(existing?.metadata || {}), ...(input.metadata || {}), description_auto: !descriptionProvided },
       createdAt: existing?.createdAt || now,
       updatedAt: now
     };
@@ -257,12 +258,12 @@ export class MemoryService {
     return notes.length;
   }
 
-  context({ scope, query = "", extraQueries = [], budgetTokens = 1200 } = {}) {
+  context({ scope, query = "", extraQueries = [], profile = "", budgetTokens = 1200 } = {}) {
     const s = this.normalizeScope(scope);
     const allNotes = this.list(s, { allScopes: false });
     const all = allNotes.filter((n) => n.status === "active");
     const conflicts = allNotes.filter((n) => n.status === "conflicted");
-    const stable = all.filter((n) => STABLE_TYPES.has(n.type)).slice(0, 20);
+    const stable = all.filter((n) => STABLE_TYPES.has(n.type) && !(profile && (n.type === "preference" || n.type === "user"))).slice(0, 20);
     const queries = [...new Set([query, ...(Array.isArray(extraQueries) ? extraQueries : [])].map((q) => String(q || "").trim()).filter(Boolean))];
     const recalled = [];
     const recalledIds = new Set();
@@ -284,17 +285,19 @@ export class MemoryService {
       picked.push(n);
       chars += block.length;
     }
+    const profileText = profile ? "Synthesized user profile (from typed memories; verify mutable facts):\n" + profile : "";
     const conflictText = conflicts.length
       ? "存在未解决的记忆冲突（不要自行选一个，先向用户确认）：\n" + conflicts.map((n) => "- #" + n.id + " [" + n.type + "] " + n.title + ": " + n.body.replace(/\s+/g, " ").slice(0, 240)).join("\n")
       : "";
-    const bodyText = picked.map((n) => "- [" + n.type + "] " + n.title + ": " + n.description + (n.body ? "\n  " + n.body.replace(/\s+/g, " ").slice(0, 280) : "")).join("\n");
+    const bodyText = picked.map((n) => "- [" + n.type + "] " + n.title + (n.updatedAt ? " (updated " + String(n.updatedAt).slice(0, 10) + ")" : "") + ": " + n.description + (n.body ? "\n  " + n.body.replace(/\s+/g, " ").slice(0, 280) : "")).join("\n");
     return {
       stable,
       conflicts,
       recalled: picked.filter((n) => !stable.includes(n)),
       notes: picked,
-      text: [conflictText, bodyText].filter(Boolean).join("\n\n"),
-      tokens: Math.ceil((chars + conflictText.length) / 4)
+      profile: profileText,
+      text: [conflictText, profileText, bodyText].filter(Boolean).join("\n\n"),
+      tokens: Math.ceil((chars + conflictText.length + profileText.length) / 4)
     };
   }
 

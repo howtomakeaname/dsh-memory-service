@@ -6,7 +6,7 @@ export function exportClaude(service, { target, scope = "global", force = false 
   if (!target) throw new Error("export target required");
   fs.mkdirSync(target, { recursive: true });
   const notes = service.list(scope, { allScopes: false }).filter((n) => n.status === "active");
-  const lines = ["# Memory", "", "Imported from dsh-memory-service.", ""];
+  const lines = ["# Memory Index", "", "Imported from dsh-memory-service. Edit notes, not this index.", ""];
   for (const note of notes) {
     const file = note.id + ".md";
     lines.push("- [" + note.title + "](" + file + ") — " + (note.description || ""));

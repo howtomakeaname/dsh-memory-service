@@ -30,7 +30,7 @@ export function commitCandidate(service, candidate, { sessionId, turn, scope } =
     id,
     scope: targetScope,
     title: candidate.title || text.slice(0, 80),
-    description: "Extracted from a completed turn.",
+    description: candidate.description || String(text).replace(/\s+/g, " ").slice(0, 200),
     body: text,
     type: candidate.type || "fact",
     sourceRefs: ["session:" + (sessionId || "") + ":turn:" + (turn == null ? "" : turn)],

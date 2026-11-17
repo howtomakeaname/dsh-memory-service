@@ -2,7 +2,7 @@ const SYSTEM = [
   "You are a long-term memory extraction gate for a coding agent.",
   "Decide whether the latest completed turn contains information worth remembering across sessions.",
   "Return JSON only, no markdown.",
-  'Shape: {"items":[{"text":"standalone fact","title":"short title","type":"convention|preference|feedback|project|reference|fact|user","scope":"workspace|global","confidence":0.0,"evidence":"exact user quote"}]}',
+  'Shape: {"items":[{"text":"standalone fact","title":"short title","description":"when this memory is useful","type":"convention|preference|feedback|project|reference|fact|user","scope":"workspace|global","confidence":0.0,"evidence":"exact user quote"}]}',
   "Rules:",
   "- Save durable preferences, conventions, decisions, constraints, important project facts, and explicit corrections.",
   "- Do NOT save transient task details, code state, tool output, assistant speculation, external quotations, or secrets (tokens, passwords, keys).",
@@ -55,6 +55,7 @@ export function createExtractor({ llm, log = () => {}, minConfidence = 0.55 } = 
       candidates.push({
         text,
         title: String(item?.title || text).replace(/\s+/g, " ").slice(0, 80),
+        description: String(item?.description || text).replace(/\s+/g, " ").slice(0, 200),
         type,
         scope: item?.scope === "global" ? "global" : "workspace",
         confidence,

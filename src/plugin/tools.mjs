@@ -37,7 +37,7 @@ export function createTools({ ctx, service, root, queue, extractor }) {
       const text = String(args?.text || "").trim();
       if (!text) return { text: "memory_save: text is required" };
       const scope = args?.scope === "global" ? "global" : scopeFromExec(exec);
-      const note = service.upsert({ scope, key: args?.key, title: String(args?.title || text.slice(0, 80)), description: String(args?.description || ""), body: text, type: args?.type || "fact", metadata: { pinned: args?.pinned === true, capture: "tool" } });
+      const note = service.upsert({ scope, key: args?.key, title: String(args?.title || text.slice(0, 80)), description: args?.description, body: text, type: args?.type || "fact", metadata: { pinned: args?.pinned === true, capture: "tool" } });
       if (note.status === "conflicted") return { text: "conflict: #" + note.id + " conflicts with #" + (note.metadata?.conflict_with || "") + "; both are hidden from recall until memory_resolve" };
       return { text: "saved #" + note.id + " revision " + note.revision + " (" + scope + ")" };
     }
@@ -70,7 +70,7 @@ export function createTools({ ctx, service, root, queue, extractor }) {
           scope,
           expectedRevision: Number(args?.expectedRevision),
           title: args?.title != null ? String(args.title) : note.title,
-          description: args?.description != null ? String(args.description) : note.description,
+          ...(args?.description != null ? { description: String(args.description) } : {}),
           body: args?.text != null ? String(args.text) : note.body,
           type: args?.type || note.type
         });
