@@ -6,6 +6,20 @@ window.__ModuleLoader__.load({
     let ui = {};
     try { ui = require("@deepseek-ai/dsh-client-ui-primitives") || {}; } catch { ui = {}; }
     const icon = (name, size) => { const C = ui[name]; return C ? h(C, { size: size || 14 }) : null; };
+    const Button = ui.Button;
+    const Input = ui.Input;
+    const Tag = ui.Tag;
+    function action(label, props, iconName) {
+      if (Button) return h(Button, { size: "sm", ...props, icon: iconName ? icon(iconName) : undefined }, label);
+      const { variant, ...rest } = props || {};
+      return h("button", { className: "dms_btn " + (variant === "primary" ? "primary" : ""), ...rest }, iconName ? icon(iconName) : null, " ", label);
+    }
+    function textField(props) {
+      const { icon: leading, ...rest } = props || {};
+      if (Input) return h(Input, { ...rest, icon: leading });
+      return h("input", { className: "dms_input", ...rest });
+    }
+    function tag(label) { return Tag ? h(Tag, { tone: "outline" }, label) : h("span", null, label); }
     const NS = "memory-service";
     const API = "/memory-service/api";
     const STYLE_ID = "dsh-memory-service/page";
@@ -114,13 +128,13 @@ window.__ModuleLoader__.load({
             stat(t("pending"), status.capture?.pending || 0), stat(t("failed"), status.capture?.failed || 0),
             stat(t("extractor"), status.extractor ? "on" : "off")) : null,
           h("form", { className: "dms_toolbar", onSubmit: submitSearch },
-            h("input", { className: "dms_input", value: query, placeholder: t("searchPlaceholder"), onChange: (event) => setQuery(event.target.value) }),
+            textField({ value: query, placeholder: t("searchPlaceholder"), icon: icon("IconSearchOutlineRegular"), onChange: (event) => setQuery(event.target.value) }),
             h("select", { className: "dms_select", value: scope, onChange: (event) => setScope(event.target.value) },
               h("option", { value: "workspace" }, t("workspace")), h("option", { value: "global" }, t("global")), h("option", { value: "all" }, t("all"))),
-            h("button", { className: "dms_btn primary", type: "submit" }, icon("IconSearchOutlineRegular"), " ", t("search")),
-            h("button", { className: "dms_btn", type: "button", onClick: refresh }, icon("IconRefreshOutlineRegular"), " ", t("refresh")),
-            h("button", { className: "dms_btn", type: "button", onClick: flush }, icon("IconDatabaseOutlineRegular"), " ", t("flush")),
-            h("button", { className: "dms_btn", type: "button", onClick: startNew }, icon("IconPlusOutlineRegular"), " ", t("newMemory"))),
+            action(t("search"), { type: "submit", variant: "primary" }, "IconSearchOutlineRegular"),
+            action(t("refresh"), { type: "button", onClick: refresh, variant: "ghost" }, "IconRefreshOutlineRegular"),
+            action(t("flush"), { type: "button", onClick: flush, variant: "ghost" }, "IconDatabaseOutlineRegular"),
+            action(t("newMemory"), { type: "button", onClick: startNew, variant: "ghost" }, "IconPlusOutlineRegular")),
           error ? h("div", { className: "dms_error" }, error) : null,
           draft ? h("div", { className: "dms_form" },
             h("label", { className: "dms_field" }, t("titleField"), h("input", { className: "dms_input", value: draft.title, onChange: (event) => setDraft({ ...draft, title: event.target.value }) })),
@@ -129,13 +143,13 @@ window.__ModuleLoader__.load({
             h("div", { className: "dms_toolbar" },
               h("label", { className: "dms_field" }, t("typeField"), h("select", { className: "dms_select", value: draft.type, onChange: (event) => setDraft({ ...draft, type: event.target.value }) }, TYPES.map((type) => h("option", { key: type, value: type }, type)))),
               h("label", { className: "dms_field" }, t("scopeField"), h("select", { className: "dms_select", value: draft.scope, onChange: (event) => setDraft({ ...draft, scope: event.target.value }) }, h("option", { value: "workspace" }, t("workspace")), h("option", { value: "global" }, t("global"))))),
-            h("div", { className: "dms_toolbar" }, h("button", { className: "dms_btn primary", type: "button", onClick: save }, t("save")), h("button", { className: "dms_btn", type: "button", onClick: () => setDraft(null) }, t("cancel")))) : null,
+            h("div", { className: "dms_toolbar" }, action(t("save"), { type: "button", onClick: save, variant: "primary" }), action(t("cancel"), { type: "button", onClick: () => setDraft(null), variant: "ghost" }))) : null,
           loading ? h("div", { className: "dms_desc" }, t("loading")) : items.length === 0 ? h("div", { className: "dms_desc" }, t("empty")) : h("div", { className: "dms_list" },
             items.map((item) => h("div", { className: "dms_row", key: item.id },
               h("div", { className: "dms_rowHead" },
                 h("div", { className: "dms_rowTitle" }, item.title || item.id),
-                h("div", { className: "dms_rowActions" }, h("button", { className: "dms_btn", type: "button", onClick: () => startEdit(item) }, icon("IconEditOutlineRegular"), " ", t("edit")), h("button", { className: "dms_btn danger", type: "button", onClick: () => forget(item) }, icon("IconTrashOutlineRegular"), " ", t("delete")))),
-              h("div", { className: "dms_meta" }, item.type, item.scope, t("revision") + " " + item.revision, item.updatedAt || ""),
+                h("div", { className: "dms_rowActions" }, action(t("edit"), { type: "button", onClick: () => startEdit(item), variant: "ghost" }, "IconEditOutlineRegular"), action(t("delete"), { type: "button", onClick: () => forget(item), variant: "ghost" }, "IconTrashOutlineRegular"))),
+              h("div", { className: "dms_meta" }, tag(item.type), tag(item.scope), t("revision") + " " + item.revision, item.updatedAt || ""),
               h("div", { className: "dms_body" }, item.description ? item.description + "\n" : "", item.body || "")))));
       };
     }
