@@ -4,6 +4,7 @@ import { MemoryService, MemoryConflictError } from "../store.mjs";
 import { discoverClaudeMemories, importClaude, exportClaude } from "../adapters/claude.mjs";
 import { parseArgs } from "./args.mjs";
 import { CaptureQueue } from "../capture/queue.mjs";
+import { backupMemory, restoreMemory } from "../core/backup.mjs";
 import { print } from "./output.mjs";
 
 export function run(argv) {
@@ -37,6 +38,16 @@ export function run(argv) {
     if (command === "forget") { print(service.forget(args._[1], { scope: args.scope, hard: !!args.hard })); return; }
     if (command === "rebuild") { print({ rebuilt: service.rebuild() }); return; }
     if (command === "flush") { const queue = new CaptureQueue(service.index.db); print(queue.drain(service)); return; }
+    if (command === "backup") {
+      if (!args.target) throw new Error("backup requires --target");
+      print(backupMemory(root, args.target));
+      return;
+    }
+    if (command === "restore") {
+      if (!args.source) throw new Error("restore requires --source");
+      print(restoreMemory(args.source, args.target || root, { force: !!args.force }));
+      return;
+    }
     if (command === "doctor") {
       const notes = service.list("global", { allScopes: true, includeForgotten: true });
       const rows = service.index.db.prepare("SELECT id, hash FROM notes").all();

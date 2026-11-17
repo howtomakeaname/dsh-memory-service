@@ -9,6 +9,7 @@ import { noteFromFile, serializeNote } from "./note.mjs";
 import { writeMemoryIndex } from "./index-file.mjs";
 import { appendJournal } from "./journal.mjs";
 import { withFileLock } from "./lock.mjs";
+import { ensureSchema } from "./schema.mjs";
 
 export class MemoryService {
   constructor({ root, workspaceId = "default" } = {}) {
@@ -21,6 +22,7 @@ export class MemoryService {
     for (const dir of [this.root, path.join(this.root, "global", "notes"), path.join(this.root, "workspaces"), path.join(this.root, "journal"), path.join(this.root, ".index")]) {
       fs.mkdirSync(dir, { recursive: true });
     }
+    ensureSchema(this.root);
     this.index = new MemoryIndex(this.root);
     this.#ensureIndex();
     return this;
