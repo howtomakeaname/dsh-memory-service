@@ -200,4 +200,4 @@ node scripts/e2e-preference-extraction.mjs --profile bench-memt-headless
 
 ## Release
 
-[v0.1.0](https://github.com/howtomakeaname/dsh-memory-service/releases/tag/v0.1.1) 提供可安装 tarball。
+[v0.2.0](https://github.com/howtomakeaname/dsh-memory-service/releases/tag/v0.2.0) 提供可安装 tarball。

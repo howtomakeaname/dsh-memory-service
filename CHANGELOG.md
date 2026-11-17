@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.2.0
+
+- Claude Code import flow: multi-select workspaces and global memory, preview all entries, edit title/description/body/type/scope, import only selected entries.
+- Dedicated Memory settings nav icon (`IconContextInjectionOutlineRegular`) instead of the generic settings glyph.
+- Import modal widened and source/entry layout cleaned up.
+- Simplified settings and import copy (`管理 DeepSeek Harness 的各项记忆`, `从 Claude Code 导入各项记忆。`).
+- 50 tests, CI green.
+
 ## 0.1.1
 
 - Settings memory page with master list and drill-down detail view.
