@@ -77,13 +77,21 @@ node bench/e2e/run.mjs \
 
 ## 已验证
 
-在 6 条 LongMemEval 任务上（single-session-user 3、multi-session 1、temporal-reasoning 1、knowledge-update 1）：
+在完整 24 条 LongMemEval 任务上（6 类各 4 条，`--min-chars 200000`）：
 
 ~~~text
-tasks 6, passed 6
+tasks 24, passed 21
+single-session-user 4/4
+multi-session 4/4
+temporal-reasoning 4/4
+knowledge-update 4/4
+single-session-assistant 4/4
+single-session-preference 1/4
 ~~~
 
-每条 direct 摄取 466–509 个 turn note，真实 DSH 新会话查询，LLM judge 判定通过。
+每条 direct 摄取 466–509 个 turn note、约 46–49 万字符，真实 DSH 新会话查询，LLM judge 判定。
+
+失败集中在 preference：模型没有把分散的偏好推断成“用户会喜欢什么”。这不是长上下文丢失，而是偏好聚合能力不足。
 
 ## agent 模式冒烟
 
