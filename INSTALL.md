@@ -49,4 +49,4 @@ dsh plugin --profile <profile> add dsh-memory-service
 npm install https://github.com/howtomakeaname/dsh-memory-service/releases/download/v0.2.0/dsh-memory-service-0.2.0.tgz
 ~~~
 
-或下载 release 里的 `dsh-memory-service-0.2.0.tgz`，再用 `npm install ./dsh-memory-service-0.1.1.tgz`。npm registry 发布仍需要 npm 凭据。
+或下载 release 里的 `dsh-memory-service-0.2.0.tgz`，再用 `npm install ./dsh-memory-service-0.2.0.tgz`。npm registry 发布仍需要 npm 凭据。
