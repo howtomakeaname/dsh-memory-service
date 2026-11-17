@@ -28,7 +28,8 @@
     "test": "node --test",
     "check": "node scripts/check.mjs",
     "e2e": "node scripts/e2e-real.mjs --profile bench-memt-headless",
-    "bench:e2e": "node bench/e2e/run.mjs"
+    "bench:e2e": "node bench/e2e/run.mjs",
+    "e2e:extraction": "node scripts/e2e-pure-extraction.mjs --profile bench-memt-headless"
   },
   "engines": {
     "node": ">=22.5"
