@@ -119,6 +119,7 @@ v1 root 初始化时自动迁移到 v2：legacy note 补 `description_auto`，�
 - 列表、scope、详情 drill-down、复制 ID、编辑/遗忘；
 - 新建会话调用 `memory_save`，工具卡片和展开的 Arguments/Result 可见；
 - 冲突数据可筛选、打开详情并通过“保留此版本”解决；
-- Settings 表单新增记忆成功落盘。
+- Settings 表单新增记忆成功落盘；
+- 类型/scope 使用 DSH `Menu` 下拉，工具栏筛选组/操作组分开，不再堆叠。
 
 截图见 [docs/ui.md](ui.md)。

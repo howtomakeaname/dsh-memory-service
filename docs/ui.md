@@ -14,6 +14,10 @@
 
 ![memory_save 工具卡片](screenshots/memory-tool-card.png)
 
+### DSH Menu 下拉
+
+![类型下拉复用 DSH Menu](screenshots/memory-dropdown.png)
+
 ### 冲突详情
 
 ![冲突详情与保留版本](screenshots/memory-conflict.png)
@@ -43,20 +47,23 @@
 - `Tag`：类型、scope、模型抽取状态
 - `SegmentedTabs`：工作区 / 全局 / 全部
 - `DisclosureRow`：工具调用折叠行
+- `Menu` / `MenuItemButton`：表单里的类型、scope 下拉
 - 图标：`IconSearchOutlineRegular`、`IconRefreshOutlineRegular`、`IconDatabaseOutlineRegular`、`IconPlusOutlineRegular`、`IconEditOutlineRegular`、`IconTrashOutlineRegular`、`IconChevronLeftOutlineRegular`、`IconCopyOutlineRegular`、`IconCheckOutlineRegular`、`IconInfoOutlineRegular`、`IconUserOutlineRegular`、`IconChecklistOutlineRegular`、`IconBrowseOutlineRegular`、`IconDataOutlineRegular`
 
 原生控件只保留：
 
 - `textarea`：多行正文；
-- `select`：类型和 scope 的短枚举选择；
 - 列表行：需要整行点击和复合内容，用原生 `button` 承载，内部仍用 DSH token/Tag/icon。
+
+类型/scope 已从原生 `<select>` 换成 DSH `Menu` + `MenuItemButton`；只有 primitives 不可用时才回退原生 select。
 
 ## 页面结构
 
 ### 列表
 
 - 顶部摘要：笔记/有效/冲突/待处理/失败 + 模型抽取状态；
-- 搜索 + scope 切换；
+- 搜索单独一行；
+- 筛选组和操作组分开：scope + 冲突筛选在左，刷新/队列/新增图标在右，避免挤成一排；
 - 列表行显示类型图标、标题、描述、type/scope、更新时间；
 - 点击整行进入单条详情；
 - 有冲突时可切换“只看冲突”，列表只显示 `conflicted` 记忆。

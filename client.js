@@ -22,6 +22,29 @@ window.__ModuleLoader__.load({
       if (Button) return h(Button, { size: "sm", variant: "ghost", ...props, icon: icon(iconName), "aria-label": label, title: label });
       return h("button", { className: "dms_btn", "aria-label": label, title: label, ...props }, iconName ? icon(iconName) : null);
     }
+    function Dropdown({ value, options, onChange, label }) {
+      if (!ui.Menu || !ui.MenuItemButton || !Button) {
+        return h("select", { className: "dms_select", value, "aria-label": label, onChange: (event) => onChange(event.target.value) }, options.map((item) => h("option", { key: item.value, value: item.value }, item.label)));
+      }
+      const [open, setOpen] = React.useState(false);
+      const current = options.find((item) => item.value === value) || options[0];
+      return h(ui.Menu, {
+        open,
+        onClose: () => setOpen(false),
+        align: "start",
+        portal: true,
+        autoFocus: true,
+        anchor: h(Button, {
+          type: "button", size: "sm", variant: "outline", "aria-label": label,
+          "aria-haspopup": "menu", "aria-expanded": open,
+          onClick: () => setOpen((next) => !next),
+          onKeyDown: (event) => { if (!open && event.key === "ArrowDown") { event.preventDefault(); setOpen(true); } }
+        }, h("span", { className: "dms_dropdownLabel" }, current ? current.label : ""), icon("IconChevronDownOutlineRegular", 12))
+      }, options.map((item) => h(ui.MenuItemButton, {
+        key: item.value,
+        onSelect: () => { onChange(item.value); setOpen(false); }
+      }, item.label)));
+    }
     function textField(props) {
       const { icon: leading, ...rest } = props || {};
       if (Input) return h(Input, { ...rest, icon: leading });
@@ -48,7 +71,7 @@ window.__ModuleLoader__.load({
       revision: "版本", updated: "更新于", id: "ID", copyId: "复制 ID", copied: "已复制",
       confirmDelete: "确定遗忘这条记忆？", error: "操作失败", conflict: "版本冲突：内容已被其他会话修改，请重试。",
       queue: "捕获队列", pending: "待处理", failed: "失败", notes: "笔记", active: "有效", conflicts: "冲突",
-      extractor: "模型抽取", on: "开启", off: "关闭", allScopes: "全部", detail: "记忆详情", status: "状态", showConflicts: "只看冲突", allMemories: "全部记忆", resolveKeep: "保留此版本", conflictWith: "冲突对象", resolved: "已解决", argumentsLabel: "参数", resultLabel: "结果", errorLabel: "错误",
+      extractor: "模型抽取", on: "开启", off: "关闭", allScopes: "全部", detail: "记忆详情", conflictShort: "冲突", status: "状态", showConflicts: "只看冲突", allMemories: "全部记忆", resolveKeep: "保留此版本", conflictWith: "冲突对象", resolved: "已解决", argumentsLabel: "参数", resultLabel: "结果", errorLabel: "错误",
       sourceRefs: "来源", noDescription: "（无描述）", noBody: "（无正文）", memory: "记忆",
       toolSearch: "搜索记忆", toolSave: "保存记忆", toolGet: "读取记忆", toolUpdate: "更新记忆",
       toolForget: "遗忘记忆", toolFlush: "处理捕获队列", toolConflicts: "查看记忆冲突",
@@ -63,7 +86,7 @@ window.__ModuleLoader__.load({
       revision: "Revision", updated: "Updated", id: "ID", copyId: "Copy ID", copied: "Copied",
       confirmDelete: "Forget this memory?", error: "Operation failed", conflict: "Revision conflict: another session changed this memory. Reload and retry.",
       queue: "Capture queue", pending: "pending", failed: "failed", notes: "notes", active: "active", conflicts: "conflicts",
-      extractor: "Model extraction", on: "on", off: "off", allScopes: "all", detail: "Memory detail", status: "Status", showConflicts: "Conflicts", allMemories: "All memories", resolveKeep: "Keep this version", conflictWith: "Conflicts with", resolved: "Resolved", argumentsLabel: "Arguments", resultLabel: "Result", errorLabel: "Error",
+      extractor: "Model extraction", on: "on", off: "off", allScopes: "all", detail: "Memory detail", conflictShort: "Conflicts", status: "Status", showConflicts: "Conflicts", allMemories: "All memories", resolveKeep: "Keep this version", conflictWith: "Conflicts with", resolved: "Resolved", argumentsLabel: "Arguments", resultLabel: "Result", errorLabel: "Error",
       sourceRefs: "Sources", noDescription: "(no description)", noBody: "(empty body)", memory: "Memory",
       toolSearch: "Search memory", toolSave: "Save memory", toolGet: "Read memory", toolUpdate: "Update memory",
       toolForget: "Forget memory", toolFlush: "Drain capture queue", toolConflicts: "Memory conflicts",
@@ -89,7 +112,7 @@ window.__ModuleLoader__.load({
         ".dms_head{display:flex;flex-direction:column;gap:4px;}.dms_title{font-size:19px;line-height:26px;font-weight:600;}.dms_desc{font-size:13px;line-height:20px;color:var(--dsw-alias-label-secondary,#aaa);}",
         ".dms_summary{display:flex;gap:14px;flex-wrap:wrap;align-items:center;padding:10px 12px;border:1px solid var(--dsw-alias-border-l2,#333);border-radius:8px;background:var(--dsw-alias-bg-layer-1,#181818);}",
         ".dms_metric{display:flex;gap:5px;align-items:baseline;font-size:12px;color:var(--dsw-alias-label-tertiary,#888);}.dms_metric b{font-size:14px;color:var(--dsw-alias-label-primary,#eee);font-weight:600;}",
-        ".dms_toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}.dms_scope{width:260px;flex:none;min-width:220px;}",
+        ".dms_toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}.dms_filters{display:flex;gap:8px;align-items:center;flex-wrap:wrap;min-width:0;}.dms_actions{margin-left:auto;display:flex;gap:4px;align-items:center;padding-left:10px;border-left:1px solid var(--dsw-alias-border-l2,#333);}.dms_scope{width:250px;flex:none;min-width:210px;}.dms_dropdownLabel{max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}",
         ".dms_toolbar .dms_search{min-width:230px;flex:1;}",
         ".dms_input,.dms_select,.dms_textarea{background:var(--dsw-alias-bg-layer-3,#222);color:inherit;border:1px solid var(--dsw-alias-border-l2,#333);border-radius:6px;padding:7px 9px;font:inherit;}",
         ".dms_input{box-sizing:border-box;width:100%;}.dms_textarea{min-height:150px;width:100%;box-sizing:border-box;resize:vertical;font-size:13px;line-height:20px;}",
@@ -111,7 +134,7 @@ window.__ModuleLoader__.load({
         ".dms_error{color:var(--dsw-alias-state-error-primary,#e74c3c);font-size:13px;line-height:19px;}.dms_empty{display:flex;flex-direction:column;gap:6px;align-items:center;padding:42px 12px;color:var(--dsw-alias-label-tertiary,#888);text-align:center;border:1px dashed var(--dsw-alias-border-l2,#333);border-radius:8px;}",
         ".dms_empty b{font-size:14px;color:var(--dsw-alias-label-secondary,#aaa);font-weight:500;}.dms_emptyIcon{opacity:.7;}",
         ".dms_toolBody{display:flex;flex-direction:column;gap:8px;padding:8px 0 2px 26px;}.dms_toolLabel{font-size:11px;color:var(--dsw-alias-label-tertiary,#888);}.dms_toolPre{margin:0;padding:8px 10px;border-radius:6px;background:var(--dsw-alias-bg-layer-3,#222);color:var(--dsw-alias-label-secondary,#ccc);font-size:11px;line-height:17px;white-space:pre-wrap;overflow-wrap:anywhere;max-height:260px;overflow:auto;}",
-        "@media (max-width:720px){.dms_scope{width:100%;min-width:0;}.dms_detailTop{align-items:flex-start;flex-direction:column;}.dms_detailActions{flex-wrap:wrap;}.dms_summary{gap:10px 14px;}.dms_search{min-width:0;}}",
+        "@media (max-width:720px){.dms_scope{width:100%;min-width:0;}.dms_filters{width:100%;}.dms_actions{margin-left:0;border-left:none;padding-left:0;}.dms_detailTop{align-items:flex-start;flex-direction:column;}.dms_detailActions{flex-wrap:wrap;}.dms_summary{gap:10px 14px;}.dms_search{min-width:0;}}",
         ".dms_toolTitle{display:flex;gap:6px;align-items:center;min-width:0;}.dms_toolSummary{color:var(--dsw-alias-label-tertiary,#888);font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}"
       ].join("");
       document.head.appendChild(style);
@@ -252,11 +275,13 @@ window.__ModuleLoader__.load({
           h("div", { className: "dms_search" }, textField({ value: query, placeholder: t("searchPlaceholder"), icon: icon("IconSearchOutlineRegular"), onChange: (event) => setQuery(event.target.value) })),
           action(t("search"), { type: "submit", variant: "primary" }, "IconSearchOutlineRegular"));
         const toolbar2 = h("div", { className: "dms_toolbar" },
-          h("div", { className: "dms_scope" }, SegmentedTabs ? h(SegmentedTabs, { items: scopeItems, value: scope, onChange: (value) => { setScope(value); setSelectedId(null); }, label: t("scopeField"), size: "sm" }) : h("select", { className: "dms_select", value: scope, onChange: (event) => setScope(event.target.value) }, scopeItems.map((item) => h("option", { key: item.value, value: item.value }, item.label)))),
-          (status?.conflicts || 0) > 0 ? action(onlyConflicts ? t("allMemories") : t("showConflicts") + " " + status.conflicts, { type: "button", onClick: showConflicts, variant: onlyConflicts ? "primary" : "ghost" }, "IconInfoOutlineRegular") : null,
-          iconButton(t("refresh"), { type: "button", onClick: refresh }, "IconRefreshOutlineRegular"),
-          iconButton(t("flush"), { type: "button", onClick: flush }, "IconDatabaseOutlineRegular"),
-          iconButton(t("newMemory"), { type: "button", onClick: startNew }, "IconPlusOutlineRegular"));
+          h("div", { className: "dms_filters" },
+            h("div", { className: "dms_scope" }, SegmentedTabs ? h(SegmentedTabs, { items: scopeItems, value: scope, onChange: (value) => { setScope(value); setSelectedId(null); }, label: t("scopeField"), size: "sm" }) : h("select", { className: "dms_select", value: scope, onChange: (event) => setScope(event.target.value) }, scopeItems.map((item) => h("option", { key: item.value, value: item.value }, item.label)))),
+            (status?.conflicts || 0) > 0 ? action(onlyConflicts ? t("allMemories") : t("conflictShort") + " " + status.conflicts, { type: "button", onClick: showConflicts, variant: onlyConflicts ? "primary" : "ghost" }, "IconInfoOutlineRegular") : null),
+          h("div", { className: "dms_actions" },
+            iconButton(t("refresh"), { type: "button", onClick: refresh }, "IconRefreshOutlineRegular"),
+            iconButton(t("flush"), { type: "button", onClick: flush }, "IconDatabaseOutlineRegular"),
+            iconButton(t("newMemory"), { type: "button", onClick: startNew }, "IconPlusOutlineRegular")));
 
         const summary = status ? h("div", { className: "dms_summary" },
           metric(t("notes"), status.notes), metric(t("active"), status.active), metric(t("conflicts"), status.conflicts || 0),
@@ -293,8 +318,8 @@ window.__ModuleLoader__.load({
           h("label", { className: "dms_field" }, t("descriptionField"), textField({ value: draft.description, onChange: (event) => setDraft({ ...draft, description: event.target.value }) })),
           h("label", { className: "dms_field" }, t("bodyField"), h("textarea", { className: "dms_textarea", value: draft.body, onChange: (event) => setDraft({ ...draft, body: event.target.value }) })),
           h("div", { className: "dms_formRow" },
-            h("label", { className: "dms_field" }, t("typeField"), h("select", { className: "dms_select", value: draft.type, onChange: (event) => setDraft({ ...draft, type: event.target.value }) }, TYPES.map((type) => h("option", { key: type, value: type }, type)))),
-            h("label", { className: "dms_field" }, t("scopeField"), h("select", { className: "dms_select", value: draft.scope, onChange: (event) => setDraft({ ...draft, scope: event.target.value }) }, h("option", { value: "workspace" }, t("workspace")), h("option", { value: "global" }, t("global"))))),
+            h("label", { className: "dms_field" }, t("typeField"), h(Dropdown, { value: draft.type, options: TYPES.map((type) => ({ value: type, label: type })), onChange: (value) => setDraft({ ...draft, type: value }), label: t("typeField") })),
+            h("label", { className: "dms_field" }, t("scopeField"), h(Dropdown, { value: draft.scope, options: [{ value: "workspace", label: t("workspace") }, { value: "global", label: t("global") }], onChange: (value) => setDraft({ ...draft, scope: value }), label: t("scopeField") }))),
           h("div", { className: "dms_toolbar" }, action(t("save"), { type: "button", onClick: save, variant: "primary", icon: icon("IconCheckOutlineRegular") }), action(t("cancel"), { type: "button", onClick: () => setDraft(null), variant: "ghost" }))) : null;
 
         return h("div", { className: "dms_page" },

@@ -5,6 +5,7 @@
 - Settings memory page with master list and drill-down detail view.
 - Keyed tool.call.toolview cards for all memory_* tools.
 - Reuses DSH Button, Input, Tag, SegmentedTabs, DisclosureRow, official icons and design tokens.
+- Grouped toolbar and DSH Menu-based type/scope dropdowns.
 - Memory conflict filter and in-detail resolution.
 - Real DSH Web screenshots for settings, detail, conflict and tool card.
 
