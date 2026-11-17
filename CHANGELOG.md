@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.1
+
+- Settings memory page with master list and drill-down detail view.
+- Keyed tool.call.toolview cards for all memory_* tools.
+- Reuses DSH Button, Input, Tag, SegmentedTabs, DisclosureRow, official icons and design tokens.
+- Real DSH Web screenshots for settings, detail and tool card.
+
 ## 0.1.0
 
 - Markdown-first long-term memory store with global/workspace scopes, revisions, supersede and hard/soft forget.
