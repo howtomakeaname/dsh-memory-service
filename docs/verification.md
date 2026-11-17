@@ -19,7 +19,7 @@ node --test
 - Claude 导入幂等/更新/导出；
 - 插件工具、注入、自动捕获、全局 scope。
 
-当前 45 个用例，GitHub Actions 跑测试/语法检查/打包 dry-run。
+当前 48 个用例，GitHub Actions 跑测试/语法检查/打包 dry-run。
 
 ## 2. 场景化集成测试
 
@@ -106,3 +106,7 @@ node scripts/e2e-preference-extraction.mjs --profile bench-memt-headless
 LongMemEval `single-session-preference-0`，agent 模式 10 chunks / 480,675 chars：**1/1 pass**。
 
 这条路径验证的是：真实会话 chunk 抽取 → typed preference → synthesize profile → 回答；不是 direct 模式的人工平铺。
+
+## 10. schema 迁移
+
+v1 root 初始化时自动迁移到 v2：legacy note 补 `description_auto`，索引重建；未来版本会被拒绝。测试 3/3。

@@ -107,7 +107,7 @@ node scripts/e2e-real.mjs --profile bench-memt-headless
 
 ```bash
 node --test
-# 45 tests, 45 pass
+# 48 tests, 48 pass
 ```
 
 ## 宿主接口
@@ -144,7 +144,7 @@ DSH 设置页复用、官方图标和宿主 API 见 [docs/ui.md](docs/ui.md)。
 
 ## 数据版本与备份
 
-记忆库带 schema version；`backup` 只复制 Markdown/来源/journal，`restore` 后强制重建索引。详见 [docs/operations.md](docs/operations.md)。
+记忆库带 schema version 和 v1→v2 迁移；`backup` 只复制 Markdown/来源/journal，`restore` 后强制重建索引。详见 [docs/operations.md](docs/operations.md)。
 
 ## 发布验证
 
