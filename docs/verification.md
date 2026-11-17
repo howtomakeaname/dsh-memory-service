@@ -19,7 +19,7 @@ node --test
 - Claude 导入幂等/更新/导出；
 - 插件工具、注入、自动捕获、全局 scope。
 
-当前 35 个用例。
+当前 35 个用例，GitHub Actions 跑测试/语法检查/打包 dry-run。
 
 ## 2. 场景化集成测试
 

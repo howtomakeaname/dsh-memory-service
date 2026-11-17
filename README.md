@@ -161,3 +161,7 @@ node scripts/e2e-pure-extraction.mjs --profile bench-memt-headless
 ~~~
 
 会话明确禁止工具调用 → flush 队列 → 检查 `capture: llm` note → 新会话召回。当前 5/5 PASS。
+
+## CI
+
+GitHub Actions 跑 `npm test`、`npm run check`、`npm pack --dry-run`；`prepublishOnly` 也会强制执行测试和检查。

@@ -31,7 +31,7 @@ node src/cli.mjs rebuild
 node src/cli.mjs doctor
 ```
 
-`doctor` 会报告：
+`doctor` 会报告 schema version、笔记数、索引行数、缺失文件、hash 过期项和队列状态：
 
 - Markdown 笔记数
 - 索引行数
