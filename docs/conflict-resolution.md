@@ -87,14 +87,16 @@ await ctx.userQuestions.ask({
 
 - 跨进程写锁；
 - CAS revision；
-- 冲突返回当前版本，不覆盖；
-- 队列按 scope+text 去重。
+- 同 key 互斥值进入 `conflicted`；
+- `memory_conflicts` 列出冲突；
+- `memory_resolve` 选择 winner，loser 转 superseded；
+- 注入时给出冲突提示，不静默选一个。
 
 未做：
 
 - subject/predicate/value 结构化事实键；
-- conflicted 状态和 memory_resolve；
+- 字段级 merge；
 - 自动询问用户；
-- 字段级 merge。
+- 冲突 UI 的专门筛选页。
 
 这些在 [roadmap.md](roadmap.md) 的下一阶段。

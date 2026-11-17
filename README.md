@@ -12,7 +12,7 @@ Claude Code 的 memory 格式兼容只是适配器，不是项目核心。
 - **版本与更正**：`revision`、`expectedRevision` 乐观并发，`supersedes` 标记被替代的旧事实。
 - **可遗忘**：软遗忘从检索中排除；`hard` 删除同时移除文件与索引。
 - **动态注入**：稳定约定 + 本轮相关记忆，按 token 预算拼接后作为 `plugin:dsh-memory-service` 消息注入。
-- **工具**：`memory_search`、`memory_save`、`memory_get`、`memory_update`、`memory_forget`、`memory_flush`、`memory_stats`。
+- **工具**：`memory_search`、`memory_save`、`memory_get`、`memory_update`、`memory_forget`、`memory_flush`、`memory_conflicts`、`memory_resolve`、`memory_stats`。
 - **持久捕获队列**：自动捕获先入 SQLite 队列；进程崩溃/退出后下次启动继续 drain，不依赖一次性内存任务。
 - **模型抽取**：正则只做触发/节流，模型判断是否长期有效、类型、作用域；证据必须能在用户原话中找到；无 LLM 时退回确定性规则。
 
@@ -105,7 +105,7 @@ node scripts/e2e-real.mjs --profile bench-memt-headless
 
 ```bash
 node --test
-# 27 tests, 27 pass
+# 29 tests, 29 pass
 ```
 
 ## 宿主接口

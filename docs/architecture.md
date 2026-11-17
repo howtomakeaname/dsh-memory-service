@@ -31,7 +31,7 @@ src/
 │   ├── message.mjs               # 文本提取、scope、注入消息
 │   ├── capture.mjs               # session/event 自动捕获
 │   ├── inject.mjs                # agent/pre-step 动态注入
-│   └── tools.mjs                 # 七个 memory_* 工具
+│   └── tools.mjs                 # 九个 memory_* 工具
 ├── adapters/claude/
 │   ├── discover.mjs              # 发现 Claude memory 目录
 │   ├── import.mjs                # 导入
