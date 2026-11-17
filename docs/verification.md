@@ -84,3 +84,11 @@ node scripts/e2e-pure-extraction.mjs --profile bench-memt-headless
 ~~~
 
 结果 5/5 PASS：第一会话禁止工具调用，第二会话 flush 队列，检查到 `capture: llm` note，第三会话回答 pnpm，且没有 `capture: tool` 的显式保存笔记。
+
+## 7. synthesize profile e2e
+
+~~~bash
+node scripts/e2e-profile.mjs --profile bench-memt-headless
+~~~
+
+结果 3/3 PASS：4 条 typed preference 记忆经 profile 合成后，回答“Netflix 上有个人经历叙事的轻松单口喜剧专场”，没有推荐恐怖片。

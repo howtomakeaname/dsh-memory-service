@@ -177,3 +177,11 @@ GitHub Actions 跑 `npm test`、`npm run check`、`npm pack --dry-run`；`prepub
 ## Claude Code memory 参考
 
 当前 Claude Code 2.1.284 的 memory 结构、索引限长、select/synthesize 与旧泄露快照的差异，见 [docs/claude-code-memory-current.md](docs/claude-code-memory-current.md)。
+
+## Profile e2e
+
+~~~bash
+node scripts/e2e-profile.mjs --profile bench-memt-headless
+~~~
+
+4 条 typed preference 记忆 → synthesize profile → 新会话推荐；3/3 PASS。
