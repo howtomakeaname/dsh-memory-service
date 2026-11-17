@@ -14,6 +14,8 @@ function arg(name, fallback) {
 const tasksPath = arg("tasks", process.env.DSH_MEMORY_BENCH_TASKS || "");
 const profile = arg("profile", "bench-memt-headless");
 const mode = arg("mode", "direct");
+const typeFilter = arg("type", "");
+const idFilter = arg("id", "");
 const judgeMode = arg("judge", "llm");
 const limit = Number(arg("limit", "1"));
 const timeoutMs = Number(arg("timeout", "180000"));
@@ -25,7 +27,8 @@ const key = credentials.match(/DEEPSEEK_API_KEY:\s*(\S+)/)?.[1];
 if (!key) throw new Error("DEEPSEEK_API_KEY missing");
 
 if (!tasksPath) throw new Error("--tasks or DSH_MEMORY_BENCH_TASKS is required");
-const tasks = fs.readFileSync(tasksPath, "utf8").split("\n").filter(Boolean).map((line) => JSON.parse(line)).slice(0, limit);
+const allTasks = fs.readFileSync(tasksPath, "utf8").split("\n").filter(Boolean).map((line) => JSON.parse(line));
+const tasks = allTasks.filter((task) => (!typeFilter || task.type === typeFilter) && (!idFilter || task.id === idFilter)).slice(0, limit);
 fs.mkdirSync(baseRoot, { recursive: true });
 
 function workspaceFor(cwd) {
