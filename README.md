@@ -2,7 +2,7 @@
 
 <img src="docs/assets/readme-hero.png" alt="DeepSeek Harness 长期记忆系统学术风格示意图" width="100%" />
 
-<p align="center"><sub><b>Figure 1 · System overview / 图 1 · 系统总览.</b> <b>Legend / 图例：</b> 点状流 → 会话事件；同心漏斗 → 有证据的抽取与过滤；卡片 → 持久化的 Markdown 记忆；节点网络 → FTS5 检索与相关性；曲线箭头 → 受 token 预算约束的上下文注入；嵌套框 → workspace / global 双作用域；左下角圆点 → Claude Code 导入端口。</sub></p>
+<p align="center"><sub><b>Fig. 1. Visual abstract.</b> <b>Legend / 图例：</b> 点状流 → 会话事件；同心漏斗 → 有证据的抽取与过滤；卡片 → 持久化的 Markdown 记忆；节点网络 → FTS5 检索与相关性；曲线箭头 → 受 token 预算约束的上下文注入；嵌套框 → workspace / global 双作用域；左下角圆点 → Claude Code 导入端口。</sub></p>
 
 # dsh-memory-service
 
@@ -52,7 +52,7 @@
 
 ![dsh-memory-service 系统架构](docs/assets/architecture-figure.png)
 
-<p align="center"><sub><b>Figure 2 · System architecture / 图 2 · 系统架构.</b> <b>Legend / 图例：</b>实线 = 捕获、写入与索引派生；虚线 = 召回、读取与上下文注入；点线 = Claude Code 导入；WORKSPACE 与 GLOBAL 为同级 scope；Markdown 是唯一真源，FTS5 索引可重建。<a href="docs/assets/architecture-figure.svg">SVG source</a></sub></p>
+<p align="center"><sub><b>Fig. 2. System architecture.</b> (a) <b>Write path:</b> session turns enter a persistent capture queue; the host-model extractor writes grounded candidates to Markdown memory; a rebuildable FTS5 index is derived. (b) <b>Recall path:</b> the current task queries the planner; profile synthesis, query expansion, Markdown hydration, and FTS5 retrieval produce a bounded context pack injected back into the session. (c) <b>Ingestion and control:</b> Claude Code memory is imported through a preview/edit adapter; CLI, backup/restore, and Settings UI operate on the same store. WORKSPACE and GLOBAL are sibling scopes; Markdown is the source of truth. Solid, dashed, and dotted arrows denote write/derive, read/recall, and import, respectively. <a href="docs/assets/architecture-figure.svg">SVG source</a></sub></p>
 
 **一句话数据流：** 会话事件先进入持久队列，宿主模型抽取有证据的候选，写入 Markdown 真源；索引负责可搜索，召回层再按 scope、相关性和 token 预算把一部分记忆注入下一轮。
 
