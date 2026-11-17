@@ -15,6 +15,7 @@ const tasksPath = arg("tasks", process.env.DSH_MEMORY_BENCH_TASKS || "");
 const profile = arg("profile", "bench-memt-headless");
 const mode = arg("mode", "direct");
 const typeFilter = arg("type", "");
+const minChars = Number(arg("min-chars", "0"));
 const idFilter = arg("id", "");
 const judgeMode = arg("judge", "llm");
 const limit = Number(arg("limit", "1"));
@@ -142,6 +143,11 @@ for (const task of tasks) {
   fs.mkdirSync(work, { recursive: true });
   const cwd = fs.realpathSync(work);
   const workspace = workspaceFor(cwd);
+  const ingestChars = (task.ingest_chunks || []).reduce((sum, chunk) => sum + String(chunk).length, 0);
+  if (ingestChars < minChars) {
+    const row = { taskId: task.id, type: task.type, mode, ingested: 0, ingestChars, passed: false, skipped: true, reason: "ingest chars " + ingestChars + " < min " + minChars, answer: "", gold: task.gold, usage: null };
+    results.push(row); console.log(JSON.stringify(row)); continue;
+  }
   let ingested = 0;
   if (mode === "direct") {
     ingested = ingestDirect(task, taskRoot, workspace, cwd);
@@ -156,12 +162,12 @@ for (const task of tasks) {
   const question = task.question + (task.question_date ? "\n(question date: " + task.question_date + ")" : "");
   const asked = dshRun(question + "\n请只根据长期记忆回答；如果记忆里没有，就回答不知道。", taskRoot, cwd);
   const passed = asked.ok && await grade(task, asked.text);
-  const row = { taskId: task.id, type: task.type, mode, ingested, passed, answer: asked.text, gold: task.gold, usage: asked.usage };
+  const row = { taskId: task.id, type: task.type, mode, ingested, ingestChars, passed, answer: asked.text, gold: task.gold, usage: asked.usage };
   results.push(row);
   console.log(JSON.stringify(row));
 }
 const passed = results.filter((r) => r.passed).length;
-const report = { tasks: tasks.length, passed, mode, root: baseRoot, results };
+const report = { tasks: tasks.length, passed, mode, minChars, root: baseRoot, results };
 fs.writeFileSync(path.join(baseRoot, "report.json"), JSON.stringify(report, null, 2));
-console.log("SUMMARY " + JSON.stringify({ tasks: tasks.length, passed, root: baseRoot }));
+console.log("SUMMARY " + JSON.stringify({ tasks: tasks.length, passed, minChars, root: baseRoot }));
 process.exit(passed === tasks.length ? 0 : 1);

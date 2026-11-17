@@ -70,6 +70,7 @@ node bench/e2e/run.mjs \
 - mode：direct 或 agent
 - judge：llm 或 none，开放题默认 LLM 语义 judge
 - timeout：单会话超时，默认 180s
+- min-chars：要求每条任务 ingest 至少 N 字符；低于门槛直接标 skipped/fail，防止拿短任务冒充长程
 - root：隔离记忆根目录
 
 输出每个 task 的 JSON 行，最后写 report.json，并返回 task 全通过才 exit 0。
