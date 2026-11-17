@@ -1,7 +1,9 @@
 import { MemoryService } from "../store.mjs";
 import fs from "node:fs";
+import path from "node:path";
 import { normalizeConfig } from "../config.mjs";
-import { discoverClaudeMemories, importClaude } from "../adapters/claude.mjs";
+import { discoverClaudeMemories, importClaude, previewClaudeSources, importClaudeEntries } from "../adapters/claude.mjs";
+import { slug } from "../adapters/claude/utils.mjs";
 import { createCaptureHandler } from "./capture.mjs";
 import { createPreStepHandler } from "./inject.mjs";
 import { createTools } from "./tools.mjs";
@@ -154,6 +156,39 @@ export function apply(ctx, rawConfig = {}) {
         forget: (payload) => {
           const note = service.forget(String(payload?.id || ""), { scope: payloadScope(payload), hard: payload?.hard === true });
           return { forgotten: Boolean(note) };
+        },
+        claudePreview: (payload) => {
+          const known = discoverClaudeMemories();
+          const requested = Array.isArray(payload?.sources) ? payload.sources.map(String) : [];
+          const sources = requested.map((source) => known.find(({ dir }) => dir === source)).filter(Boolean);
+          if (!sources.length) throw new Error("no Claude memory source selected");
+          const scope = payloadScope(payload);
+          return { scope, sources, entries: previewClaudeSources(service, sources, { scope }) };
+        },
+        claudeImportEntries: (payload) => {
+          const known = discoverClaudeMemories();
+          const raw = Array.isArray(payload?.entries) ? payload.entries.slice(0, 500) : [];
+          const entries = [];
+          for (const entry of raw) {
+            const source = known.find(({ dir }) => dir === String(entry?.source || ""));
+            if (!source) throw new Error("unknown Claude memory source");
+            const file = String(entry?.file || "");
+            if (!file || path.basename(file) !== file) throw new Error("invalid Claude memory file");
+            const base = file.replace(/\.md$/i, "");
+            entries.push({
+              id: "claude-" + slug(source.project) + "-" + slug(base),
+              source: source.dir,
+              file,
+              project: source.project,
+              title: String(entry?.title || base).slice(0, 200),
+              description: String(entry?.description || "").slice(0, 200),
+              body: String(entry?.body || "").slice(0, 100000),
+              type: String(entry?.type || "project"),
+              scope: entry?.scope === "global" ? "global" : "workspace",
+              metadata: { origin: "claude-code", claude_name: String(entry?.title || ""), claude_description: String(entry?.description || "") }
+            });
+          }
+          return importClaudeEntries(service, entries, { force: payload?.force === true });
         },
         claudeDiscover: () => discoverClaudeMemories().map(({ project, dir }) => {
           let notes = 0;
