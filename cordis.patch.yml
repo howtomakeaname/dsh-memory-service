@@ -1,0 +1,4 @@
+# dsh-memory-service bundle patch: mount the host half as one loader row.
+- insert:
+    - id: memory-service
+      name: 'dsh-memory-service'
