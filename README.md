@@ -50,27 +50,9 @@
 
 ## 架构
 
-~~~mermaid
-flowchart LR
-    U[用户 / 编码 Agent] --> S[DSH 会话]
-    S -->|完成的轮次| Q[持久捕获队列]
-    Q --> X[宿主模型抽取]
-    X -->|有原话证据的候选| M[(Markdown 记忆库)]
-    M --> D[(SQLite FTS5 派生索引)]
+![dsh-memory-service 系统架构](docs/assets/architecture-figure.png)
 
-    S -->|当前任务| R[召回规划]
-    D --> R
-    M --> R
-    R -->|profile + 相关记忆<br/>受 token 预算约束| S
-
-    C[Claude Code memory] --> I[导入适配器]
-    I --> M
-
-    UI[Settings UI] --> M
-    UI --> Q
-
-    M -->|重建| D
-~~~
+<p align="center"><sub><b>Figure 2 · System architecture / 图 2 · 系统架构.</b> <b>Legend / 图例：</b>实线 = 捕获、写入与索引派生；虚线 = 召回、读取与上下文注入；点线 = Claude Code 导入；WORKSPACE 与 GLOBAL 为同级 scope；Markdown 是唯一真源，FTS5 索引可重建。<a href="docs/assets/architecture-figure.svg">SVG source</a></sub></p>
 
 **一句话数据流：** 会话事件先进入持久队列，宿主模型抽取有证据的候选，写入 Markdown 真源；索引负责可搜索，召回层再按 scope、相关性和 token 预算把一部分记忆注入下一轮。
 
