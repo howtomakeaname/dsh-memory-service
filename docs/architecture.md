@@ -25,7 +25,8 @@ src/
 │   ├── scope.mjs                 # scope SQL
 │   └── memory-index.mjs          # SQLite + FTS5 派生索引
 ├── retrieval/
-│   └── query-expander.mjs         # 模型查询扩展（失败回退原 query）
+│   ├── query-expander.mjs         # 模型查询扩展（失败回退原 query）
+│   └── profile.mjs                # preference/user 合成 profile
 ├── capture/
 │   ├── queue.mjs                 # 持久捕获队列（enqueue/drain/恢复）
 │   ├── llm.mjs                   # 可选 DSH llm 客户端

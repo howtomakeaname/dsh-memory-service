@@ -69,3 +69,7 @@ LongMemEval 的 preference 题不是“关键词匹配”：
 2. 稳定 profile 生成（把多条 preference 合成短摘要）；
 3. FTS + embedding 混合召回；
 4. benchmark 用 agent 模式或预抽取 preference 记录，而不是 flat reference。
+
+## synthesize profile
+
+当存在多条 `preference`/`user` 记忆时，[profile.mjs](profile.mjs) 会按 revision hash 缓存生成一段短 profile，稳定注入；任务事实仍走 select/FTS。这样偏好聚合不依赖 query 关键词或正则。

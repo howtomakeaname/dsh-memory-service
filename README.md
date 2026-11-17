@@ -107,7 +107,7 @@ node scripts/e2e-real.mjs --profile bench-memt-headless
 
 ```bash
 node --test
-# 39 tests, 39 pass
+# 45 tests, 45 pass
 ```
 
 ## 宿主接口
@@ -173,3 +173,7 @@ GitHub Actions 跑 `npm test`、`npm run check`、`npm pack --dry-run`；`prepub
 ## 检索扩展
 
 有 LLM 时，用户问题会先被改写成几条检索 query，再合并 FTS 召回；失败自动退回原 query。正则不做语义判断。
+
+## Claude Code memory 参考
+
+当前 Claude Code 2.1.284 的 memory 结构、索引限长、select/synthesize 与旧泄露快照的差异，见 [docs/claude-code-memory-current.md](docs/claude-code-memory-current.md)。

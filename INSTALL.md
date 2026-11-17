@@ -41,3 +41,4 @@ dsh plugin --profile <profile> add dsh-memory-service
 
 非法数值会被 clamp 到合法范围并在日志里 warning。
 - `queryExpansion`：是否用模型把问题改写成检索 query，默认 `true`
+- `profileSynthesis`：是否把 preference/user 记忆合成短 profile，默认 `true`
