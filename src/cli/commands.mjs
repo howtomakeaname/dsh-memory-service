@@ -5,6 +5,7 @@ import { discoverClaudeMemories, importClaude, exportClaude } from "../adapters/
 import { parseArgs } from "./args.mjs";
 import { CaptureQueue } from "../capture/queue.mjs";
 import { backupMemory, restoreMemory } from "../core/backup.mjs";
+import { ensureSchema } from "../core/schema.mjs";
 import { print } from "./output.mjs";
 
 export function run(argv) {
@@ -55,7 +56,7 @@ export function run(argv) {
       const missingFiles = rows.filter((row) => !byId.has(row.id)).map((row) => row.id);
       const stale = notes.filter((note) => { const row = rows.find((r) => r.id === note.id); return row && note.hash && row.hash !== note.hash; }).map((n) => n.id);
       const queue = new CaptureQueue(service.index.db);
-      print({ root, workspace, notes: notes.length, index: rows.length, missingFiles, stale, capture: queue.stats() });
+      print({ root, workspace, schema: ensureSchema(root).version, notes: notes.length, index: rows.length, missingFiles, stale, capture: queue.stats() });
       return;
     }
     if (command === "discover-claude") { print(discoverClaudeMemories(args.home)); return; }
