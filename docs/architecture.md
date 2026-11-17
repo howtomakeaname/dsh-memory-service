@@ -6,6 +6,7 @@
 client.js                         # settings.section 页面（浏览器入口，无构建）
 src/
 ├── store.mjs                     # 兼容门面：re-export MemoryService
+├── config.mjs                    # 配置规范化与范围校验
 ├── api.mjs                       # 宿主 /memory-service/api 路由
 ├── index-db.mjs                  # 兼容门面：re-export MemoryIndex
 ├── core/

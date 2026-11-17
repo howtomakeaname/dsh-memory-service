@@ -19,7 +19,7 @@ node --test
 - Claude 导入幂等/更新/导出；
 - 插件工具、注入、自动捕获、全局 scope。
 
-当前 33 个用例。
+当前 35 个用例。
 
 ## 2. 场景化集成测试
 
@@ -76,3 +76,11 @@ direct 模式验证检索/注入，不验证自动抽取；agent 模式才走完
 
 - `npm pack` 产物安装到空项目，`dsh-memory-service/core` 写入/检索通过；
 - 两个真实 CLI 进程用同一 revision 更新同一 note，结果一个成功、一个 exit 2 conflict。
+
+## 6. 纯模型抽取 e2e
+
+~~~bash
+node scripts/e2e-pure-extraction.mjs --profile bench-memt-headless
+~~~
+
+结果 5/5 PASS：第一会话禁止工具调用，第二会话 flush 队列，检查到 `capture: llm` note，第三会话回答 pnpm，且没有 `capture: tool` 的显式保存笔记。

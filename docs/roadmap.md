@@ -17,7 +17,6 @@
 - **语义冲突**：结构化 `subject/predicate/value`、`conflicted` 状态、`memory_resolve`、按需询问用户；详见 [conflict-resolution.md](conflict-resolution.md)。
 
 1. **LLM 抽取**：当前自动捕获是确定性启发式，只识别“以后/记住/不要再”等；下一步加可选 LLM extractor，输入轮次水位，输出候选事实，再进入队列。
-3. **配置校验**：root、budgetTokens、capture、flush 并发策略做 schema 校验和文档化。
 4. **发布**：`npm pack` 已可打包；补 CHANGELOG、版本号、发布到 npm，并用 tarball 安装冒烟。
 6. **自动化 e2e**：把真实 DSH headless 冒烟脚本化，作为发布前 gate。
 7. **工具拆分**：`plugin/tools.mjs` 已接近 200 行，工具继续增加时拆成 `plugin/tools/` 每工具一文件。

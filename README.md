@@ -107,7 +107,7 @@ node scripts/e2e-real.mjs --profile bench-memt-headless
 
 ```bash
 node --test
-# 33 tests, 33 pass
+# 35 tests, 35 pass
 ```
 
 ## 宿主接口
@@ -149,3 +149,15 @@ DSH 设置页复用、官方图标和宿主 API 见 [docs/ui.md](docs/ui.md)。
 ## 发布验证
 
 `npm pack` 产物已在临时项目安装并导入 `dsh-memory-service/core`，写入/检索通过；真实双进程并发 CLI 测试也通过。
+
+## 配置
+
+`root`、`capture`、`budgetTokens`、`extractEveryTurns`、`minConfidence` 都会规范化并做范围校验；非法值会 clamp 并写 warning。见 [INSTALL.md](INSTALL.md)。
+
+## 纯抽取 e2e
+
+~~~bash
+node scripts/e2e-pure-extraction.mjs --profile bench-memt-headless
+~~~
+
+会话明确禁止工具调用 → flush 队列 → 检查 `capture: llm` note → 新会话召回。当前 5/5 PASS。
