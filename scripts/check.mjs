@@ -10,7 +10,7 @@ function walk(dir) {
 }
 
 let failed = false;
-for (const file of [...walk("src"), "client.js", "bench/e2e/run.mjs", "scripts/e2e-real.mjs", "scripts/e2e-pure-extraction.mjs", "scripts/e2e-profile.mjs"]) {
+for (const file of [...walk("src"), "client.js", "bench/e2e/run.mjs", "scripts/e2e-real.mjs", "scripts/e2e-pure-extraction.mjs", "scripts/e2e-profile.mjs", "scripts/e2e-preference-extraction.mjs"]) {
   const result = spawnSync(process.execPath, ["--check", file], { stdio: "inherit" });
   if (result.status !== 0) failed = true;
 }
