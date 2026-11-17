@@ -61,7 +61,9 @@ node bench/e2e/run.mjs --tasks /tmp/dshmem/benchdata/tasks-lme20.jsonl --limit 3
 
 当前结果：6 条 LongMemEval（single-session-user 3、multi-session 1、temporal-reasoning 1、knowledge-update 1），6/6 通过；每条 direct 摄取 466–509 个 turn note，真实 DSH 新会话查询，LLM judge。
 
-direct 模式验证检索/注入，不验证自动抽取；agent 模式才走完整抽取链路。示例 fixture 的 agent 模式 1/1 通过，但该次模型选择调用 memory_save，不等于纯模型抽取路径已验证。详见 [../bench/e2e/README.md](../bench/e2e/README.md)。
+direct 模式验证检索/注入，不验证自动抽取；agent 模式才走完整抽取链路。示例 fixture 的 agent 模式 1/1 通过，但该次模型选择调用 memory_save。
+
+另外单独跑过一次纯模型抽取：会话明确说“不要调用任何工具”，模型没有调用 memory_save，插件仍写入一条 `capture: llm`、`confidence: 0.95`、evidence 为“以后这个项目统一使用 pnpm”的 convention note。说明正则不是唯一入口，模型抽取链路可用。详见 [../bench/e2e/README.md](../bench/e2e/README.md)。
 
 ## 局限
 
