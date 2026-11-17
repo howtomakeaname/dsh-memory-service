@@ -117,6 +117,8 @@ v1 root 初始化时自动迁移到 v2：legacy note 补 `description_auto`，�
 
 - Settings → 记忆真实可见；
 - 列表、scope、详情 drill-down、复制 ID、编辑/遗忘；
-- 新建会话调用 `memory_save`，工具卡片和展开的 Arguments/Result 可见。
+- 新建会话调用 `memory_save`，工具卡片和展开的 Arguments/Result 可见；
+- 冲突数据可筛选、打开详情并通过“保留此版本”解决；
+- Settings 表单新增记忆成功落盘。
 
 截图见 [docs/ui.md](ui.md)。

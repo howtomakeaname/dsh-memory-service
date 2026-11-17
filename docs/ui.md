@@ -14,6 +14,10 @@
 
 ![memory_save 工具卡片](screenshots/memory-tool-card.png)
 
+### 冲突详情
+
+![冲突详情与保留版本](screenshots/memory-conflict.png)
+
 截图来自真实 DSH Web：
 
 - DSH web app `0.2.2-rc.3`
@@ -54,14 +58,16 @@
 - 顶部摘要：笔记/有效/冲突/待处理/失败 + 模型抽取状态；
 - 搜索 + scope 切换；
 - 列表行显示类型图标、标题、描述、type/scope、更新时间；
-- 点击整行进入单条详情。
+- 点击整行进入单条详情；
+- 有冲突时可切换“只看冲突”，列表只显示 `conflicted` 记忆。
 
 ### 单条记忆详情
 
 - 独立 drill-down 视图，不是把列表行展开；
 - 返回列表、复制 ID、编辑、遗忘；
 - 展示 type/scope/revision/updated、完整正文、ID、sourceRefs；
-- 编辑复用同一表单，带 revision CAS。
+- 编辑复用同一表单，带 revision CAS；
+- `conflicted` 详情显示冲突对象和“保留此版本”，选择 winner 后 loser 转 superseded。
 
 ### 工具调用
 
@@ -114,5 +120,6 @@ dsh --profile bench-memt-web --port 54123 --host 127.0.0.1 --no-open
 
 - 没有独立的 Playwright/浏览器 CI；这次是 CDP 驱动的真实 DSH 手动 e2e；
 - 没有移动端/窄屏专门验证；
+- 冲突解决一次处理当前记录标记的冲突对象，不做三方合并。
 - textarea/select 仍是原生控件，因为 primitives 没有对应公开组件；
 - 没有独立路由页，详情是 Settings 内 drill-down。
