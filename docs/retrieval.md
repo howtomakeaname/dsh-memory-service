@@ -43,6 +43,7 @@ LongMemEval 的 preference 题不是“关键词匹配”：
 ### 读取侧
 
 - `user` / `preference` / `convention` / `feedback` 属于稳定层，不依赖 query 关键词；
+- 有 LLM 时，问题先改写成 2–4 条检索 query，再合并 FTS 召回；
 - 其余事实走 FTS5 检索；
 - 预算内拼接；
 - 冲突单独提示。
@@ -59,7 +60,7 @@ LongMemEval 的 preference 题不是“关键词匹配”：
 
 - 偏好还没有 `subject/predicate/value` 结构化字段；
 - 没有 embedding/混合召回；
-- 没有 LLM query expansion/rerank；
+- 没有 rerank；
 - benchmark direct 模式把所有 turn 存成 reference，不会产生 `preference` 类型，所以 preference 1/4 不能直接归因于真实抽取链路。
 
 下一步应做：

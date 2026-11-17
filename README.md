@@ -107,7 +107,7 @@ node scripts/e2e-real.mjs --profile bench-memt-headless
 
 ```bash
 node --test
-# 36 tests, 36 pass
+# 39 tests, 39 pass
 ```
 
 ## 宿主接口
@@ -169,3 +169,7 @@ GitHub Actions 跑 `npm test`、`npm run check`、`npm pack --dry-run`；`prepub
 ## 检索策略
 
 为什么正则只能做触发/兜底、偏好为什么需要类型化写入，见 [docs/retrieval.md](docs/retrieval.md)。
+
+## 检索扩展
+
+有 LLM 时，用户问题会先被改写成几条检索 query，再合并 FTS 召回；失败自动退回原 query。正则不做语义判断。
