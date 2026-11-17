@@ -3,8 +3,10 @@
 目标是让“存储、索引、宿主适配、格式适配、CLI”分开，后续加后台队列或 web UI 时不需要继续往 `store.mjs` / `plugin.mjs` 里堆。
 
 ```text
+client.js                         # settings.section 页面（浏览器入口，无构建）
 src/
 ├── store.mjs                     # 兼容门面：re-export MemoryService
+├── api.mjs                       # 宿主 /memory-service/api 路由
 ├── index-db.mjs                  # 兼容门面：re-export MemoryIndex
 ├── core/
 │   ├── constants.mjs             # 记忆类型、稳定类型
@@ -29,7 +31,7 @@ src/
 │   ├── message.mjs               # 文本提取、scope、注入消息
 │   ├── capture.mjs               # session/event 自动捕获
 │   ├── inject.mjs                # agent/pre-step 动态注入
-│   └── tools.mjs                 # 四个 memory_* 工具
+│   └── tools.mjs                 # 七个 memory_* 工具
 ├── adapters/claude/
 │   ├── discover.mjs              # 发现 Claude memory 目录
 │   ├── import.mjs                # 导入

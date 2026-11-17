@@ -105,7 +105,7 @@ node scripts/e2e-real.mjs --profile bench-memt-headless
 
 ```bash
 node --test
-# 23 tests, 23 pass
+# 27 tests, 27 pass
 ```
 
 ## 宿主接口
@@ -135,3 +135,7 @@ DSH 工具注册和动态注入的实际接口、约束与验证记录见 [docs/
 ## Benchmark e2e
 
 LongMemEval/LoCoMo/GateMem 风格任务的真实 DSH 端到端 harness 见 [bench/e2e/README.md](bench/e2e/README.md)。
+
+## UI
+
+DSH 设置页复用、官方图标和宿主 API 见 [docs/ui.md](docs/ui.md)。
