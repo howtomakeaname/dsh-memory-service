@@ -3,7 +3,7 @@ import path from "node:path";
 
 const sleepArray = new Int32Array(new SharedArrayBuffer(4));
 
-export function withFileLock(root, fn, { timeoutMs = 10000, staleMs = 30000 } = {}) {
+export function withFileLock(root, fn, { timeoutMs = 30000, staleMs = 120000 } = {}) {
   const file = path.join(root, ".memory.lock");
   fs.mkdirSync(root, { recursive: true });
   const start = Date.now();
@@ -16,7 +16,14 @@ export function withFileLock(root, fn, { timeoutMs = 10000, staleMs = 30000 } = 
       if (error?.code !== "EEXIST") throw error;
       try {
         const stat = fs.statSync(file);
-        if (Date.now() - stat.mtimeMs > staleMs) {
+        let dead = false;
+        try {
+          const info = JSON.parse(fs.readFileSync(file, "utf8"));
+          if (info && Number.isInteger(info.pid) && info.pid !== process.pid) {
+            try { process.kill(info.pid, 0); } catch (killError) { if (killError?.code === "ESRCH") dead = true; }
+          }
+        } catch { /* ignore malformed lock */ }
+        if (dead || Date.now() - stat.mtimeMs > staleMs) {
           fs.rmSync(file, { force: true });
           continue;
         }
