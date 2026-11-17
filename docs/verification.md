@@ -19,7 +19,7 @@ node --test
 - Claude 导入幂等/更新/导出；
 - 插件工具、注入、自动捕获、全局 scope。
 
-当前 48 个用例，GitHub Actions 跑测试/语法检查/打包 dry-run。
+当前 49 个用例，GitHub Actions 跑测试/语法检查/打包 dry-run。
 
 ## 2. 场景化集成测试
 
@@ -110,3 +110,13 @@ LongMemEval `single-session-preference-0`，agent 模式 10 chunks / 480,675 cha
 ## 10. schema 迁移
 
 v1 root 初始化时自动迁移到 v2：legacy note 补 `description_auto`，索引重建；未来版本会被拒绝。测试 3/3。
+
+## 11. 真实 DSH Web UI
+
+在 `bench-memt-web` profile、DSH web app 0.2.2-rc.3 中验证：
+
+- Settings → 记忆真实可见；
+- 列表、scope、详情 drill-down、复制 ID、编辑/遗忘；
+- 新建会话调用 `memory_save`，工具卡片和展开的 Arguments/Result 可见。
+
+截图见 [docs/ui.md](ui.md)。

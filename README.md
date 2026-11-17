@@ -107,7 +107,7 @@ node scripts/e2e-real.mjs --profile bench-memt-headless
 
 ```bash
 node --test
-# 48 tests, 48 pass
+# 49 tests, 49 pass
 ```
 
 ## 宿主接口
@@ -140,7 +140,9 @@ LongMemEval/LoCoMo/GateMem 风格任务的真实 DSH 端到端 harness 见 [benc
 
 ## UI
 
-DSH 设置页复用、官方图标和宿主 API 见 [docs/ui.md](docs/ui.md)。
+DSH 设置页复用、单条记忆详情、工具调用卡片和截图见 [docs/ui.md](docs/ui.md)。
+
+![记忆设置页](docs/screenshots/memory-settings-list.png)
 
 ## 数据版本与备份
 
