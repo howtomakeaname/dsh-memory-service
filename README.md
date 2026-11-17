@@ -193,3 +193,7 @@ node scripts/e2e-preference-extraction.mjs --profile bench-memt-headless
 ~~~
 
 真实会话陈述偏好 → flush → 新会话推荐；4/4 PASS。
+
+## Release
+
+[v0.1.0](https://github.com/howtomakeaname/dsh-memory-service/releases/tag/v0.1.0) 提供可安装 tarball。
