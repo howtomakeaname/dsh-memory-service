@@ -107,7 +107,7 @@ node scripts/e2e-real.mjs --profile bench-memt-headless
 
 ```bash
 node --test
-# 49 tests, 49 pass
+# 50 tests, 50 pass
 ```
 
 ## 宿主接口

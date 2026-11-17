@@ -114,7 +114,8 @@ POST /memory-service/api/update
 POST /memory-service/api/forget
 POST /memory-service/api/flush
 POST /memory-service/api/claudeDiscover
-POST /memory-service/api/claudeImport
+POST /memory-service/api/claudePreview
+POST /memory-service/api/claudeImportEntries
 ~~~
 
 实现：`src/api.mjs`。路由通过 `ctx.inject(['webServer'])` 懒挂载；headless profile 没有 webServer 时自动跳过。
@@ -123,8 +124,10 @@ POST /memory-service/api/claudeImport
 
 - 工具栏“从 Claude Code 导入”打开官方 `Modal`；
 - 通过 `claudeDiscover` 列出 `~/.claude/projects/*/memory` 和全局 memory；
-- 选择项目、导入 scope（当前工作区/全局）、是否覆盖本地修改；
-- `claudeImport` 只接受发现列表中存在的 source，不能传任意路径；
+- **可多选**多个 Claude 工作区和 global；
+- `claudePreview` 合并所有选中来源，逐条返回标题、描述、类型、正文和已存在状态；
+- 预览列表可逐条勾选、修改标题/描述/正文/类型，并为每条选择 workspace/global scope；
+- `claudeImportEntries` 只导入勾选项，只接受发现列表中的 source/file，不能传任意路径；
 - 导入后显示新增/更新/跳过/冲突计数，并刷新列表。
 
 ## 验证方式

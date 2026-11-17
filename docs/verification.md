@@ -19,7 +19,7 @@ node --test
 - Claude 导入幂等/更新/导出；
 - 插件工具、注入、自动捕获、全局 scope。
 
-当前 49 个用例，GitHub Actions 跑测试/语法检查/打包 dry-run。
+当前 50 个用例，GitHub Actions 跑测试/语法检查/打包 dry-run。
 
 ## 2. 场景化集成测试
 
@@ -126,4 +126,4 @@ v1 root 初始化时自动迁移到 v2：legacy note 补 `description_auto`，�
 
 ## 12. Claude Code 导入 UI
 
-在真实 Settings 中：临时 Claude memory fixture → 发现项目 → 选择 → 导入 → 显示“新增 1”并刷新列表；验证后删除临时 fixture。API 只接受发现列表中的 source。
+在隔离 HOME 的真实 Settings 中：临时 Claude memory fixture（两个项目 + global）→ 多选来源 → 预览 3 条 → 修改其中一条标题 → 导入选中 → 显示“新增 3”并刷新列表；验证后删除临时 HOME/fixture。API 只接受发现列表中的 source/file。
