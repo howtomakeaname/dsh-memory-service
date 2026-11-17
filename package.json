@@ -1,0 +1,41 @@
+{
+  "name": "dsh-memory-service",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "File-native long-term memory for DeepSeek Harness, with Claude Code memory import/export and a rebuildable SQLite index.",
+  "license": "MIT",
+  "bin": {
+    "dsh-memory": "./src/cli.mjs"
+  },
+  "exports": {
+    ".": "./src/plugin.mjs",
+    "./core": "./src/index.mjs",
+    "./store": "./src/store.mjs",
+    "./claude": "./src/adapters/claude.mjs"
+  },
+  "files": [
+    "src",
+    "cordis.patch.yml",
+    "README.md",
+    "LICENSE",
+    "INSTALL.md",
+    "docs"
+  ],
+  "scripts": {
+    "test": "node --test",
+    "check": "node scripts/check.mjs",
+    "e2e": "node scripts/e2e-real.mjs --profile bench-memt-headless"
+  },
+  "engines": {
+    "node": ">=22.5"
+  },
+  "main": "src/plugin.mjs",
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
