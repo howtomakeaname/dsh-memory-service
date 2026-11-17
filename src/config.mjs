@@ -7,7 +7,8 @@ export const DEFAULT_CONFIG = Object.freeze({
   budgetTokens: 1200,
   extractEveryTurns: 1,
   minConfidence: 0.55,
-  queryExpansion: true
+  queryExpansion: true,
+  profileSynthesis: true
 });
 
 function integer(value, fallback, min, max, warnings, name) {
@@ -39,5 +40,6 @@ export function normalizeConfig(raw = {}) {
   }
   const llm = input.llm && typeof input.llm === "object" && !Array.isArray(input.llm) ? input.llm : {};
   const queryExpansion = input.queryExpansion !== false;
-  return { config: { root, capture, budgetTokens, extractEveryTurns, minConfidence, queryExpansion, llm }, warnings };
+  const profileSynthesis = input.profileSynthesis !== false;
+  return { config: { root, capture, budgetTokens, extractEveryTurns, minConfidence, queryExpansion, profileSynthesis, llm }, warnings };
 }

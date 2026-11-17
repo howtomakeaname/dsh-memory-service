@@ -1,6 +1,6 @@
 import { contextMessage, humanText, scopeOf } from "./message.mjs";
 
-export function createPreStepHandler({ service, budgetTokens, log, stateOf, queryExpander }) {
+export function createPreStepHandler({ service, budgetTokens, log, stateOf, queryExpander, profileSynthesizer }) {
   return async ({ agent, messages, turn, signal }, next) => {
     const decision = await next();
     try {
@@ -14,7 +14,14 @@ export function createPreStepHandler({ service, budgetTokens, log, stateOf, quer
       if (!query) return decision;
       const scope = scopeOf(session);
       const expanded = queryExpander ? await queryExpander.expand(query) : [query];
-      const packed = service.context({ scope, query, extraQueries: expanded, budgetTokens });
+      let profile = "";
+      if (profileSynthesizer) {
+        try {
+          const notes = service.list(scope, { allScopes: false }).filter((note) => note.status === "active" && (note.type === "preference" || note.type === "user"));
+          profile = (await profileSynthesizer.synthesize(notes)) || "";
+        } catch { /* profile is best-effort */ }
+      }
+      const packed = service.context({ scope, query, extraQueries: expanded, profile, budgetTokens });
       state.injectedTurn = turn;
       if (!packed.text) return decision;
       const text = "长期记忆（由 dsh-memory-service 自动注入，来自过去会话；不是用户本轮的话）：\n" + packed.text;
