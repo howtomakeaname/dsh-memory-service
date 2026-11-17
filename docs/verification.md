@@ -59,7 +59,7 @@ node scripts/e2e-real.mjs --profile bench-memt-headless
 node bench/e2e/run.mjs --tasks /tmp/dshmem/benchdata/tasks-lme20.jsonl --limit 3 --mode direct
 ~~~
 
-当前结果：完整 24 条 LongMemEval（6 类各 4 条，`--min-chars 200000`），21/24 通过；每条 direct 摄取 466–509 个 turn note、约 46–49 万字符，真实 DSH 新会话查询，LLM judge。失败集中在 single-session-preference（1/4），其余 5 类全过。
+当前结果：完整 24 条 LongMemEval（6 类各 4 条，`--min-chars 200000`），22/24 通过；每条 direct 摄取 466–509 个 turn note、约 46–49 万字符，真实 DSH 新会话查询，LLM judge。失败集中在 single-session-preference（2/4），其余 5 类全过。2026-11-17 当前代码全量重跑，root `/tmp/dsh-bench-lme-final24`。
 
 direct 模式验证检索/注入，不验证自动抽取；agent 模式才走完整抽取链路。示例 fixture 的 agent 模式 1/1 通过，但该次模型选择调用 memory_save。
 
