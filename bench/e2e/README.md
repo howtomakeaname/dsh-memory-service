@@ -65,6 +65,8 @@ node bench/e2e/run.mjs \
 
 - tasks：任务 JSONL，或环境变量 DSH_MEMORY_BENCH_TASKS
 - limit：只跑前 N 条，默认 1
+- type：按 task.type 过滤
+- id：只跑指定 task id
 - mode：direct 或 agent
 - judge：llm 或 none，开放题默认 LLM 语义 judge
 - timeout：单会话超时，默认 180s
@@ -74,10 +76,10 @@ node bench/e2e/run.mjs \
 
 ## 已验证
 
-在 3 条 LongMemEval single-session-user 任务上：
+在 6 条 LongMemEval 任务上（single-session-user 3、multi-session 1、temporal-reasoning 1、knowledge-update 1）：
 
 ~~~text
-tasks 3, passed 3
+tasks 6, passed 6
 ~~~
 
 每条 direct 摄取 466–509 个 turn note，真实 DSH 新会话查询，LLM judge 判定通过。

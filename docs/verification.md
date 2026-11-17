@@ -59,7 +59,7 @@ node scripts/e2e-real.mjs --profile bench-memt-headless
 node bench/e2e/run.mjs --tasks /tmp/dshmem/benchdata/tasks-lme20.jsonl --limit 3 --mode direct
 ~~~
 
-当前结果：3 条 LongMemEval single-session-user，3/3 通过；每条 direct 摄取 466–509 个 turn note，真实 DSH 新会话查询，LLM judge。
+当前结果：6 条 LongMemEval（single-session-user 3、multi-session 1、temporal-reasoning 1、knowledge-update 1），6/6 通过；每条 direct 摄取 466–509 个 turn note，真实 DSH 新会话查询，LLM judge。
 
 direct 模式验证检索/注入，不验证自动抽取；agent 模式才走完整抽取链路。详见 [../bench/e2e/README.md](../bench/e2e/README.md)。
 
