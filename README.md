@@ -131,3 +131,7 @@ DSH 工具注册和动态注入的实际接口、约束与验证记录见 [docs/
 ## 验证
 
 分层验证和真实 e2e 见 [docs/verification.md](docs/verification.md)。
+
+## Benchmark e2e
+
+LongMemEval/LoCoMo/GateMem 风格任务的真实 DSH 端到端 harness 见 [bench/e2e/README.md](bench/e2e/README.md)。
