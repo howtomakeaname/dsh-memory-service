@@ -12,6 +12,7 @@ window.__ModuleLoader__.load({
     const SegmentedTabs = ui.SegmentedTabs;
     const DisclosureRow = ui.DisclosureRow;
     const TextShimmer = ui.TextShimmer;
+    const Modal = ui.Modal;
 
     function action(label, props, iconName) {
       if (Button) return h(Button, { size: "sm", ...props, icon: iconName ? icon(iconName) : undefined }, label);
@@ -70,7 +71,7 @@ window.__ModuleLoader__.load({
       back: "返回列表", titleField: "标题", descriptionField: "一句话描述", bodyField: "正文", typeField: "类型", scopeField: "作用域",
       revision: "版本", updated: "更新于", id: "ID", copyId: "复制 ID", copied: "已复制",
       confirmDelete: "确定遗忘这条记忆？", error: "操作失败", conflict: "版本冲突：内容已被其他会话修改，请重试。",
-      queue: "捕获队列", pending: "待处理", failed: "失败", notes: "笔记", active: "有效", conflicts: "冲突",
+      queue: "捕获队列", pending: "待处理", failed: "失败", notes: "笔记", active: "有效", conflicts: "冲突", claudeImport: "从 Claude Code 导入", claudeImportTitle: "导入 Claude Code 记忆", claudeImportDesc: "选择 Claude Code 的 memory 目录，导入到当前工作区或全局；重复导入会跳过未变化项。", claudeProject: "Claude 项目", claudeImportScope: "导入到", claudeNotes: "条记忆", claudeImportAction: "开始导入", claudeImporting: "导入中…", claudeNoSources: "没有找到 Claude Code memory 目录。", claudeSummary: "导入结果", imported: "新增", updated: "更新", skipped: "跳过", importConflicts: "冲突", importErrors: "错误", forceImport: "覆盖本地修改",
       extractor: "模型抽取", on: "开启", off: "关闭", allScopes: "全部", detail: "记忆详情", conflictShort: "冲突", status: "状态", showConflicts: "只看冲突", allMemories: "全部记忆", resolveKeep: "保留此版本", conflictWith: "冲突对象", resolved: "已解决", argumentsLabel: "参数", resultLabel: "结果", errorLabel: "错误",
       sourceRefs: "来源", noDescription: "（无描述）", noBody: "（无正文）", memory: "记忆",
       toolSearch: "搜索记忆", toolSave: "保存记忆", toolGet: "读取记忆", toolUpdate: "更新记忆",
@@ -85,7 +86,7 @@ window.__ModuleLoader__.load({
       back: "Back to list", titleField: "Title", descriptionField: "One-line description", bodyField: "Body", typeField: "Type", scopeField: "Scope",
       revision: "Revision", updated: "Updated", id: "ID", copyId: "Copy ID", copied: "Copied",
       confirmDelete: "Forget this memory?", error: "Operation failed", conflict: "Revision conflict: another session changed this memory. Reload and retry.",
-      queue: "Capture queue", pending: "pending", failed: "failed", notes: "notes", active: "active", conflicts: "conflicts",
+      queue: "Capture queue", pending: "pending", failed: "failed", notes: "notes", active: "active", conflicts: "conflicts", claudeImport: "Import from Claude Code", claudeImportTitle: "Import Claude Code memories", claudeImportDesc: "Choose a Claude Code memory directory and import it into the current workspace or global memory. Re-imports skip unchanged entries.", claudeProject: "Claude project", claudeImportScope: "Import to", claudeNotes: "memories", claudeImportAction: "Import", claudeImporting: "Importing…", claudeNoSources: "No Claude Code memory directory found.", claudeSummary: "Import result", imported: "added", updated: "updated", skipped: "skipped", importConflicts: "conflicts", importErrors: "errors", forceImport: "Overwrite local edits",
       extractor: "Model extraction", on: "on", off: "off", allScopes: "all", detail: "Memory detail", conflictShort: "Conflicts", status: "Status", showConflicts: "Conflicts", allMemories: "All memories", resolveKeep: "Keep this version", conflictWith: "Conflicts with", resolved: "Resolved", argumentsLabel: "Arguments", resultLabel: "Result", errorLabel: "Error",
       sourceRefs: "Sources", noDescription: "(no description)", noBody: "(empty body)", memory: "Memory",
       toolSearch: "Search memory", toolSave: "Save memory", toolGet: "Read memory", toolUpdate: "Update memory",
@@ -132,6 +133,7 @@ window.__ModuleLoader__.load({
         ".dms_form{display:flex;flex-direction:column;gap:10px;border:1px solid var(--dsw-alias-border-l2,#333);border-radius:8px;padding:14px;background:var(--dsw-alias-bg-layer-1,#181818);}",
         ".dms_field{display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--dsw-alias-label-secondary,#aaa);}.dms_formRow{display:flex;gap:10px;flex-wrap:wrap;}",
         ".dms_conflict{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;border:1px solid var(--dsw-alias-state-error-primary,#e74c3c);border-radius:6px;padding:9px 10px;background:var(--dsw-alias-bg-layer-3,#222);font-size:12px;line-height:18px;color:var(--dsw-alias-label-secondary,#bbb);}",
+        ".dms_import{display:flex;flex-direction:column;gap:12px;}.dms_check{display:flex;gap:8px;align-items:center;font-size:12px;color:var(--dsw-alias-label-secondary,#aaa);}.dms_importSummary{display:flex;flex-direction:column;gap:7px;border-top:1px solid var(--dsw-alias-border-l2,#333);padding-top:10px;font-size:12px;color:var(--dsw-alias-label-secondary,#bbb);}",
         ".dms_error{color:var(--dsw-alias-state-error-primary,#e74c3c);font-size:13px;line-height:19px;}.dms_empty{display:flex;flex-direction:column;gap:6px;align-items:center;padding:42px 12px;color:var(--dsw-alias-label-tertiary,#888);text-align:center;border:1px dashed var(--dsw-alias-border-l2,#333);border-radius:8px;}",
         ".dms_empty b{font-size:14px;color:var(--dsw-alias-label-secondary,#aaa);font-weight:500;}.dms_emptyIcon{opacity:.7;}",
         ".dms_toolBody{display:flex;flex-direction:column;gap:8px;padding:8px 0 2px 26px;}.dms_toolLabel{font-size:11px;color:var(--dsw-alias-label-tertiary,#888);}.dms_toolPre{margin:0;padding:8px 10px;border-radius:6px;background:var(--dsw-alias-bg-layer-3,#222);color:var(--dsw-alias-label-secondary,#ccc);font-size:11px;line-height:17px;white-space:pre-wrap;overflow-wrap:anywhere;max-height:260px;overflow:auto;}",
@@ -208,6 +210,14 @@ window.__ModuleLoader__.load({
         const [selectedId, setSelectedId] = React.useState(null);
         const [copied, setCopied] = React.useState(false);
         const [onlyConflicts, setOnlyConflicts] = React.useState(false);
+        const [claudeOpen, setClaudeOpen] = React.useState(false);
+        const [claudeSources, setClaudeSources] = React.useState([]);
+        const [claudeSource, setClaudeSource] = React.useState("");
+        const [claudeImportScope, setClaudeImportScope] = React.useState("workspace");
+        const [claudeForce, setClaudeForce] = React.useState(false);
+        const [claudeBusy, setClaudeBusy] = React.useState(false);
+        const [claudeSummary, setClaudeSummary] = React.useState(null);
+        const [claudeError, setClaudeError] = React.useState("");
 
         const selected = items.find((item) => item.id === selectedId) || null;
 
@@ -227,6 +237,26 @@ window.__ModuleLoader__.load({
         React.useEffect(() => { void load(scope, ""); }, [scope, load]);
         const submitSearch = (event) => { event.preventDefault(); setOnlyConflicts(false); void load(scope, query.trim()); };
         const refresh = () => { setOnlyConflicts(false); void load(scope, query.trim()); };
+        const openClaudeImport = async () => {
+          setClaudeOpen(true); setClaudeBusy(true); setClaudeError(""); setClaudeSummary(null);
+          try {
+            const sources = await api("claudeDiscover");
+            setClaudeSources(sources || []);
+            setClaudeSource((sources && sources[0] && sources[0].source) || "");
+            setClaudeImportScope(scope === "global" ? "global" : "workspace");
+          } catch (failure) { setClaudeError(String(failure.message || failure)); }
+          finally { setClaudeBusy(false); }
+        };
+        const runClaudeImport = async () => {
+          if (!claudeSource || claudeBusy) return;
+          setClaudeBusy(true); setClaudeError(""); setClaudeSummary(null);
+          try {
+            const summary = await api("claudeImport", { source: claudeSource, scope: claudeImportScope, force: claudeForce });
+            setClaudeSummary(summary);
+            await load(scope, query.trim());
+          } catch (failure) { setClaudeError(String(failure.message || failure)); }
+          finally { setClaudeBusy(false); }
+        };
         const showConflicts = async () => {
           if (onlyConflicts) { setOnlyConflicts(false); void load(scope, query.trim()); return; }
           setLoading(true); setError("");
@@ -283,6 +313,7 @@ window.__ModuleLoader__.load({
             h("div", { className: "dms_scope" }, SegmentedTabs ? h(SegmentedTabs, { items: scopeItems, value: scope, onChange: (value) => { setScope(value); setSelectedId(null); }, label: t("scopeField"), size: "sm" }) : h("select", { className: "dms_select", value: scope, onChange: (event) => setScope(event.target.value) }, scopeItems.map((item) => h("option", { key: item.value, value: item.value }, item.label)))),
             (status?.conflicts || 0) > 0 ? action(onlyConflicts ? t("allMemories") : t("conflictShort") + " " + status.conflicts, { type: "button", onClick: showConflicts, variant: onlyConflicts ? "primary" : "ghost" }, "IconInfoOutlineRegular") : null),
           h("div", { className: "dms_actions" },
+            iconButton(t("claudeImport"), { type: "button", onClick: openClaudeImport }, "IconDownloadOutlineRegular"),
             iconButton(t("refresh"), { type: "button", onClick: refresh }, "IconRefreshOutlineRegular"),
             iconButton(t("flush"), { type: "button", onClick: flush }, "IconDatabaseOutlineRegular"),
             iconButton(t("newMemory"), { type: "button", onClick: startNew }, "IconPlusOutlineRegular")));
@@ -326,12 +357,36 @@ window.__ModuleLoader__.load({
             h("label", { className: "dms_field" }, t("scopeField"), h(Dropdown, { value: draft.scope, options: [{ value: "workspace", label: t("workspace") }, { value: "global", label: t("global") }], onChange: (value) => setDraft({ ...draft, scope: value }), label: t("scopeField") }))),
           h("div", { className: "dms_toolbar" }, action(t("save"), { type: "button", onClick: save, variant: "primary", icon: icon("IconCheckOutlineRegular") }), action(t("cancel"), { type: "button", onClick: () => setDraft(null), variant: "ghost" }))) : null;
 
+        const claudeOptions = claudeSources.map((item) => ({ value: item.source, label: (item.project || item.source) + " · " + item.notes + " " + t("claudeNotes") }));
+        const claudeImportBody = h("div", { className: "dms_import" },
+          claudeError ? h("div", { className: "dms_error" }, claudeError) : null,
+          claudeBusy ? h("div", { className: "dms_desc" }, shimmer(t("claudeImporting"))) :
+            claudeSources.length === 0 ? h("div", { className: "dms_empty" }, icon("IconDownloadOutlineRegular", 24), h("b", null, t("claudeNoSources"))) :
+              h(React.Fragment, null,
+                h("label", { className: "dms_field" }, t("claudeProject"), h(Dropdown, { value: claudeSource, options: claudeOptions, onChange: setClaudeSource, label: t("claudeProject") })),
+                h("label", { className: "dms_field" }, t("claudeImportScope"), h(Dropdown, { value: claudeImportScope, options: [{ value: "workspace", label: t("workspace") }, { value: "global", label: t("global") }], onChange: setClaudeImportScope, label: t("claudeImportScope") })),
+                h("label", { className: "dms_check" }, h("input", { type: "checkbox", checked: claudeForce, onChange: (event) => setClaudeForce(event.target.checked) }), t("forceImport")),
+                claudeSummary ? h("div", { className: "dms_importSummary" },
+                  h("b", null, t("claudeSummary")),
+                  h("div", { className: "dms_meta" }, tag(t("imported") + " " + claudeSummary.imported), tag(t("updated") + " " + claudeSummary.updated), tag(t("skipped") + " " + claudeSummary.skipped), tag(t("importConflicts") + " " + claudeSummary.conflicts, claudeSummary.conflicts ? "error" : "outline")),
+                  claudeSummary.errors && claudeSummary.errors.length ? h("div", { className: "dms_error" }, claudeSummary.errors.slice(0, 3).join("\n")) : null) : null));
+        const claudeDialog = claudeOpen ? (Modal ? h(Modal, {
+          open: true,
+          onClose: () => setClaudeOpen(false),
+          title: t("claudeImportTitle"),
+          closeLabel: t("cancel"),
+          description: t("claudeImportDesc"),
+          footer: h("div", { className: "dms_toolbar" },
+            action(t("cancel"), { type: "button", onClick: () => setClaudeOpen(false), variant: "ghost" }),
+            action(claudeBusy ? t("claudeImporting") : t("claudeImportAction"), { type: "button", onClick: runClaudeImport, variant: "primary", disabled: claudeBusy || !claudeSource }, "IconDownloadOutlineRegular"))
+        }, claudeImportBody) : h("div", { className: "dms_form" }, claudeImportBody)) : null;
         return h("div", { className: "dms_page" },
           h("div", { className: "dms_head" }, h("div", { className: "dms_title" }, t("title")), h("div", { className: "dms_desc" }, t("description"))),
           summary,
           h("form", { className: "dms_controls", onSubmit: submitSearch }, toolbar, toolbar2),
           error ? h("div", { className: "dms_error" }, error) : null,
-          form || detail || list);
+          form || detail || list,
+          claudeDialog);
       };
     }
 

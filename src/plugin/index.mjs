@@ -1,5 +1,7 @@
 import { MemoryService } from "../store.mjs";
+import fs from "node:fs";
 import { normalizeConfig } from "../config.mjs";
+import { discoverClaudeMemories, importClaude } from "../adapters/claude.mjs";
 import { createCaptureHandler } from "./capture.mjs";
 import { createPreStepHandler } from "./inject.mjs";
 import { createTools } from "./tools.mjs";
@@ -152,6 +154,24 @@ export function apply(ctx, rawConfig = {}) {
         forget: (payload) => {
           const note = service.forget(String(payload?.id || ""), { scope: payloadScope(payload), hard: payload?.hard === true });
           return { forgotten: Boolean(note) };
+        },
+        claudeDiscover: () => discoverClaudeMemories().map(({ project, dir }) => {
+          let notes = 0;
+          try { notes = fs.readdirSync(dir).filter((name) => name.endsWith(".md") && name !== "MEMORY.md").length; } catch { /* ignore */ }
+          return { project, source: dir, notes };
+        }),
+        claudeImport: (payload) => {
+          const source = discoverClaudeMemories().find(({ dir }) => dir === String(payload?.source || ""));
+          if (!source) throw new Error("unknown Claude memory directory");
+          const scope = payload?.scope === "global" ? "global" : service.defaultScope();
+          const summary = importClaude(service, {
+            source: source.dir,
+            project: source.project,
+            scope,
+            dryRun: payload?.dryRun === true,
+            force: payload?.force === true
+          });
+          return { ...summary, project: source.project, scope, dryRun: payload?.dryRun === true };
         },
         flush: async () => {
           if (!queue) return { processed: 0, failed: 0, pending: 0 };
