@@ -100,3 +100,9 @@ node scripts/e2e-preference-extraction.mjs --profile bench-memt-headless
 ~~~
 
 结果 4/4 PASS：第一会话只陈述偏好、禁止工具调用；第二会话 flush；第三会话回答“叙事型单口喜剧专场”，且没有推荐恐怖片。这条链路验证的是抽取 → typed preference → synthesize profile → 回答。
+
+## 9. agent-mode preference
+
+LongMemEval `single-session-preference-0`，agent 模式 10 chunks / 480,675 chars：**1/1 pass**。
+
+这条路径验证的是：真实会话 chunk 抽取 → typed preference → synthesize profile → 回答；不是 direct 模式的人工平铺。

@@ -110,3 +110,11 @@ node bench/e2e/run.mjs --tasks bench/e2e/fixtures/long-horizon.sample.jsonl --li
 - agent 模式慢且受模型波动影响，适合发布前小样本。
 - 全量 LongMemEval 500 / GateMem 2218 是过夜级，不进 CI。
 - 不要把 query session 的原始日志当记忆；harness 使用独立 root 和真实新会话。
+
+## agent 模式 preference
+
+~~~bash
+node bench/e2e/run.mjs --tasks ... --type single-session-preference --limit 1 --min-chars 200000 --mode agent --judge llm
+~~~
+
+2026-11-17 实测：10 个 chunk、480,675 字符，agent 抽取后回答 1/1 通过。之前失败是模型看到偏好却拒绝推荐；注入增加“可基于偏好推断”的使用约束后通过。
