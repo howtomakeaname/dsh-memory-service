@@ -1,6 +1,9 @@
 <div align="center">
 
-<img src="docs/assets/icon-180.png" width="84" alt="dsh-memory-service logo" />
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/icon-180-dark.png" />
+  <img src="docs/assets/icon-180.png" width="84" alt="dsh-memory-service logo" />
+</picture>
 
 # dsh-memory-service
 
