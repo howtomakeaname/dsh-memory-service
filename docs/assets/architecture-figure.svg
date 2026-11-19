@@ -8,7 +8,7 @@
 <rect width="2000" height="1125" fill="#FFFFFF"/>
 <text x="70" y="58" font-family="Times New Roman, Times, serif" font-size="31" font-weight="400" fill="#111111" text-anchor="start" >dsh-memory-service: system architecture</text>
 <text x="70" y="84" font-family="Helvetica, Arial, sans-serif" font-size="11" font-weight="600" fill="#333333" text-anchor="start" letter-spacing="2.2">FILE-NATIVE LONG-TERM MEMORY FOR DEEPSEEK HARNESS</text>
-<text x="1930" y="58" font-family="Helvetica, Arial, sans-serif" font-size="11" font-weight="700" fill="#333333" text-anchor="end" letter-spacing="2">Fig. 2</text>
+<text x="1930" y="58" font-family="Helvetica, Arial, sans-serif" font-size="11" font-weight="700" fill="#333333" text-anchor="end" letter-spacing="2">Fig. 1</text>
 <line x1="70" y1="108" x2="1930" y2="108" stroke="#BBBBBB" stroke-width="1"/>
 <text x="70" y="140" font-family="Helvetica, Arial, sans-serif" font-size="11" font-weight="700" fill="#333333" text-anchor="start" letter-spacing="1.8">(a) Write path</text>
 <text x="1930" y="140" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="400" fill="#555555" text-anchor="end" >capture  →  extract  →  durable write  →  derive index</text>

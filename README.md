@@ -18,10 +18,6 @@
 
 </div>
 
-![dsh-memory-service visual overview](docs/assets/readme-hero.png)
-
-<p align="center"><sub><b>Fig. 1.</b> Visual overview of the memory lifecycle.</sub></p>
-
 > 一次会话里做出的决定，不应该等到下一次会话再重新发现。
 >
 > dsh-memory-service 给 DSH 增加一层持久记忆：Markdown 文件是唯一真源，SQLite FTS5 只是可丢弃的检索索引，模型每轮只拿到和当前任务相关的那部分记忆。
@@ -53,7 +49,7 @@
 
 ![dsh-memory-service system architecture](docs/assets/architecture-figure.png)
 
-<p align="center"><sub><b>Fig. 2.</b> System architecture. Solid arrows: write / derive; dashed: recall / read; dotted: import. WORKSPACE and GLOBAL are sibling scopes; Markdown is the source of truth and the FTS5 index is rebuildable. <a href="docs/assets/architecture-figure.svg">SVG source</a></sub></p>
+<p align="center"><sub><b>Fig. 1.</b> System architecture. Solid arrows: write / derive; dashed: recall / read; dotted: import. WORKSPACE and GLOBAL are sibling scopes; Markdown is the source of truth and the FTS5 index is rebuildable. <a href="docs/assets/architecture-figure.svg">SVG source</a></sub></p>
 
 会话事件先进入持久队列，宿主模型抽取有证据的候选，写入 Markdown 真源；索引负责可搜索，召回层再按 scope、相关性和 token 预算把一部分记忆注入下一轮。
 
