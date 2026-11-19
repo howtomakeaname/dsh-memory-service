@@ -7,6 +7,8 @@
 **为 DeepSeek Harness 提供文件原生、可审计、可重建的长期记忆。**
 
 [![npm](https://img.shields.io/npm/v/dsh-memory-service?style=flat-square&color=1f6feb)](https://www.npmjs.com/package/dsh-memory-service)
+[![npm weekly downloads](https://img.shields.io/npm/dw/dsh-memory-service?style=flat-square&color=2f6f4e)](https://www.npmjs.com/package/dsh-memory-service)
+[![Listed on dsh-plugin.org](https://dsh-plugin.org/badges/listed.svg)](https://dsh-plugin.org/plugins/howtomakeaname/dsh-memory-service)
 [![CI](https://github.com/howtomakeaname/dsh-memory-service/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/howtomakeaname/dsh-memory-service/actions/workflows/ci.yml)
 [![Node](https://img.shields.io/badge/node-%3E%3D22.5-339933?style=flat-square&logo=node.js&logoColor=white)](https://nodejs.org/)
 [![License](https://img.shields.io/badge/license-MIT-blue?style=flat-square)](LICENSE)
