@@ -23,7 +23,8 @@
     "docs",
     "bench",
     "client.js",
-    "CHANGELOG.md"
+    "CHANGELOG.md",
+    "screenshots.json"
   ],
   "scripts": {
     "test": "node --test",
