@@ -49,7 +49,7 @@
 
 ![dsh-memory-service system architecture](docs/assets/architecture-figure.png)
 
-<p align="center"><sub><b>Fig. 1.</b> System architecture. Solid arrows: write / derive; dashed: recall / read; dotted: import. WORKSPACE and GLOBAL are sibling scopes; Markdown is the source of truth and the FTS5 index is rebuildable. <a href="docs/assets/architecture-figure.svg">SVG source</a></sub></p>
+<p align="center"><sub><b>Fig. 1.</b> System architecture. Solid arrows: write / derive; dashed: recall / read; dotted: import. Markdown is the source of truth; FTS5 is a rebuildable index; WORKSPACE and GLOBAL are sibling scopes.</sub></p>
 
 会话事件先进入持久队列，宿主模型抽取有证据的候选，写入 Markdown 真源；索引负责可搜索，召回层再按 scope、相关性和 token 预算把一部分记忆注入下一轮。
 
