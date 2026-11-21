@@ -152,8 +152,8 @@ window.__ModuleLoader__.load({
         ".dms_nebula{position:relative;width:100%;height:clamp(420px,calc(100vh - 310px),720px);border:1px solid rgba(126,150,255,.24);border-radius:10px;overflow:hidden;background:radial-gradient(ellipse at 50% 42%,#1a2442 0%,#0d1224 58%,#090d18 100%);box-shadow:inset 0 0 80px rgba(60,90,180,.12);}",
         ".dms_nebulaCanvas{display:block;width:100%;height:100%;cursor:crosshair;touch-action:none;}",
         ".dms_nebulaMeta{position:absolute;left:14px;top:12px;display:flex;flex-direction:column;gap:3px;pointer-events:none;font-size:11px;color:#8ea6c9;}.dms_nebulaMeta b{font-size:13px;font-weight:600;color:#eef4ff;}.dms_nebulaControls{position:absolute;right:12px;top:12px;display:flex;align-items:center;gap:3px;padding:4px 6px;border:1px solid rgba(126,150,255,.18);border-radius:8px;background:rgba(8,12,24,.55);backdrop-filter:blur(3px);z-index:2;}.dms_nebulaScale{font-size:10px;line-height:14px;color:#8ea6c9;min-width:32px;text-align:center;font-variant-numeric:tabular-nums;}.dms_nebulaBtn{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;padding:0;border:0;border-radius:5px;background:transparent;color:#a9bce0;cursor:pointer;}.dms_nebulaBtn:hover{background:rgba(126,150,255,.16);color:#eef4ff;}",
-        ".dms_nebulaTip{position:absolute;z-index:3;width:220px;display:flex;flex-direction:column;gap:4px;padding:9px 11px;border:1px solid rgba(126,150,255,.28);border-radius:8px;background:#131b30;box-shadow:0 12px 30px rgba(0,0,0,.45);pointer-events:none;}",
-        ".dms_nebulaType{font-size:10px;line-height:14px;text-transform:uppercase;letter-spacing:.05em;}.dms_nebulaTip b{font-size:12px;line-height:17px;color:#eef4ff;}.dms_nebulaDesc{font-size:11px;line-height:16px;color:#9fb4d4;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;}",
+        ".dms_nebulaTip{position:absolute;z-index:3;width:260px;display:flex;flex-direction:column;gap:4px;padding:9px 11px;border:1px solid rgba(126,150,255,.28);border-radius:8px;background:#131b30;box-shadow:0 12px 30px rgba(0,0,0,.45);pointer-events:none;}",
+        ".dms_nebulaType{font-size:10px;line-height:14px;text-transform:uppercase;letter-spacing:.05em;}.dms_nebulaFacts{font-size:10px;line-height:14px;color:#7f98bb;overflow-wrap:anywhere;}.dms_nebulaUpdated{font-size:10px;line-height:14px;color:#6f86a8;}.dms_nebulaTip b{font-size:12px;line-height:17px;color:#eef4ff;}.dms_nebulaDesc{font-size:11px;line-height:16px;color:#9fb4d4;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;}",
         ".dms_nebulaLegend{position:absolute;left:14px;right:14px;bottom:10px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:center;pointer-events:none;padding:5px 8px;border-radius:8px;background:rgba(8,12,24,.45);backdrop-filter:blur(2px);}.dms_nebulaLegendItem{display:inline-flex;align-items:center;gap:5px;font-size:10px;line-height:14px;color:#8ea6c9;}.dms_nebulaLegendItem i{width:6px;height:6px;border-radius:50%;display:inline-block;}.dms_nebulaLegendItem span{font-variant-numeric:tabular-nums;}",
         ".dms_nebulaEmpty{min-height:320px;}",
         ".dms_treePane{border:0;border-right:1px solid var(--dsw-alias-border-l2,#333);border-radius:0;background:transparent;padding:0 16px 0 0;position:sticky;top:16px;max-height:calc(100vh - 200px);overflow:auto;box-sizing:border-box;}",
@@ -624,7 +624,7 @@ window.__ModuleLoader__.load({
                 context.arc(x, y, node.r + 4, 0, Math.PI * 2);
                 context.stroke();
               }
-              if (node.degree > 0 || node.id === hoverId || (needle && matched) || layout.nodes.length <= 10) {
+              if (layout.nodes.length <= 80 || node.id === hoverId || (needle && matched)) {
                 context.globalAlpha = active ? 0.82 : 0.18;
                 context.fillStyle = primary;
                 context.font = "500 11px system-ui, -apple-system, sans-serif";
@@ -665,7 +665,9 @@ window.__ModuleLoader__.load({
           tip ? h("div", { className: "dms_nebulaTip", style: { left: tip.x, top: tip.y } },
             h("span", { className: "dms_nebulaType", style: { color: tip.node.color } }, tip.node.type),
             h("b", null, tip.node.item.title || tip.node.item.id),
-            h("span", { className: "dms_nebulaDesc" }, tip.node.item.description || tip.node.item.body || t("noDescription"))) : null,
+            h("span", { className: "dms_nebulaFacts" }, tip.node.item.scope + " / " + tip.node.item.status),
+            h("span", { className: "dms_nebulaDesc" }, tip.node.item.description || tip.node.item.body || t("noDescription")),
+            h("span", { className: "dms_nebulaUpdated" }, fmtDate(tip.node.item.updatedAt) + " / " + tip.node.degree + " " + t("nebulaLinks"))) : null,
           h("div", { className: "dms_nebulaLegend" },
             [{ key: "conflict", color: "#ef6b6b", label: t("edgeConflict") }, { key: "supersede", color: "#6ea8fe", label: t("edgeSupersede") }, { key: "key", color: "#b58cff", label: t("edgeKey") }, { key: "source", color: "#5f7d9e", label: t("edgeSource") }, { key: "type", color: "#6f86a8", label: t("edgeType") }].map((item) => h("span", { className: "dms_nebulaLegendItem", key: item.key },
               h("i", { className: "dms_nebulaLegendLine", style: { background: item.color } }),
