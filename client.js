@@ -102,7 +102,7 @@ window.__ModuleLoader__.load({
       emptyHint: "试试换一个作用域，或新增一条记忆。", formHint: "保存一条可跨会话复用的记忆。", edit: "编辑", delete: "遗忘", save: "保存", cancel: "取消",
       back: "返回列表", titleField: "标题", descriptionField: "一句话描述", bodyField: "正文", typeField: "类型", scopeField: "作用域",
       revision: "版本", updated: "更新于", id: "ID", copyId: "复制 ID", copied: "已复制",
-      confirmDelete: "确定遗忘这条记忆？", error: "操作失败", conflict: "版本冲突：内容已被其他会话修改，请重试。",
+      confirmDelete: "确定遗忘这条记忆？", confirmForgetTitle: "遗忘这条记忆？", confirmForgetDesc: "遗忘后会从当前作用域的搜索结果和召回上下文中隐藏。", forgetting: "正在遗忘…", error: "操作失败", conflict: "版本冲突：内容已被其他会话修改，请重试。",
       queue: "捕获队列", pending: "待处理", failed: "失败", notes: "笔记", active: "有效", conflicts: "冲突", claudeImport: "从 Claude Code 导入", claudeImportTitle: "导入 Claude Code 记忆", claudeImportDesc: "从 Claude Code 导入各项记忆。", claudeProject: "Claude 项目", claudeImportScope: "导入到", claudeNotes: "条记忆", claudeImportAction: "开始导入", claudeImporting: "导入中…", claudeNoSources: "没有找到 Claude Code memory 目录。", claudeSummary: "导入结果", imported: "新增", updated: "更新", skipped: "跳过", importConflicts: "冲突", importErrors: "错误", forceImport: "覆盖本地修改", claudeSelectSources: "选择来源（可多选）", claudeSelectAll: "全选", claudeClear: "清空", claudePreview: "预览", claudePreviewing: "预览中…", claudeEntries: "条待导入", claudeExisting: "已存在", claudeEdit: "修改", claudeDone: "完成", claudeImportSelected: "导入选中", claudeNoEntries: "没有可导入的记忆。", claudeEntrySource: "来源：",
       extractor: "模型抽取", on: "开启", off: "关闭", allScopes: "全部", detail: "记忆详情", conflictShort: "冲突", status: "状态", showConflicts: "只看冲突", allMemories: "全部记忆", resolveKeep: "保留此版本", conflictWith: "冲突对象", resolved: "已解决", argumentsLabel: "参数", resultLabel: "结果", errorLabel: "错误",
       sourceRefs: "来源", noDescription: "（无描述）", noBody: "（无正文）", memory: "记忆",
@@ -117,7 +117,7 @@ window.__ModuleLoader__.load({
       emptyHint: "Try another scope, or create a memory.", formHint: "Save a durable memory for future sessions.", edit: "Edit", delete: "Forget", save: "Save", cancel: "Cancel",
       back: "Back to list", titleField: "Title", descriptionField: "One-line description", bodyField: "Body", typeField: "Type", scopeField: "Scope",
       revision: "Revision", updated: "Updated", id: "ID", copyId: "Copy ID", copied: "Copied",
-      confirmDelete: "Forget this memory?", error: "Operation failed", conflict: "Revision conflict: another session changed this memory. Reload and retry.",
+      confirmDelete: "Forget this memory?", confirmForgetTitle: "Forget this memory?", confirmForgetDesc: "It will be hidden from search and recall in this scope.", forgetting: "Forgetting…", error: "Operation failed", conflict: "Revision conflict: another session changed this memory. Reload and retry.",
       queue: "Capture queue", pending: "pending", failed: "failed", notes: "notes", active: "active", conflicts: "conflicts", claudeImport: "Import from Claude Code", claudeImportTitle: "Import Claude Code memories", claudeImportDesc: "Import memories from Claude Code.", claudeProject: "Claude project", claudeImportScope: "Import to", claudeNotes: "memories", claudeImportAction: "Import", claudeImporting: "Importing…", claudeNoSources: "No Claude Code memory directory found.", claudeSummary: "Import result", imported: "added", updated: "updated", skipped: "skipped", importConflicts: "conflicts", importErrors: "errors", forceImport: "Overwrite local edits", claudeSelectSources: "Sources (multi-select)", claudeSelectAll: "All", claudeClear: "Clear", claudePreview: "Preview", claudePreviewing: "Previewing…", claudeEntries: "entries", claudeExisting: "existing", claudeEdit: "Edit", claudeDone: "Done", claudeImportSelected: "Import selected", claudeNoEntries: "No importable memories.", claudeEntrySource: "Source: ",
       extractor: "Model extraction", on: "on", off: "off", allScopes: "all", detail: "Memory detail", conflictShort: "Conflicts", status: "Status", showConflicts: "Conflicts", allMemories: "All memories", resolveKeep: "Keep this version", conflictWith: "Conflicts with", resolved: "Resolved", argumentsLabel: "Arguments", resultLabel: "Result", errorLabel: "Error",
       sourceRefs: "Sources", noDescription: "(no description)", noBody: "(empty body)", memory: "Memory",
@@ -183,7 +183,7 @@ window.__ModuleLoader__.load({
         ".dms_form{display:flex;flex-direction:column;gap:10px;border:1px solid var(--dsw-alias-border-l2,#333);border-radius:8px;padding:14px;background:var(--dsw-alias-bg-layer-1,#181818);}",
         ".dms_field{display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--dsw-alias-label-secondary,#aaa);}.dms_formRow{display:flex;gap:10px;flex-wrap:wrap;}.dms_scopeChoice{display:flex;gap:12px;align-items:center;flex-wrap:wrap;}.dms_workspacePick{display:flex;align-items:center;gap:7px;min-width:240px;max-width:100%;border:1px solid var(--dsw-alias-border-l2,#333);border-radius:6px;background:var(--dsw-alias-bg-layer-3,#222);color:var(--dsw-alias-label-primary,#eee);padding:7px 9px;font:inherit;cursor:pointer;}.dms_workspacePick:hover{background:var(--dsw-alias-interactive-bg-hover,#242424);}.dms_workspacePickLabel{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}.dms_scopePicker{min-width:260px;max-width:100%;display:flex;}.dms_wsMenu{min-width:360px;max-width:min(520px,calc(100vw - 40px));}.dms_wsOption{display:flex;align-items:center;justify-content:space-between;gap:16px;width:100%;min-width:0;}.dms_wsOptionText{display:flex;flex-direction:column;gap:2px;min-width:0;}.dms_wsOptionTitle{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}.dms_wsOptionPath{font-size:12px;line-height:18px;color:var(--dsw-alias-label-tertiary,#888);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:420px;}.dms_wsOptionCheck{display:flex;flex:none;color:var(--dsw-alias-state-business-primary,#4d6bfe);}",
         ".dms_conflict{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;border:1px solid var(--dsw-alias-state-error-primary,#e74c3c);border-radius:6px;padding:9px 10px;background:var(--dsw-alias-bg-layer-3,#222);font-size:12px;line-height:18px;color:var(--dsw-alias-label-secondary,#bbb);}",
-        ".dms_importDialog{width:min(760px,calc(100vw - 64px))!important;max-width:760px!important;}.dms_import{display:flex;flex-direction:column;gap:12px;}.dms_importSection{display:flex;flex-direction:column;gap:7px;border:1px solid var(--dsw-alias-border-l2,#333);border-radius:8px;padding:10px;}.dms_importSectionHead{display:flex;gap:8px;align-items:center;justify-content:space-between;font-size:12px;color:var(--dsw-alias-label-secondary,#bbb);}.dms_sourceGrid{display:grid;grid-template-columns:1fr;gap:6px;max-height:160px;overflow:auto;}.dms_importList{display:flex;flex-direction:column;gap:8px;max-height:320px;overflow:auto;}.dms_importEntry{border:1px solid var(--dsw-alias-border-l2,#333);border-radius:7px;padding:9px;display:flex;flex-direction:column;gap:6px;}.dms_importEntryHead{display:flex;gap:8px;align-items:center;justify-content:space-between;flex-wrap:wrap;}.dms_check{display:flex;gap:8px;align-items:center;font-size:12px;color:var(--dsw-alias-label-secondary,#aaa);}.dms_importSummary{display:flex;flex-direction:column;gap:7px;border-top:1px solid var(--dsw-alias-border-l2,#333);padding-top:10px;font-size:12px;color:var(--dsw-alias-label-secondary,#bbb);}",
+        ".dms_importDialog{width:min(760px,calc(100vw - 64px))!important;max-width:760px!important;}.dms_confirmDialog{width:min(460px,calc(100vw - 48px))!important;max-width:460px!important;}.dms_confirmBody{display:flex;flex-direction:column;gap:10px;}.dms_dangerButton{color:var(--dsw-alias-state-error-primary,#e74c3c)!important;border-color:var(--dsw-alias-state-error-primary,#e74c3c)!important;}.dms_import{display:flex;flex-direction:column;gap:12px;}.dms_importSection{display:flex;flex-direction:column;gap:7px;border:1px solid var(--dsw-alias-border-l2,#333);border-radius:8px;padding:10px;}.dms_importSectionHead{display:flex;gap:8px;align-items:center;justify-content:space-between;font-size:12px;color:var(--dsw-alias-label-secondary,#bbb);}.dms_sourceGrid{display:grid;grid-template-columns:1fr;gap:6px;max-height:160px;overflow:auto;}.dms_importList{display:flex;flex-direction:column;gap:8px;max-height:320px;overflow:auto;}.dms_importEntry{border:1px solid var(--dsw-alias-border-l2,#333);border-radius:7px;padding:9px;display:flex;flex-direction:column;gap:6px;}.dms_importEntryHead{display:flex;gap:8px;align-items:center;justify-content:space-between;flex-wrap:wrap;}.dms_check{display:flex;gap:8px;align-items:center;font-size:12px;color:var(--dsw-alias-label-secondary,#aaa);}.dms_importSummary{display:flex;flex-direction:column;gap:7px;border-top:1px solid var(--dsw-alias-border-l2,#333);padding-top:10px;font-size:12px;color:var(--dsw-alias-label-secondary,#bbb);}",
         ".dms_error{color:var(--dsw-alias-state-error-primary,#e74c3c);font-size:13px;line-height:19px;}.dms_empty{display:flex;flex-direction:column;gap:6px;align-items:center;padding:42px 12px;color:var(--dsw-alias-label-tertiary,#888);text-align:center;border:1px dashed var(--dsw-alias-border-l2,#333);border-radius:8px;}",
         ".dms_empty b{font-size:14px;color:var(--dsw-alias-label-secondary,#aaa);font-weight:500;}.dms_emptyIcon{opacity:.7;}",
         ".dms_toolBody{display:flex;flex-direction:column;gap:8px;padding:8px 0 2px 26px;}.dms_toolLabel{font-size:11px;color:var(--dsw-alias-label-tertiary,#888);}.dms_toolPre{margin:0;padding:8px 10px;border-radius:6px;background:var(--dsw-alias-bg-layer-3,#222);color:var(--dsw-alias-label-secondary,#ccc);font-size:11px;line-height:17px;white-space:pre-wrap;overflow-wrap:anywhere;max-height:260px;overflow:auto;}",
@@ -607,6 +607,9 @@ window.__ModuleLoader__.load({
         const [error, setError] = React.useState("");
         const [draft, setDraft] = React.useState(null);
         const [selectedId, setSelectedId] = React.useState(null);
+        const [confirmForget, setConfirmForget] = React.useState(null);
+        const [forgetBusy, setForgetBusy] = React.useState(false);
+        const [forgetError, setForgetError] = React.useState("");
         const [copied, setCopied] = React.useState(false);
         const [onlyConflicts, setOnlyConflicts] = React.useState(false);
         const [claudeOpen, setClaudeOpen] = React.useState(false);
@@ -732,7 +735,19 @@ window.__ModuleLoader__.load({
         const openDetail = (item) => { setSelectedId(item.id); setDraft(null); };
         const startNew = () => { setSelectedId(null); setDraft({ id: "", title: "", description: "", body: "", type: "fact", scope: scope === "global" ? "global" : "workspace:" + activeWorkspace, revision: null }); };
         const startEdit = (item) => setDraft({ id: item.id, title: item.title, description: item.description, body: item.body, type: item.type, scope: item.scope === "global" ? "global" : item.scope, revision: item.revision });
-        const forget = async (item) => { if (!window.confirm(t("confirmDelete") + " #" + item.id)) return; try { await api("forget", { id: item.id, scope: item.scope }); setSelectedId(null); refresh(); } catch (failure) { setError(String(failure.message || failure)); } };
+        const forget = (item) => { setForgetError(""); setConfirmForget(item); };
+        const runForget = async () => {
+          if (!confirmForget || forgetBusy) return;
+          setForgetBusy(true); setForgetError("");
+          try {
+            await api("forget", { id: confirmForget.id, scope: confirmForget.scope });
+            setConfirmForget(null);
+            setSelectedId(null);
+            refresh();
+          } catch (failure) {
+            setForgetError(String(failure.message || failure));
+          } finally { setForgetBusy(false); }
+        };
         const save = async () => {
           if (!draft || !draft.body.trim()) return;
           setError("");
@@ -915,6 +930,22 @@ window.__ModuleLoader__.load({
                   h("b", null, t("claudeSummary")),
                   h("div", { className: "dms_meta" }, tag(t("imported") + " " + claudeSummary.imported), tag(t("updated") + " " + claudeSummary.updated), tag(t("skipped") + " " + claudeSummary.skipped), tag(t("importConflicts") + " " + claudeSummary.conflicts, claudeSummary.conflicts ? "error" : "outline")),
                   claudeSummary.errors && claudeSummary.errors.length ? h("div", { className: "dms_error" }, claudeSummary.errors.slice(0, 3).join("\n")) : null) : null));
+        const forgetDialog = confirmForget && Modal ? h(Modal, {
+          className: "dms_confirmDialog",
+          open: true,
+          onClose: () => { if (!forgetBusy) { setConfirmForget(null); setForgetError(""); } },
+          title: t("confirmForgetTitle"),
+          closeLabel: t("cancel"),
+          description: "#" + confirmForget.id + (confirmForget.title ? " " + confirmForget.title : ""),
+          footer: h("div", { className: "dms_toolbar" },
+            action(t("cancel"), { type: "button", variant: "ghost", disabled: forgetBusy, onClick: () => { setConfirmForget(null); setForgetError(""); } }),
+            action(t("delete"), { type: "button", variant: "outline", className: "dms_dangerButton", disabled: forgetBusy, onClick: runForget }, "IconTrashOutlineRegular"))
+        },
+          h("div", { className: "dms_confirmBody" },
+            h("div", { className: "dms_desc" }, t("confirmForgetDesc")),
+            h("div", { className: "dms_meta" }, tag(confirmForget.scope), tag(confirmForget.status)),
+            forgetBusy ? h("div", { className: "dms_desc" }, shimmer(t("forgetting"))) : null,
+            forgetError ? h("div", { className: "dms_error" }, forgetError) : null)) : null;
         const claudeDialog = claudeOpen ? (Modal ? h(Modal, {
           className: "dms_importDialog",
           open: true,
@@ -939,6 +970,7 @@ window.__ModuleLoader__.load({
               h("form", { className: "dms_controls", onSubmit: submitSearch }, toolbar),
               form || detail || (view === "nebula" ? h(MemoryNebula, { items: visibleItems, query, onOpen: openDetail }) : list)),
           ),
+          forgetDialog,
           claudeDialog);
       };
     }

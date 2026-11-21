@@ -81,7 +81,7 @@
 
 ### 单条记忆详情
 
-- 独立 drill-down 视图，不是把列表行展开；
+- 独立 drill-down 视图，不是把列表行展开；遗忘使用 DSH `Modal` 二次确认，带取消/确认、busy 和错误状态；
 - 返回列表、复制 ID、编辑、遗忘；
 - 展示 type/scope/revision/updated、完整正文、ID、sourceRefs；
 - 编辑复用同一表单，带 revision CAS；
