@@ -94,7 +94,7 @@ window.__ModuleLoader__.load({
     };
     const zh = {
       section: "记忆", title: "记忆服务", description: "管理 DeepSeek Harness 的各项记忆",
-      workspace: "当前工作区", workspaceShort: "工作区", workspaceTree: "工作区树", otherWorkspaces: "其他记忆工作区", noWorkspaces: "暂无工作区", followsSession: "跟随当前会话", allShort: "全部", global: "全局", all: "全部工作区", listView: "列表", nebulaView: "星云", viewField: "视图", nebulaTitle: "记忆星云", nebulaNodes: "节点", nebulaLinks: "关系", search: "搜索", clearSearch: "清除搜索", searchPlaceholder: "搜索标题、描述或正文…",
+      workspace: "当前工作区", workspaceShort: "工作区", workspaceTree: "工作区树", otherWorkspaces: "其他记忆工作区", noWorkspaces: "暂无工作区", followsSession: "跟随当前会话", allShort: "全部", global: "全局", all: "全部工作区", listView: "列表", nebulaView: "星云", viewField: "视图", nebulaTitle: "记忆星云", nebulaNodes: "条记忆", nebulaLinks: "条关系", nebulaRelations: "连线：冲突 / 替代 / 同 key / 来源 / 时间链", search: "搜索", clearSearch: "清除搜索", searchPlaceholder: "搜索标题、描述或正文…",
       refresh: "刷新", flush: "处理队列", newMemory: "新增记忆", loading: "加载中…", empty: "没有匹配的记忆。",
       emptyHint: "试试换一个作用域，或新增一条记忆。", formHint: "保存一条可跨会话复用的记忆。", edit: "编辑", delete: "遗忘", save: "保存", cancel: "取消",
       back: "返回列表", titleField: "标题", descriptionField: "一句话描述", bodyField: "正文", typeField: "类型", scopeField: "作用域",
@@ -109,7 +109,7 @@ window.__ModuleLoader__.load({
     };
     const en = {
       section: "Memory", title: "Memory service", description: "Manage DeepSeek Harness memories.",
-      workspace: "Current workspace", workspaceShort: "Workspace", workspaceTree: "Workspaces", otherWorkspaces: "Other memory workspaces", noWorkspaces: "No workspaces", followsSession: "Following current session", allShort: "All", global: "Global", all: "All workspaces", listView: "List", nebulaView: "Nebula", viewField: "View", nebulaTitle: "Memory nebula", nebulaNodes: "nodes", nebulaLinks: "links", search: "Search", clearSearch: "Clear search", searchPlaceholder: "Search title, description or body…",
+      workspace: "Current workspace", workspaceShort: "Workspace", workspaceTree: "Workspaces", otherWorkspaces: "Other memory workspaces", noWorkspaces: "No workspaces", followsSession: "Following current session", allShort: "All", global: "Global", all: "All workspaces", listView: "List", nebulaView: "Nebula", viewField: "View", nebulaTitle: "Memory nebula", nebulaNodes: "memories", nebulaLinks: "links", nebulaRelations: "links: conflict / supersede / same key / source / time", search: "Search", clearSearch: "Clear search", searchPlaceholder: "Search title, description or body…",
       refresh: "Refresh", flush: "Drain queue", newMemory: "New memory", loading: "Loading…", empty: "No matching memories.",
       emptyHint: "Try another scope, or create a memory.", formHint: "Save a durable memory for future sessions.", edit: "Edit", delete: "Forget", save: "Save", cancel: "Cancel",
       back: "Back to list", titleField: "Title", descriptionField: "One-line description", bodyField: "Body", typeField: "Type", scopeField: "Scope",
@@ -150,7 +150,7 @@ window.__ModuleLoader__.load({
         ".dms_nebulaCanvas{display:block;width:100%;height:100%;cursor:crosshair;}",
         ".dms_nebulaMeta{position:absolute;left:14px;top:12px;display:flex;flex-direction:column;gap:3px;pointer-events:none;font-size:11px;color:#8ea6c9;}.dms_nebulaMeta b{font-size:13px;font-weight:600;color:#eef4ff;}",
         ".dms_nebulaTip{position:absolute;z-index:3;width:220px;display:flex;flex-direction:column;gap:4px;padding:9px 11px;border:1px solid rgba(126,150,255,.28);border-radius:8px;background:#131b30;box-shadow:0 12px 30px rgba(0,0,0,.45);pointer-events:none;}",
-        ".dms_nebulaType{font-size:10px;line-height:14px;text-transform:uppercase;letter-spacing:.05em;}.dms_nebulaTip b{font-size:12px;line-height:17px;color:#eef4ff;}.dms_nebulaDesc{font-size:11px;line-height:16px;color:#9fb4d4;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;}",
+        ".dms_nebulaRelations{font-size:10px;line-height:14px;color:#6f86a8;}.dms_nebulaType{font-size:10px;line-height:14px;text-transform:uppercase;letter-spacing:.05em;}.dms_nebulaTip b{font-size:12px;line-height:17px;color:#eef4ff;}.dms_nebulaDesc{font-size:11px;line-height:16px;color:#9fb4d4;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;}",
         ".dms_nebulaLegend{position:absolute;left:14px;right:14px;bottom:10px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:center;pointer-events:none;padding:5px 8px;border-radius:8px;background:rgba(8,12,24,.45);backdrop-filter:blur(2px);}.dms_nebulaLegendItem{display:inline-flex;align-items:center;gap:5px;font-size:10px;line-height:14px;color:#8ea6c9;}.dms_nebulaLegendItem i{width:6px;height:6px;border-radius:50%;display:inline-block;}.dms_nebulaLegendItem span{font-variant-numeric:tabular-nums;}",
         ".dms_nebulaEmpty{min-height:320px;}",
         ".dms_treePane{border:0;border-right:1px solid var(--dsw-alias-border-l2,#333);border-radius:0;background:transparent;padding:0 16px 0 0;position:sticky;top:16px;max-height:calc(100vh - 200px);overflow:auto;box-sizing:border-box;}",
@@ -301,16 +301,11 @@ window.__ModuleLoader__.load({
     function buildNebula(items) {
       const notes = (items || []).filter((note) => note.status !== "forgotten");
       const types = [...TYPES.filter((type) => notes.some((note) => note.type === type)), ...new Set(notes.map((note) => note.type).filter((type) => !TYPES.includes(type)))];
-      const groups = types.map((type, index) => {
-        const angle = -Math.PI / 2 + (index * Math.PI * 2) / Math.max(1, types.length);
-        return {
-          type,
-          color: TYPE_COLORS[type] || "#8fa3bf",
-          angle,
-          centerX: 0.5 + Math.cos(angle) * 0.24,
-          centerY: 0.5 + Math.sin(angle) * 0.21
-        };
-      });
+      const groups = types.map((type, index) => ({
+        type,
+        color: TYPE_COLORS[type] || "#8fa3bf",
+        angle: -Math.PI / 2 + (index * Math.PI * 2) / Math.max(1, types.length)
+      }));
       const nodes = [];
       const byId = new Map();
       for (const group of groups) {
@@ -318,12 +313,13 @@ window.__ModuleLoader__.load({
         groupNotes.forEach((item, index) => {
           const seed = nebulaHash(item.id);
           const count = groupNotes.length;
-          const spread = count > 1 ? 0.045 + 0.1 * Math.sqrt(index / Math.max(1, count - 1)) : 0;
-          const orbit = index * 2.399963 + (nebulaRand(seed) - 0.5) * 0.7;
+          const t = count > 1 ? (index + 0.5) / count : 0.34;
+          const radius = 0.09 + 0.34 * Math.sqrt(t);
+          const angle = group.angle + (t - 0.5) * 0.72 + (nebulaRand(seed) - 0.5) * 0.08;
           const node = {
             id: item.id, item, type: group.type, color: group.color,
-            x: Math.max(0.08, Math.min(0.92, group.centerX + Math.cos(orbit) * spread * 1.15)),
-            y: Math.max(0.1, Math.min(0.9, group.centerY + Math.sin(orbit) * spread * 0.82)),
+            x: Math.max(0.07, Math.min(0.93, 0.5 + Math.cos(angle) * radius * 1.2)),
+            y: Math.max(0.09, Math.min(0.91, 0.5 + Math.sin(angle) * radius * 0.86)),
             r: 4.2, degree: 0, match: true
           };
           nodes.push(node);
@@ -471,8 +467,8 @@ window.__ModuleLoader__.load({
               context.fill();
             }
             for (const group of layout.groups) {
-              const cx = group.centerX * width;
-              const cy = group.centerY * height;
+              const cx = (0.5 + Math.cos(group.angle) * 0.24) * width;
+              const cy = (0.5 + Math.sin(group.angle) * 0.21) * height;
               const radius = Math.min(width, height) * 0.15;
               const aura = context.createRadialGradient(cx, cy, 0, cx, cy, radius);
               aura.addColorStop(0, group.color + "24");
@@ -494,7 +490,8 @@ window.__ModuleLoader__.load({
               const bx = link.b.x * width;
               const by = link.b.y * height;
               const bend = link.kind === "chain" ? 0.04 : 0.12;
-              context.globalAlpha = link.kind === "chain" ? 0.18 : link.kind === "cluster" ? 0.28 : 0.62;
+              const related = !hoverId || link.a.id === hoverId || link.b.id === hoverId;
+              context.globalAlpha = related ? (link.kind === "chain" ? 0.18 : link.kind === "cluster" ? 0.28 : 0.62) : 0.1;
               context.strokeStyle = link.color;
               context.lineWidth = link.width;
               context.beginPath();
@@ -519,7 +516,8 @@ window.__ModuleLoader__.load({
               const x = node.x * width;
               const y = node.y * height;
               const matched = !needle || [node.item.title, node.item.description, node.item.body, node.item.type].join(" ").toLowerCase().includes(needle);
-              const active = !needle || matched;
+              const connected = !hoverId || node.id === hoverId || layout.links.some((link) => (link.a.id === hoverId && link.b.id === node.id) || (link.b.id === hoverId && link.a.id === node.id));
+              const active = (!needle || matched) && connected;
               const pulse = 1 + (reduced ? 0 : Math.sin(phase + node.x * 6) * 0.06);
               context.globalAlpha = active ? 1 : 0.16;
               const halo = context.createRadialGradient(x, y, 0, x, y, node.r * 6);
@@ -572,7 +570,8 @@ window.__ModuleLoader__.load({
           h("canvas", { ref: canvasRef, className: "dms_nebulaCanvas", onPointerMove: move, onPointerLeave: leave, onClick: click }),
           h("div", { className: "dms_nebulaMeta" },
             h("b", null, t("nebulaTitle")),
-            h("span", null, layout.nodes.length + " " + t("nebulaNodes") + " · " + layout.links.length + " " + t("nebulaLinks"))),
+            h("span", null, layout.nodes.length + " " + t("nebulaNodes") + " / " + layout.links.length + " " + t("nebulaLinks")),
+            h("span", { className: "dms_nebulaRelations" }, t("nebulaRelations"))),
           tip ? h("div", { className: "dms_nebulaTip", style: { left: tip.x, top: tip.y } },
             h("span", { className: "dms_nebulaType", style: { color: tip.node.color } }, tip.node.type),
             h("b", null, tip.node.item.title || tip.node.item.id),
