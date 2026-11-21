@@ -6,6 +6,12 @@
 
 ![侧栏记忆面板](screenshots/memory-panel-final.png)
 
+### 星云视图
+
+![记忆星云](screenshots/memory-nebula-final.png)
+
+节点=记忆，连线=冲突/替代/同 key/来源/类型簇；搜索会高亮匹配节点，悬停看标题+描述，点击进入详情。
+
 ### 单条记忆详情
 
 ![单条记忆详情](screenshots/memory-detail-final.png)

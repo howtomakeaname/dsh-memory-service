@@ -88,9 +88,13 @@ window.__ModuleLoader__.load({
       feedback: "IconInfoOutlineRegular", project: "IconDatabaseOutlineRegular",
       reference: "IconBrowseOutlineRegular", fact: "IconInfoOutlineRegular", user: "IconUserOutlineRegular"
     };
+    const TYPE_COLORS = {
+      convention: "#6ea8fe", preference: "#b58cff", feedback: "#f2a65a", project: "#4fd1b0",
+      reference: "#5bc8e8", fact: "#f2d35e", user: "#f27bae"
+    };
     const zh = {
       section: "记忆", title: "记忆服务", description: "管理 DeepSeek Harness 的各项记忆",
-      workspace: "当前工作区", workspaceShort: "工作区", workspaceTree: "工作区树", otherWorkspaces: "其他记忆工作区", noWorkspaces: "暂无工作区", followsSession: "跟随当前会话", allShort: "全部", global: "全局", all: "全部工作区", search: "搜索", clearSearch: "清除搜索", searchPlaceholder: "搜索标题、描述或正文…",
+      workspace: "当前工作区", workspaceShort: "工作区", workspaceTree: "工作区树", otherWorkspaces: "其他记忆工作区", noWorkspaces: "暂无工作区", followsSession: "跟随当前会话", allShort: "全部", global: "全局", all: "全部工作区", listView: "列表", nebulaView: "星云", viewField: "视图", nebulaTitle: "记忆星云", nebulaNodes: "节点", nebulaLinks: "关系", search: "搜索", clearSearch: "清除搜索", searchPlaceholder: "搜索标题、描述或正文…",
       refresh: "刷新", flush: "处理队列", newMemory: "新增记忆", loading: "加载中…", empty: "没有匹配的记忆。",
       emptyHint: "试试换一个作用域，或新增一条记忆。", formHint: "保存一条可跨会话复用的记忆。", edit: "编辑", delete: "遗忘", save: "保存", cancel: "取消",
       back: "返回列表", titleField: "标题", descriptionField: "一句话描述", bodyField: "正文", typeField: "类型", scopeField: "作用域",
@@ -105,7 +109,7 @@ window.__ModuleLoader__.load({
     };
     const en = {
       section: "Memory", title: "Memory service", description: "Manage DeepSeek Harness memories.",
-      workspace: "Current workspace", workspaceShort: "Workspace", workspaceTree: "Workspaces", otherWorkspaces: "Other memory workspaces", noWorkspaces: "No workspaces", followsSession: "Following current session", allShort: "All", global: "Global", all: "All workspaces", search: "Search", clearSearch: "Clear search", searchPlaceholder: "Search title, description or body…",
+      workspace: "Current workspace", workspaceShort: "Workspace", workspaceTree: "Workspaces", otherWorkspaces: "Other memory workspaces", noWorkspaces: "No workspaces", followsSession: "Following current session", allShort: "All", global: "Global", all: "All workspaces", listView: "List", nebulaView: "Nebula", viewField: "View", nebulaTitle: "Memory nebula", nebulaNodes: "nodes", nebulaLinks: "links", search: "Search", clearSearch: "Clear search", searchPlaceholder: "Search title, description or body…",
       refresh: "Refresh", flush: "Drain queue", newMemory: "New memory", loading: "Loading…", empty: "No matching memories.",
       emptyHint: "Try another scope, or create a memory.", formHint: "Save a durable memory for future sessions.", edit: "Edit", delete: "Forget", save: "Save", cancel: "Cancel",
       back: "Back to list", titleField: "Title", descriptionField: "One-line description", bodyField: "Body", typeField: "Type", scopeField: "Scope",
@@ -141,6 +145,14 @@ window.__ModuleLoader__.load({
         ".dms_summary{display:flex;gap:16px;flex-wrap:wrap;align-items:center;padding:11px 14px;border:1px solid var(--dsw-alias-border-l2,#333);border-radius:10px;background:var(--dsw-alias-bg-layer-1,#181818);}",
         ".dms_layout{display:grid;grid-template-columns:238px minmax(0,1fr);gap:22px;align-items:start;}",
         ".dms_content{display:flex;flex-direction:column;gap:14px;min-width:0;}",
+        ".dms_viewSwitch{flex:none;}",
+        ".dms_nebula{position:relative;width:100%;height:clamp(420px,calc(100vh - 310px),720px);border:1px solid rgba(126,150,255,.24);border-radius:10px;overflow:hidden;background:radial-gradient(ellipse at 50% 42%,#1a2442 0%,#0d1224 58%,#090d18 100%);box-shadow:inset 0 0 80px rgba(60,90,180,.12);}",
+        ".dms_nebulaCanvas{display:block;width:100%;height:100%;cursor:crosshair;}",
+        ".dms_nebulaMeta{position:absolute;left:14px;top:12px;display:flex;flex-direction:column;gap:3px;pointer-events:none;font-size:11px;color:#8ea6c9;}.dms_nebulaMeta b{font-size:13px;font-weight:600;color:#eef4ff;}",
+        ".dms_nebulaTip{position:absolute;z-index:3;width:220px;display:flex;flex-direction:column;gap:4px;padding:9px 11px;border:1px solid rgba(126,150,255,.28);border-radius:8px;background:#131b30;box-shadow:0 12px 30px rgba(0,0,0,.45);pointer-events:none;}",
+        ".dms_nebulaType{font-size:10px;line-height:14px;text-transform:uppercase;letter-spacing:.05em;}.dms_nebulaTip b{font-size:12px;line-height:17px;color:#eef4ff;}.dms_nebulaDesc{font-size:11px;line-height:16px;color:#9fb4d4;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;}",
+        ".dms_nebulaLegend{position:absolute;left:14px;right:14px;bottom:10px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:center;pointer-events:none;padding:5px 8px;border-radius:8px;background:rgba(8,12,24,.45);backdrop-filter:blur(2px);}.dms_nebulaLegendItem{display:inline-flex;align-items:center;gap:5px;font-size:10px;line-height:14px;color:#8ea6c9;}.dms_nebulaLegendItem i{width:6px;height:6px;border-radius:50%;display:inline-block;}.dms_nebulaLegendItem span{font-variant-numeric:tabular-nums;}",
+        ".dms_nebulaEmpty{min-height:320px;}",
         ".dms_treePane{border:0;border-right:1px solid var(--dsw-alias-border-l2,#333);border-radius:0;background:transparent;padding:0 16px 0 0;position:sticky;top:16px;max-height:calc(100vh - 200px);overflow:auto;box-sizing:border-box;}",
         ".dms_treeHead{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:2px 8px 8px;font-size:12px;font-weight:600;color:var(--dsw-alias-label-primary,#eee);}.dms_treeHint{font-size:10px;font-weight:400;color:var(--dsw-alias-label-tertiary,#888);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}",
         ".dms_treeList{display:flex;flex-direction:column;gap:1px;}.dms_treeSection{padding:10px 8px 4px;font-size:11px;font-weight:500;color:var(--dsw-alias-label-tertiary,#888);letter-spacing:.02em;}",
@@ -268,11 +280,318 @@ window.__ModuleLoader__.load({
       };
     }
 
+    function nebulaHash(text) {
+      let value = 2166136261;
+      const input = String(text || "");
+      for (let index = 0; index < input.length; index += 1) {
+        value ^= input.charCodeAt(index);
+        value = Math.imul(value, 16777619);
+      }
+      return value >>> 0;
+    }
+
+    function nebulaRand(seed) {
+      let value = seed || 1;
+      value ^= value << 13;
+      value ^= value >>> 17;
+      value ^= value << 5;
+      return (value >>> 0) / 4294967296;
+    }
+
+    function buildNebula(items) {
+      const notes = (items || []).filter((note) => note.status !== "forgotten");
+      const types = [...TYPES.filter((type) => notes.some((note) => note.type === type)), ...new Set(notes.map((note) => note.type).filter((type) => !TYPES.includes(type)))];
+      const groups = types.map((type, index) => {
+        const angle = -Math.PI / 2 + (index * Math.PI * 2) / Math.max(1, types.length);
+        return {
+          type,
+          color: TYPE_COLORS[type] || "#8fa3bf",
+          angle,
+          centerX: 0.5 + Math.cos(angle) * 0.24,
+          centerY: 0.5 + Math.sin(angle) * 0.21
+        };
+      });
+      const nodes = [];
+      const byId = new Map();
+      for (const group of groups) {
+        const groupNotes = notes.filter((note) => note.type === group.type).sort((a, b) => String(a.updatedAt).localeCompare(String(b.updatedAt)));
+        groupNotes.forEach((item, index) => {
+          const seed = nebulaHash(item.id);
+          const count = groupNotes.length;
+          const spread = count > 1 ? 0.045 + 0.1 * Math.sqrt(index / Math.max(1, count - 1)) : 0;
+          const orbit = index * 2.399963 + (nebulaRand(seed) - 0.5) * 0.7;
+          const node = {
+            id: item.id, item, type: group.type, color: group.color,
+            x: Math.max(0.08, Math.min(0.92, group.centerX + Math.cos(orbit) * spread * 1.15)),
+            y: Math.max(0.1, Math.min(0.9, group.centerY + Math.sin(orbit) * spread * 0.82)),
+            r: 4.2, degree: 0, match: true
+          };
+          nodes.push(node);
+          byId.set(node.id, node);
+        });
+      }
+      const links = [];
+      const seen = new Set();
+      const addLink = (from, to, kind, color, width) => {
+        if (!from || !to || from === to) return;
+        const a = byId.get(from);
+        const b = byId.get(to);
+        if (!a || !b) return;
+        const key = [from, to].sort().join("|") + ":" + kind;
+        if (seen.has(key)) return;
+        seen.add(key);
+        links.push({ a, b, kind, color, width });
+        a.degree += 1;
+        b.degree += 1;
+      };
+      for (const node of nodes) {
+        const conflict = node.item.metadata && node.item.metadata.conflict_with;
+        if (conflict) addLink(node.id, String(conflict), "conflict", "#ef6b6b", 1.7);
+        if (node.item.supersededBy) addLink(node.id, String(node.item.supersededBy), "supersede", "#6ea8fe", 1.4);
+        if (node.item.supersedes) addLink(node.id, String(node.item.supersedes), "supersede", "#6ea8fe", 1.4);
+      }
+      const byKey = new Map();
+      for (const node of nodes) {
+        if (!node.item.key) continue;
+        const list = byKey.get(node.item.key) || [];
+        list.push(node);
+        byKey.set(node.item.key, list);
+      }
+      for (const list of byKey.values()) {
+        for (let index = 1; index < list.length; index += 1) addLink(list[index - 1].id, list[index].id, "key", "#b58cff", 1.2);
+      }
+      const bySource = new Map();
+      for (const node of nodes) {
+        const source = Array.isArray(node.item.sourceRefs) ? node.item.sourceRefs[0] : "";
+        if (!source) continue;
+        const list = bySource.get(source) || [];
+        list.push(node);
+        bySource.set(source, list);
+      }
+      for (const list of bySource.values()) {
+        for (let index = 1; index < list.length; index += 1) addLink(list[index - 1].id, list[index].id, "source", "#53708f", 1);
+      }
+      for (const group of groups) {
+        const groupNodes = nodes.filter((node) => node.type === group.type);
+        for (let index = 1; index < groupNodes.length; index += 1) addLink(groupNodes[index - 1].id, groupNodes[index].id, "cluster", group.color, 0.7);
+      }
+      const chain = [...nodes].sort((a, b) => String(a.item.updatedAt).localeCompare(String(b.item.updatedAt)));
+      for (let index = 1; index < chain.length; index += 1) addLink(chain[index - 1].id, chain[index].id, "chain", "#6b7d9c", 0.8);
+      for (const node of nodes) {
+        const bodySize = String(node.item.body || "").length;
+        node.r = 5.2 + Math.min(6.5, node.degree * 1.05) + Math.min(3, bodySize / 420);
+      }
+      return { nodes, links, groups };
+    }
+
+    function createMemoryNebula(t) {
+      return function MemoryNebula({ items, query, onOpen }) {
+        const wrapRef = React.useRef(null);
+        const canvasRef = React.useRef(null);
+        const [size, setSize] = React.useState({ width: 0, height: 0 });
+        const [hoverId, setHoverId] = React.useState(null);
+        const [tip, setTip] = React.useState(null);
+        const layout = React.useMemo(() => buildNebula(items), [items]);
+        const needle = String(query || "").trim().toLowerCase();
+        const hover = layout.nodes.find((node) => node.id === hoverId) || null;
+
+        React.useEffect(() => {
+          const element = wrapRef.current;
+          if (!element) return undefined;
+          const update = () => setSize({ width: element.clientWidth, height: element.clientHeight });
+          update();
+          const observer = new ResizeObserver(update);
+          observer.observe(element);
+          return () => observer.disconnect();
+        }, []);
+
+        const nearest = (event) => {
+          const canvas = canvasRef.current;
+          if (!canvas) return null;
+          const rect = canvas.getBoundingClientRect();
+          const x = event.clientX - rect.left;
+          const y = event.clientY - rect.top;
+          let best = null;
+          let bestDistance = Infinity;
+          for (const node of layout.nodes) {
+            const distance = Math.hypot(x - node.x * rect.width, y - node.y * rect.height);
+            if (distance < Math.max(10, node.r + 8) && distance < bestDistance) {
+              best = node;
+              bestDistance = distance;
+            }
+          }
+          return best ? { node: best, x, y } : null;
+        };
+
+        const move = (event) => {
+          const result = nearest(event);
+          setHoverId(result ? result.node.id : null);
+          setTip(result ? { node: result.node, x: Math.min(result.x + 14, Math.max(12, size.width - 230)), y: Math.max(8, result.y - 10) } : null);
+        };
+        const leave = () => { setHoverId(null); setTip(null); };
+        const click = (event) => {
+          const result = nearest(event);
+          if (result) onOpen(result.node.item);
+        };
+
+        React.useEffect(() => {
+          const canvas = canvasRef.current;
+          if (!canvas || !size.width || !size.height) return undefined;
+          const ratio = Math.min(window.devicePixelRatio || 1, 2);
+          canvas.width = Math.max(1, Math.round(size.width * ratio));
+          canvas.height = Math.max(1, Math.round(size.height * ratio));
+          const context = canvas.getContext("2d");
+          if (!context) return undefined;
+          const style = getComputedStyle(canvas);
+          const primary = "#eef4ff";
+          const secondary = "#8ea6c9";
+          const reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+          const started = performance.now();
+          let frame = 0;
+          const draw = (now) => {
+            const width = size.width;
+            const height = size.height;
+            const phase = reduced ? 0 : (now - started) / 1600;
+            context.setTransform(ratio, 0, 0, ratio, 0, 0);
+            context.clearRect(0, 0, width, height);
+            const glow = context.createRadialGradient(width * 0.5, height * 0.5, 0, width * 0.5, height * 0.5, Math.max(width, height) * 0.72);
+            glow.addColorStop(0, "rgba(92,124,255,0.10)");
+            glow.addColorStop(0.5, "rgba(128,88,220,0.035)");
+            glow.addColorStop(1, "rgba(0,0,0,0)");
+            context.fillStyle = glow;
+            context.fillRect(0, 0, width, height);
+            for (let index = 0; index < 70; index += 1) {
+              const seed = nebulaHash("star-" + index);
+              const x = nebulaRand(seed) * width;
+              const y = nebulaRand(seed >>> 7) * height;
+              context.globalAlpha = 0.08 + nebulaRand(seed >>> 13) * 0.16;
+              context.fillStyle = index % 5 === 0 ? "#9db8ff" : secondary;
+              context.beginPath();
+              context.arc(x, y, index % 7 === 0 ? 1.2 : 0.7, 0, Math.PI * 2);
+              context.fill();
+            }
+            for (const group of layout.groups) {
+              const cx = group.centerX * width;
+              const cy = group.centerY * height;
+              const radius = Math.min(width, height) * 0.15;
+              const aura = context.createRadialGradient(cx, cy, 0, cx, cy, radius);
+              aura.addColorStop(0, group.color + "24");
+              aura.addColorStop(1, group.color + "00");
+              context.fillStyle = aura;
+              context.fillRect(cx - radius, cy - radius, radius * 2, radius * 2);
+            }
+            context.globalAlpha = 0.16;
+            context.strokeStyle = secondary;
+            context.lineWidth = 1;
+            context.setLineDash([3, 7]);
+            context.beginPath();
+            context.arc(width / 2, height / 2, Math.min(width, height) * 0.31, 0, Math.PI * 2);
+            context.stroke();
+            context.setLineDash([]);
+            for (const link of layout.links) {
+              const ax = link.a.x * width;
+              const ay = link.a.y * height;
+              const bx = link.b.x * width;
+              const by = link.b.y * height;
+              const bend = link.kind === "chain" ? 0.04 : 0.12;
+              context.globalAlpha = link.kind === "chain" ? 0.18 : link.kind === "cluster" ? 0.28 : 0.62;
+              context.strokeStyle = link.color;
+              context.lineWidth = link.width;
+              context.beginPath();
+              context.moveTo(ax, ay);
+              context.quadraticCurveTo((ax + bx) / 2 + (by - ay) * bend, (ay + by) / 2 - (bx - ax) * bend, bx, by);
+              context.stroke();
+              if (link.kind !== "chain" && link.kind !== "cluster") {
+                const offset = (phase * 0.16 + nebulaRand(nebulaHash(link.a.id + link.b.id))) % 1;
+                const controlX = (ax + bx) / 2 + (by - ay) * bend;
+                const controlY = (ay + by) / 2 - (bx - ax) * bend;
+                const px = (1 - offset) * (1 - offset) * ax + 2 * (1 - offset) * offset * controlX + offset * offset * bx;
+                const py = (1 - offset) * (1 - offset) * ay + 2 * (1 - offset) * offset * controlY + offset * offset * by;
+                context.globalAlpha = 0.8;
+                context.fillStyle = link.color;
+                context.beginPath();
+                context.arc(px, py, 1.7, 0, Math.PI * 2);
+                context.fill();
+              }
+            }
+            const labelBoxes = [];
+            for (const node of layout.nodes) {
+              const x = node.x * width;
+              const y = node.y * height;
+              const matched = !needle || [node.item.title, node.item.description, node.item.body, node.item.type].join(" ").toLowerCase().includes(needle);
+              const active = !needle || matched;
+              const pulse = 1 + (reduced ? 0 : Math.sin(phase + node.x * 6) * 0.06);
+              context.globalAlpha = active ? 1 : 0.16;
+              const halo = context.createRadialGradient(x, y, 0, x, y, node.r * 6);
+              halo.addColorStop(0, node.color + "aa");
+              halo.addColorStop(0.45, node.color + "44");
+              halo.addColorStop(1, node.color + "00");
+              context.fillStyle = halo;
+              context.beginPath();
+              context.arc(x, y, node.r * 6, 0, Math.PI * 2);
+              context.fill();
+              context.fillStyle = node.color;
+              context.beginPath();
+              context.arc(x, y, node.r * pulse, 0, Math.PI * 2);
+              context.fill();
+              if (node.id === hoverId || (needle && matched)) {
+                context.globalAlpha = active ? 0.9 : 0.2;
+                context.strokeStyle = primary;
+                context.lineWidth = 1;
+                context.beginPath();
+                context.arc(x, y, node.r + 4, 0, Math.PI * 2);
+                context.stroke();
+              }
+              if (layout.nodes.length <= 22 || node.degree >= 2 || node.id === hoverId || (needle && matched)) {
+                context.globalAlpha = active ? 0.82 : 0.18;
+                context.fillStyle = primary;
+                context.font = "500 11px system-ui, -apple-system, sans-serif";
+                context.textAlign = "center";
+                const title = String(node.item.title || node.item.id);
+                const labelY = y + (nebulaHash(node.id) % 2 === 0 ? -node.r - 9 : node.r + 15);
+                const labelWidth = Math.min(190, title.length * 6.2 + 10);
+                const labelBox = { left: x - labelWidth / 2 - 6, right: x + labelWidth / 2 + 6, top: labelY - 13, bottom: labelY + 7 };
+                const collides = labelBoxes.some((box) => labelBox.left < box.right && labelBox.right > box.left && labelBox.top < box.bottom && labelBox.bottom > box.top);
+                if (!collides || node.id === hoverId) {
+                  labelBoxes.push(labelBox);
+                  context.fillText(title.length > 24 ? title.slice(0, 23) + "…" : title, x, labelY);
+                }
+              }
+            }
+            context.globalAlpha = 1;
+            if (!reduced) frame = requestAnimationFrame(draw);
+          };
+          draw(performance.now());
+          return () => cancelAnimationFrame(frame);
+        }, [layout, size, hoverId, needle]);
+
+        if (!items || items.length === 0) {
+          return h("div", { className: "dms_empty dms_nebulaEmpty" }, h("span", { className: "dms_emptyIcon" }, icon("IconSparkleRegular", 26)), h("b", null, t("empty")), h("span", null, t("emptyHint")));
+        }
+        return h("div", { className: "dms_nebula", ref: wrapRef },
+          h("canvas", { ref: canvasRef, className: "dms_nebulaCanvas", onPointerMove: move, onPointerLeave: leave, onClick: click }),
+          h("div", { className: "dms_nebulaMeta" },
+            h("b", null, t("nebulaTitle")),
+            h("span", null, layout.nodes.length + " " + t("nebulaNodes") + " · " + layout.links.length + " " + t("nebulaLinks"))),
+          tip ? h("div", { className: "dms_nebulaTip", style: { left: tip.x, top: tip.y } },
+            h("span", { className: "dms_nebulaType", style: { color: tip.node.color } }, tip.node.type),
+            h("b", null, tip.node.item.title || tip.node.item.id),
+            h("span", { className: "dms_nebulaDesc" }, tip.node.item.description || tip.node.item.body || t("noDescription"))) : null,
+          h("div", { className: "dms_nebulaLegend" },
+            layout.groups.map((group) => h("span", { className: "dms_nebulaLegendItem", key: group.type },
+              h("i", { style: { background: group.color } }),
+              group.type,
+              h("span", null, String(layout.nodes.filter((node) => node.type === group.type).length))))));
+      };
+    }
+
     function createPage(t, currentSessionId) {
+      const MemoryNebula = createMemoryNebula(t);
       return function MemoryPage(props) {
         const [status, setStatus] = React.useState(null);
         const [items, setItems] = React.useState([]);
         const [scope, setScope] = React.useState("workspace");
+        const [view, setView] = React.useState("list");
         const [workspaceId, setWorkspaceId] = React.useState("");
         const [workspaceDetails, setWorkspaceDetails] = React.useState([]);
         const [pathWorkspaceIds, setPathWorkspaceIds] = React.useState({});
@@ -451,6 +770,11 @@ window.__ModuleLoader__.load({
           h("div", { className: "dms_search" },
             textField({ type: "search", value: query, placeholder: t("searchPlaceholder"), icon: icon("IconSearchOutlineRegular"), onChange: (event) => setQuery(event.target.value) }),
             query ? h("button", { type: "button", className: "dms_searchClear", "aria-label": t("clearSearch"), title: t("clearSearch"), onClick: () => { setQuery(""); setDebouncedQuery(""); } }, icon("IconCloseOutlineRegular", 14)) : null),
+          h("div", { className: "dms_viewSwitch" }, SegmentedTabs ? h(SegmentedTabs, {
+            items: [{ value: "list", label: t("listView") }, { value: "nebula", label: t("nebulaView") }],
+            value: view, size: "sm", label: t("viewField"),
+            onChange: (next) => { setView(next); setSelectedId(null); setDraft(null); }
+          }) : null),
           (status?.conflicts || 0) > 0 ? action(onlyConflicts ? t("allMemories") : t("conflictShort") + " " + status.conflicts, { type: "button", onClick: showConflicts, variant: onlyConflicts ? "primary" : "ghost" }, "IconInfoOutlineRegular") : null,
           h("div", { className: "dms_actions" },
             iconButton(t("claudeImport"), { type: "button", onClick: openClaudeImport }, "IconDownloadOutlineRegular"),
@@ -611,7 +935,8 @@ window.__ModuleLoader__.load({
             workspaceTree,
             h("div", { className: "dms_content" },
               h("form", { className: "dms_controls", onSubmit: submitSearch }, toolbar),
-              form || detail || list)),
+              form || detail || (view === "nebula" ? h(MemoryNebula, { items: visibleItems, query, onOpen: openDetail }) : list)),
+          ),
           claudeDialog);
       };
     }

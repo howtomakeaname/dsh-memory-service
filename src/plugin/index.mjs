@@ -61,7 +61,8 @@ export function apply(ctx, rawConfig = {}) {
     }
     const serialize = (note) => note ? ({
       id: note.id, scope: note.scope, title: note.title, description: note.description,
-      body: note.body, type: note.type, status: note.status, revision: note.revision,
+      body: note.body, type: note.type, status: note.status, revision: note.revision, key: note.key,
+      supersedes: note.supersedes, supersededBy: note.supersededBy,
       updatedAt: note.updatedAt, sourceRefs: note.sourceRefs, metadata: note.metadata
     }) : null;
     const payloadScope = (payload) => {

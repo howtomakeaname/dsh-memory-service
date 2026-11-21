@@ -11,6 +11,7 @@
 - Refined the page toolbar to one compact row and replaced the tree card with a borderless sidebar-style rail.
 - New/edit memory scope picker now shows workspace title, full path, and the selected check in a DSH-style Menu, matching the native workspace selector.
 - Search now runs as you type with a 260ms debounce and a clear button; the separate Search button is gone.
+- Added a list/nebula toggle: the nebula view renders memories as a constellation with conflict, supersede, shared-key, source and cluster links, search highlighting, hover previews and click-through detail.
 
 ## 0.2.0
 
