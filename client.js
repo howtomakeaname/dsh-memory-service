@@ -428,6 +428,7 @@ window.__ModuleLoader__.load({
         const [tip, setTip] = React.useState(null);
         const [viewport, setViewport] = React.useState({ scale: 1, x: 0, y: 0 });
         const dragRef = React.useRef(null);
+        const pointerRef = React.useRef({ x: -9999, y: -9999, active: false });
         const layout = React.useMemo(() => buildNebula(items), [items]);
         const needle = String(query || "").trim().toLowerCase();
         const hover = layout.nodes.find((node) => node.id === hoverId) || null;
@@ -494,6 +495,11 @@ window.__ModuleLoader__.load({
           setTip(null);
         };
         const move = (event) => {
+          const canvas = canvasRef.current;
+          if (canvas) {
+            const rect = canvas.getBoundingClientRect();
+            pointerRef.current = { x: event.clientX - rect.left, y: event.clientY - rect.top, active: true };
+          }
           const drag = dragRef.current;
           if (drag) {
             const dx = event.clientX - drag.x;
@@ -515,7 +521,7 @@ window.__ModuleLoader__.load({
             if (result) onOpen(result.node.item);
           }
         };
-        const leave = () => { if (!dragRef.current) { setHoverId(null); setTip(null); } };
+        const leave = () => { pointerRef.current = { x: -9999, y: -9999, active: false }; if (!dragRef.current) { setHoverId(null); setTip(null); } };
 
         React.useEffect(() => {
           const canvas = canvasRef.current;
@@ -543,12 +549,21 @@ window.__ModuleLoader__.load({
             glow.addColorStop(1, "rgba(0,0,0,0)");
             context.fillStyle = glow;
             context.fillRect(0, 0, width, height);
-            context.globalAlpha = 0.16;
-            context.fillStyle = secondary;
-            for (let gx = 24; gx < width; gx += 42) {
-              for (let gy = 24; gy < height; gy += 42) {
+            const pointer = pointerRef.current;
+            const dotSpacing = 28;
+            for (let gx = 14; gx < width; gx += dotSpacing) {
+              for (let gy = 14; gy < height; gy += dotSpacing) {
+                const dx = gx - pointer.x;
+                const dy = gy - pointer.y;
+                const distance = Math.sqrt(dx * dx + dy * dy) || 0.001;
+                const influence = pointer.active && distance < 118 ? 1 - distance / 118 : 0;
+                const push = influence * 7;
+                const ox = gx + (dx / distance) * push;
+                const oy = gy + (dy / distance) * push;
+                context.globalAlpha = 0.13 + influence * 0.58;
+                context.fillStyle = influence > 0 ? "#9db8ff" : secondary;
                 context.beginPath();
-                context.arc(gx, gy, 0.8, 0, Math.PI * 2);
+                context.arc(ox, oy, 0.8 + influence * 1.3, 0, Math.PI * 2);
                 context.fill();
               }
             }
@@ -573,6 +588,16 @@ window.__ModuleLoader__.load({
               context.quadraticCurveTo(controlX, controlY, bx, by);
               context.stroke();
               context.setLineDash([]);
+              if (link.kind !== "type") {
+                const offset = (phase * 0.14 + nebulaRand(nebulaHash(link.a.id + link.b.id))) % 1;
+                const px = (1 - offset) * (1 - offset) * ax + 2 * (1 - offset) * offset * controlX + offset * offset * bx;
+                const py = (1 - offset) * (1 - offset) * ay + 2 * (1 - offset) * offset * controlY + offset * offset * by;
+                context.globalAlpha = related ? 0.85 : 0.08;
+                context.fillStyle = link.color;
+                context.beginPath();
+                context.arc(px, py, 1.6, 0, Math.PI * 2);
+                context.fill();
+              }
               if (link.directed) {
                 const angle = Math.atan2(by - controlY, bx - controlX);
                 context.fillStyle = link.color;

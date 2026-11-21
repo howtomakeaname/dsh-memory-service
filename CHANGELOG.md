@@ -3,6 +3,7 @@
 ## Unreleased
 
 - Rebuilt the graph view as a force-directed relationship network driven by real conflict, supersede, shared-key, source and same-type links; added wheel zoom, drag pan and reset.
+- Added an interactive dot-grid particle layer and flowing edge particles; titles, scope/status/updated metadata and relationship counts are visible in the graph and hover card.
 
 ## 0.3.0
 
