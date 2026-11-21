@@ -5,6 +5,7 @@
 - Memory manager promoted from a Settings section to a first-class left-sidebar panel: `sidebar.panellist` entry plus a `main` keyed page.
 - Updated panel, detail, and Claude Code import screenshots for the sidebar shell.
 - Client injection now targets the DSH layout and sidebar packages instead of the Settings package.
+- Workspace scope now exposes real memory workspaces and sends explicit `workspace:<id>` scopes; it no longer falls back to `workspace:default` silently.
 
 ## 0.2.0
 

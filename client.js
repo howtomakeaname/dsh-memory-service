@@ -204,6 +204,8 @@ window.__ModuleLoader__.load({
         const [status, setStatus] = React.useState(null);
         const [items, setItems] = React.useState([]);
         const [scope, setScope] = React.useState("workspace");
+        const [workspaceId, setWorkspaceId] = React.useState("");
+        const [workspaceDetails, setWorkspaceDetails] = React.useState([]);
         const [query, setQuery] = React.useState("");
         const [loading, setLoading] = React.useState(true);
         const [error, setError] = React.useState("");
@@ -223,6 +225,10 @@ window.__ModuleLoader__.load({
         const [claudeEditing, setClaudeEditing] = React.useState(null);
 
         const selected = items.find((item) => item.id === selectedId) || null;
+        const activeWorkspace = workspaceId || "default";
+        const apiScope = scope === "global" ? "global" : scope === "all" ? "all" : "workspace:" + activeWorkspace;
+        const workspaceOptions = (workspaceDetails.length ? workspaceDetails : [{ id: "default", notes: 0, updatedAt: "" }]).map((item) => ({ value: item.id, label: item.id + (item.notes ? " · " + item.notes : "") }));
+        const scopeOptions = [...workspaceOptions.map((item) => ({ value: "workspace:" + item.value, label: t("workspace") + " " + item.value })), { value: "global", label: t("global") }];
 
         const load = React.useCallback(async (nextScope, nextQuery) => {
           setLoading(true); setError("");
@@ -232,14 +238,17 @@ window.__ModuleLoader__.load({
               nextQuery ? api("search", { query: nextQuery, scope: nextScope, limit: 50 }) : api("list", { scope: nextScope, allScopes: nextScope === "all" })
             ]);
             setStatus(state); setItems(rows || []);
+            const details = state.workspaceDetails || [];
+            setWorkspaceDetails(details);
+            setWorkspaceId((current) => current || ([...details].sort((a, b) => String(b.updatedAt).localeCompare(String(a.updatedAt)))[0]?.id || "default"));
             if (selectedId && !(rows || []).some((row) => row.id === selectedId)) setSelectedId(null);
           } catch (failure) { setError(String(failure.message || failure)); }
           finally { setLoading(false); }
         }, [selectedId]);
 
-        React.useEffect(() => { void load(scope, ""); }, [scope, load]);
-        const submitSearch = (event) => { event.preventDefault(); setOnlyConflicts(false); void load(scope, query.trim()); };
-        const refresh = () => { setOnlyConflicts(false); void load(scope, query.trim()); };
+        React.useEffect(() => { void load(apiScope, ""); }, [apiScope, load]);
+        const submitSearch = (event) => { event.preventDefault(); setOnlyConflicts(false); void load(apiScope, query.trim()); };
+        const refresh = () => { setOnlyConflicts(false); void load(apiScope, query.trim()); };
         const openClaudeImport = async () => {
           setClaudeOpen(true); setClaudeBusy(true); setClaudeError(""); setClaudeSummary(null);
           setClaudeEntries([]); setClaudeSelectedSources([]);
@@ -259,7 +268,7 @@ window.__ModuleLoader__.load({
           if (!claudeSelectedSources.length || claudeBusy) return;
           setClaudeBusy(true); setClaudeError(""); setClaudeSummary(null);
           try {
-            const result = await api("claudePreview", { sources: claudeSelectedSources, scope: claudeImportScope });
+            const result = await api("claudePreview", { sources: claudeSelectedSources, scope: claudeImportScope === "workspace" ? "workspace:" + activeWorkspace : "global" });
             setClaudeEntries((result.entries || []).map((entry) => ({ ...entry, included: true })));
           } catch (failure) { setClaudeError(String(failure.message || failure)); }
           finally { setClaudeBusy(false); }
@@ -270,28 +279,28 @@ window.__ModuleLoader__.load({
           if (!selected.length || claudeBusy) return;
           setClaudeBusy(true); setClaudeError(""); setClaudeSummary(null);
           try {
-            const summary = await api("claudeImportEntries", { force: claudeForce, entries: selected.map((entry) => ({
+            const summary = await api("claudeImportEntries", { force: claudeForce, scope: claudeImportScope === "workspace" ? "workspace:" + activeWorkspace : "global", entries: selected.map((entry) => ({
               source: entry.source, file: entry.file, title: entry.title, description: entry.description,
               body: entry.body, type: entry.type, scope: entry.scope === "global" ? "global" : "workspace"
             })) });
             setClaudeSummary(summary);
-            await load(scope, query.trim());
+            await load(apiScope, query.trim());
           } catch (failure) { setClaudeError(String(failure.message || failure)); }
           finally { setClaudeBusy(false); }
         };
         const showConflicts = async () => {
-          if (onlyConflicts) { setOnlyConflicts(false); void load(scope, query.trim()); return; }
+          if (onlyConflicts) { setOnlyConflicts(false); void load(apiScope, query.trim()); return; }
           setLoading(true); setError("");
-          try { setStatus(await api("state")); setItems(await api("conflicts", { scope: scope === "all" ? "all" : scope })); setSelectedId(null); setOnlyConflicts(true); }
+          try { setStatus(await api("state")); setItems(await api("conflicts", { scope: scope === "all" ? "all" : apiScope })); setSelectedId(null); setOnlyConflicts(true); }
           catch (failure) { setError(String(failure.message || failure)); }
           finally { setLoading(false); }
         };
         const flush = async () => { setError(""); try { await api("flush"); refresh(); } catch (failure) { setError(String(failure.message || failure)); } };
         const back = () => setSelectedId(null);
         const openDetail = (item) => { setSelectedId(item.id); setDraft(null); };
-        const startNew = () => { setSelectedId(null); setDraft({ id: "", title: "", description: "", body: "", type: "fact", scope: scope === "global" ? "global" : "workspace", revision: null }); };
-        const startEdit = (item) => setDraft({ id: item.id, title: item.title, description: item.description, body: item.body, type: item.type, scope: item.scope === "global" ? "global" : "workspace", revision: item.revision });
-        const forget = async (item) => { if (!window.confirm(t("confirmDelete") + " #" + item.id)) return; try { await api("forget", { id: item.id, scope: item.scope === "global" ? "global" : "workspace" }); setSelectedId(null); refresh(); } catch (failure) { setError(String(failure.message || failure)); } };
+        const startNew = () => { setSelectedId(null); setDraft({ id: "", title: "", description: "", body: "", type: "fact", scope: scope === "global" ? "global" : "workspace:" + activeWorkspace, revision: null }); };
+        const startEdit = (item) => setDraft({ id: item.id, title: item.title, description: item.description, body: item.body, type: item.type, scope: item.scope === "global" ? "global" : item.scope, revision: item.revision });
+        const forget = async (item) => { if (!window.confirm(t("confirmDelete") + " #" + item.id)) return; try { await api("forget", { id: item.id, scope: item.scope }); setSelectedId(null); refresh(); } catch (failure) { setError(String(failure.message || failure)); } };
         const save = async () => {
           if (!draft || !draft.body.trim()) return;
           setError("");
@@ -301,7 +310,7 @@ window.__ModuleLoader__.load({
             if (result && result.conflict) { setError(t("conflict")); setDraft({ ...draft, revision: result.latest.revision }); return; }
             const savedId = result?.note?.id || draft.id;
             setDraft(null);
-            await load(scope, query.trim());
+            await load(apiScope, query.trim());
             if (savedId) setSelectedId(savedId);
           } catch (failure) { setError(String(failure.message || failure)); }
         };
@@ -313,7 +322,7 @@ window.__ModuleLoader__.load({
           if (!peers.length) return;
           setError("");
           try {
-            await api("resolve", { winnerId: item.id, loserIds: peers, scope: item.scope === "global" ? "global" : "workspace" });
+            await api("resolve", { winnerId: item.id, loserIds: peers, scope: item.scope });
             setOnlyConflicts(false);
             await load(scope, query.trim());
             setSelectedId(item.id);
@@ -333,6 +342,7 @@ window.__ModuleLoader__.load({
         const toolbar2 = h("div", { className: "dms_toolbar" },
           h("div", { className: "dms_filters" },
             h("div", { className: "dms_scope" }, SegmentedTabs ? h(SegmentedTabs, { items: scopeItems, value: scope, onChange: (value) => { setScope(value); setSelectedId(null); }, label: t("scopeField"), size: "sm" }) : h("select", { className: "dms_select", value: scope, onChange: (event) => setScope(event.target.value) }, scopeItems.map((item) => h("option", { key: item.value, value: item.value }, item.label)))),
+            scope === "workspace" ? h("div", { className: "dms_workspace" }, h(Dropdown, { value: workspaceId || "default", options: workspaceOptions, onChange: (value) => { setWorkspaceId(value); setSelectedId(null); }, label: t("workspace") })) : null,
             (status?.conflicts || 0) > 0 ? action(onlyConflicts ? t("allMemories") : t("conflictShort") + " " + status.conflicts, { type: "button", onClick: showConflicts, variant: onlyConflicts ? "primary" : "ghost" }, "IconInfoOutlineRegular") : null),
           h("div", { className: "dms_actions" },
             iconButton(t("claudeImport"), { type: "button", onClick: openClaudeImport }, "IconDownloadOutlineRegular"),
@@ -376,7 +386,7 @@ window.__ModuleLoader__.load({
           h("label", { className: "dms_field" }, t("bodyField"), h("textarea", { className: "dms_textarea", value: draft.body, onChange: (event) => setDraft({ ...draft, body: event.target.value }) })),
           h("div", { className: "dms_formRow" },
             h("label", { className: "dms_field" }, t("typeField"), h(Dropdown, { value: draft.type, options: TYPES.map((type) => ({ value: type, label: type })), onChange: (value) => setDraft({ ...draft, type: value }), label: t("typeField") })),
-            h("label", { className: "dms_field" }, t("scopeField"), h(Dropdown, { value: draft.scope, options: [{ value: "workspace", label: t("workspace") }, { value: "global", label: t("global") }], onChange: (value) => setDraft({ ...draft, scope: value }), label: t("scopeField") }))),
+            h("label", { className: "dms_field" }, t("scopeField"), h(Dropdown, { value: draft.scope, options: scopeOptions, onChange: (value) => setDraft({ ...draft, scope: value }), label: t("scopeField") }))),
           h("div", { className: "dms_toolbar" }, action(t("save"), { type: "button", onClick: save, variant: "primary", icon: icon("IconCheckOutlineRegular") }), action(t("cancel"), { type: "button", onClick: () => setDraft(null), variant: "ghost" }))) : null;
 
         const claudeSourceRows = claudeSources.map((source) => h(Checkbox, {

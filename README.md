@@ -38,7 +38,7 @@
 
 - **Markdown 真源**：每条记忆是带 frontmatter 的普通 <code>.md</code> 文件，可读、可编辑、可 review、可迁移。
 - **可重建索引**：SQLite FTS5 只负责检索加速；索引损坏或删除后可从 Markdown 重建。
-- **双作用域**：<code>workspace:&lt;id&gt;</code> 保留项目内知识；<code>global</code> 保存跨项目约定和用户偏好。
+- **双作用域**：<code>workspace:&lt;id&gt;</code> 保留项目内知识；<code>global</code> 保存跨项目约定和用户偏好。工作区 scope 会列出实际 memory workspace，默认选最近更新的一个，可手动切换。
 - **动态回忆**：每轮注入稳定的 preference/user profile，以及和当前问题相关的 FTS 召回，受 token 预算约束。
 - **自动捕获**：完成轮次进入持久捕获队列；模型判断是否值得长期保存，并保留可核验的原话证据。
 - **冲突与更正**：<code>revision</code> / <code>expectedRevision</code> 防覆盖，<code>supersedes</code> 保留审计链，同一 fact key 的分歧显式标记为冲突。
@@ -135,7 +135,7 @@ node src/cli.mjs list --scope workspace:demo
 
 ## 记忆面板
 
-左侧栏“记忆”打开独立主区页面，覆盖完整生命周期：按 scope 浏览、新建/编辑/复制/遗忘、处理冲突，以及展开 <code>memory_*</code> 工具调用。
+左侧栏“记忆”打开独立主区页面，覆盖完整生命周期：按 scope 浏览、新建/编辑/复制/遗忘、处理冲突，以及展开 <code>memory_*</code> 工具调用。选择“工作区”时会显示实际 workspace 下拉，不再固定绑定 <code>workspace:default</code>。
 
 ![Memory panel](docs/screenshots/memory-panel-final.png)
 

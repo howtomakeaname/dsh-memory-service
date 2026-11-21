@@ -46,7 +46,7 @@ export function previewClaudeSources(service, sources, { scope } = {}) {
   for (const source of sources) {
     for (const entry of readClaudeEntries(source)) {
       const existing = service.get(entry.id, { scope: scope || service.defaultScope() });
-      entries.push({ ...entry, scope: scope === "global" ? "global" : "workspace", existing: existing ? { revision: existing.revision, title: existing.title } : null });
+      entries.push({ ...entry, scope: scope === "global" ? "global" : (String(scope).startsWith("workspace:") ? scope : "workspace"), existing: existing ? { revision: existing.revision, title: existing.title } : null });
     }
   }
   return entries;
@@ -56,7 +56,7 @@ export function importClaudeEntries(service, entries, { force = false } = {}) {
   const summary = { imported: 0, updated: 0, skipped: 0, conflicts: 0, errors: [] };
   for (const entry of entries || []) {
     try {
-      const scope = entry.scope === "global" ? "global" : service.defaultScope();
+      const scope = entry.scope === "global" ? "global" : (String(entry.scope || "").startsWith("workspace:") ? entry.scope : service.defaultScope());
       const sourceHash = hashText([entry.title, entry.description, entry.body].join("\n"));
       const existing = service.get(entry.id, { scope });
       if (existing) {

@@ -63,7 +63,12 @@ export function apply(ctx, rawConfig = {}) {
       body: note.body, type: note.type, status: note.status, revision: note.revision,
       updatedAt: note.updatedAt, sourceRefs: note.sourceRefs, metadata: note.metadata
     }) : null;
-    const payloadScope = (payload) => payload?.scope === "global" ? "global" : service.defaultScope();
+    const payloadScope = (payload) => {
+      const requested = String(payload?.scope || "");
+      if (requested === "global") return "global";
+      if (requested.startsWith("workspace:")) return requested;
+      return service.defaultScope();
+    };
     const apiRoute = createMemoryApiRoute({
       log,
       admits: (req) => {
@@ -74,13 +79,24 @@ export function apply(ctx, rawConfig = {}) {
         } catch { return false; }
       },
       methods: {
-        state: () => ({
-          root, defaultScope: service.defaultScope(), workspaces: service.listWorkspaces(),
-          notes: service.list("global", { allScopes: true, includeForgotten: true }).length,
-          active: service.list("global", { allScopes: true }).filter((note) => note.status === "active").length,
-          conflicts: service.list("global", { allScopes: true }).filter((note) => note.status === "conflicted").length,
-          capture: queue ? queue.stats() : null, extractor: Boolean(extractor)
-        }),
+        state: () => {
+          const workspaceIds = service.listWorkspaces();
+          const workspaceDetails = workspaceIds.map((id) => {
+            const rows = service.list("workspace:" + id, { includeForgotten: true });
+            return {
+              id, scope: "workspace:" + id,
+              notes: rows.filter((note) => note.status === "active").length,
+              updatedAt: rows.reduce((latest, note) => String(note.updatedAt) > latest ? String(note.updatedAt) : latest, "")
+            };
+          });
+          return {
+            root, defaultScope: service.defaultScope(), workspaces: workspaceIds, workspaceDetails,
+            notes: service.list("global", { allScopes: true, includeForgotten: true }).length,
+            active: service.list("global", { allScopes: true }).filter((note) => note.status === "active").length,
+            conflicts: service.list("global", { allScopes: true }).filter((note) => note.status === "conflicted").length,
+            capture: queue ? queue.stats() : null, extractor: Boolean(extractor)
+          };
+        },
         list: (payload) => {
           const scope = payload?.allScopes ? "global" : payloadScope(payload);
           return service.list(scope, { allScopes: Boolean(payload?.allScopes), includeForgotten: Boolean(payload?.includeForgotten) }).map(serialize);
@@ -90,7 +106,10 @@ export function apply(ctx, rawConfig = {}) {
           const limit = Number(payload?.limit || 20);
           if (payload?.scope === "all") {
             const merged = new Map();
-            for (const note of [...service.search(query, { scope: service.defaultScope(), limit }), ...service.search(query, { scope: "global", limit })]) merged.set(note.id, note);
+            const scopes = ["global", ...service.listWorkspaces().map((id) => "workspace:" + id)];
+            for (const scope of scopes) {
+              for (const note of service.search(query, { scope, limit })) merged.set(note.id, note);
+            }
             return [...merged.values()].slice(0, limit).map(serialize);
           }
           return service.search(query, { scope: payloadScope(payload), limit }).map(serialize);
@@ -184,7 +203,7 @@ export function apply(ctx, rawConfig = {}) {
               description: String(entry?.description || "").slice(0, 200),
               body: String(entry?.body || "").slice(0, 100000),
               type: String(entry?.type || "project"),
-              scope: entry?.scope === "global" ? "global" : "workspace",
+              scope: entry?.scope === "global" ? "global" : payloadScope(payload),
               metadata: { origin: "claude-code", claude_name: String(entry?.title || ""), claude_description: String(entry?.description || "") }
             });
           }
