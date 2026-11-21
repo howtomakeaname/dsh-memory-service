@@ -135,7 +135,7 @@ node src/cli.mjs list --scope workspace:demo
 
 ## 记忆面板
 
-左侧栏“记忆”打开独立主区页面，覆盖完整生命周期：按 scope 浏览、新建/编辑/复制/遗忘、处理冲突，以及展开 <code>memory_*</code> 工具调用。左侧是工作区树，右侧是记忆列表/详情；从某个 Session 切进来会跟随该 Session 的 workspace。面板支持列表/关系图两种视图：关系图把记忆画成节点，把冲突、替代、同 key 和来源关系画成连线；支持滚轮缩放、拖拽平移和复位。新建/编辑记忆时，作用域选择器复用 DSH Menu 的 workspace 行：标题、完整路径和勾选，和 DSH 自己的工作区选择一致。
+左侧栏“记忆”打开独立主区页面，覆盖完整生命周期：按 scope 浏览、新建/编辑/复制/遗忘、处理冲突，以及展开 <code>memory_*</code> 工具调用。左侧是工作区树，右侧是记忆列表/详情；从某个 Session 切进来会跟随该 Session 的 workspace。面板支持列表/星云图两种视图：星云图把记忆画成节点，把冲突、替代、同 key 和来源关系画成连线；支持滚轮缩放、拖拽平移和复位。新建/编辑记忆时，作用域选择器复用 DSH Menu 的 workspace 行：标题、完整路径和勾选，和 DSH 自己的工作区选择一致。
 
 ![记忆关系图](docs/screenshots/memory-nebula-final.png)
 

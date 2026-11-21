@@ -6,7 +6,7 @@
 
 ![侧栏记忆面板](screenshots/memory-panel-final.png)
 
-### 关系图
+### 星云图
 
 ![记忆关系图](screenshots/memory-nebula-final.png)
 
