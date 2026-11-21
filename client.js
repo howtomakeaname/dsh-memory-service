@@ -14,6 +14,7 @@ window.__ModuleLoader__.load({
     const TextShimmer = ui.TextShimmer;
     const Modal = ui.Modal;
     const Checkbox = ui.Checkbox;
+    const Tooltip = ui.Tooltip;
 
     function action(label, props, iconName) {
       if (Button) return h(Button, { size: "sm", ...props, icon: iconName ? icon(iconName) : undefined }, label);
@@ -21,8 +22,10 @@ window.__ModuleLoader__.load({
       return h("button", { className: "dms_btn " + (variant === "primary" ? "primary" : ""), ...rest }, iconName ? icon(iconName) : null, " ", label);
     }
     function iconButton(label, props, iconName) {
-      if (Button) return h(Button, { size: "sm", variant: "ghost", ...props, icon: icon(iconName), "aria-label": label, title: label });
-      return h("button", { className: "dms_btn", "aria-label": label, title: label, ...props }, iconName ? icon(iconName) : null);
+      const control = Button
+        ? h(Button, { size: "sm", variant: "ghost", ...props, icon: icon(iconName), "aria-label": label }, label)
+        : h("button", { className: "dms_btn", "aria-label": label, title: label, ...props }, iconName ? icon(iconName) : null);
+      return Tooltip ? h(Tooltip, { label, side: "bottom", delayMs: 250, portal: true }, control) : control;
     }
     function Dropdown({ value, options, onChange, label }) {
       if (!ui.Menu || !ui.MenuItemButton || !Button) {
