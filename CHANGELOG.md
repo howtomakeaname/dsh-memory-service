@@ -10,6 +10,7 @@
 - Workspace scope is now a DSH-style workspace tree; opening the panel from a Session follows that Session's workspace, with a latest-workspace fallback.
 - Refined the page toolbar to one compact row and replaced the tree card with a borderless sidebar-style rail.
 - New/edit memory scope picker now shows workspace title, full path, and the selected check in a DSH-style Menu, matching the native workspace selector.
+- Search now runs as you type with a 260ms debounce and a clear button; the separate Search button is gone.
 
 ## 0.2.0
 

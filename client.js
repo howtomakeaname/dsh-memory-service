@@ -90,7 +90,7 @@ window.__ModuleLoader__.load({
     };
     const zh = {
       section: "记忆", title: "记忆服务", description: "管理 DeepSeek Harness 的各项记忆",
-      workspace: "当前工作区", workspaceShort: "工作区", workspaceTree: "工作区树", otherWorkspaces: "其他记忆工作区", noWorkspaces: "暂无工作区", followsSession: "跟随当前会话", allShort: "全部", global: "全局", all: "全部工作区", search: "搜索", searchPlaceholder: "搜索标题、描述或正文…",
+      workspace: "当前工作区", workspaceShort: "工作区", workspaceTree: "工作区树", otherWorkspaces: "其他记忆工作区", noWorkspaces: "暂无工作区", followsSession: "跟随当前会话", allShort: "全部", global: "全局", all: "全部工作区", search: "搜索", clearSearch: "清除搜索", searchPlaceholder: "搜索标题、描述或正文…",
       refresh: "刷新", flush: "处理队列", newMemory: "新增记忆", loading: "加载中…", empty: "没有匹配的记忆。",
       emptyHint: "试试换一个作用域，或新增一条记忆。", formHint: "保存一条可跨会话复用的记忆。", edit: "编辑", delete: "遗忘", save: "保存", cancel: "取消",
       back: "返回列表", titleField: "标题", descriptionField: "一句话描述", bodyField: "正文", typeField: "类型", scopeField: "作用域",
@@ -105,7 +105,7 @@ window.__ModuleLoader__.load({
     };
     const en = {
       section: "Memory", title: "Memory service", description: "Manage DeepSeek Harness memories.",
-      workspace: "Current workspace", workspaceShort: "Workspace", workspaceTree: "Workspaces", otherWorkspaces: "Other memory workspaces", noWorkspaces: "No workspaces", followsSession: "Following current session", allShort: "All", global: "Global", all: "All workspaces", search: "Search", searchPlaceholder: "Search title, description or body…",
+      workspace: "Current workspace", workspaceShort: "Workspace", workspaceTree: "Workspaces", otherWorkspaces: "Other memory workspaces", noWorkspaces: "No workspaces", followsSession: "Following current session", allShort: "All", global: "Global", all: "All workspaces", search: "Search", clearSearch: "Clear search", searchPlaceholder: "Search title, description or body…",
       refresh: "Refresh", flush: "Drain queue", newMemory: "New memory", loading: "Loading…", empty: "No matching memories.",
       emptyHint: "Try another scope, or create a memory.", formHint: "Save a durable memory for future sessions.", edit: "Edit", delete: "Forget", save: "Save", cancel: "Cancel",
       back: "Back to list", titleField: "Title", descriptionField: "One-line description", bodyField: "Body", typeField: "Type", scopeField: "Scope",
@@ -150,7 +150,7 @@ window.__ModuleLoader__.load({
         ".dms_metric{display:flex;gap:5px;align-items:baseline;font-size:12px;color:var(--dsw-alias-label-tertiary,#888);}.dms_metric b{font-size:14px;color:var(--dsw-alias-label-primary,#eee);font-weight:600;}",
         ".dms_controls{display:flex;flex-direction:column;gap:10px;}",
         ".dms_toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}.dms_filters{display:flex;gap:8px;align-items:center;flex-wrap:wrap;min-width:0;}.dms_actions{margin-left:auto;display:flex;gap:4px;align-items:center;padding-left:10px;border-left:1px solid var(--dsw-alias-border-l2,#333);}.dms_scope{width:250px;flex:none;min-width:210px;}.dms_dropdownLabel{max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}",
-        ".dms_toolbar .dms_search{min-width:230px;flex:1;display:flex;}.dms_toolbar .dms_search>*{width:100%;}",
+        ".dms_toolbar .dms_search{min-width:230px;flex:1;display:flex;position:relative;}.dms_toolbar .dms_search>*:first-child{width:100%;}.dms_searchClear{position:absolute;right:8px;top:50%;transform:translateY(-50%);display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border:0;border-radius:50%;background:transparent;color:var(--dsw-alias-label-tertiary,#888);cursor:pointer;}.dms_searchClear:hover{background:var(--dsw-alias-interactive-bg-hover,#242424);color:var(--dsw-alias-label-primary,#eee);}.dms_search input{padding-right:32px;}.dms_search input::-webkit-search-cancel-button{display:none;}",
         ".dms_input,.dms_select,.dms_textarea{background:var(--dsw-alias-bg-layer-3,#222);color:inherit;border:1px solid var(--dsw-alias-border-l2,#333);border-radius:6px;padding:7px 9px;font:inherit;}",
         ".dms_input{box-sizing:border-box;width:100%;}.dms_textarea{min-height:150px;width:100%;box-sizing:border-box;resize:vertical;font-size:13px;line-height:20px;}",
         ".dms_select{padding:6px 8px;}.dms_btn{cursor:pointer;border:1px solid var(--dsw-alias-border-l2,#333);background:var(--dsw-alias-bg-layer-3,#222);color:inherit;border-radius:6px;padding:7px 11px;font:inherit;}",
@@ -280,6 +280,8 @@ window.__ModuleLoader__.load({
         const autoSelected = React.useRef(false);
         const workspacesSnapshot = props.useWorkspaces ? props.useWorkspaces((snapshot) => snapshot) : null;
         const [query, setQuery] = React.useState("");
+        const [debouncedQuery, setDebouncedQuery] = React.useState("");
+        const loadSeq = React.useRef(0);
         const [loading, setLoading] = React.useState(true);
         const [error, setError] = React.useState("");
         const [draft, setDraft] = React.useState(null);
@@ -331,22 +333,32 @@ window.__ModuleLoader__.load({
         }, [status, pathIdsReady, pathWorkspaceIds, workspacesSnapshot, currentSessionId]);
 
         const load = React.useCallback(async (nextScope, nextQuery) => {
+          const sequence = ++loadSeq.current;
           setLoading(true); setError("");
           try {
             const [state, rows] = await Promise.all([
               api("state"),
               nextQuery ? api("search", { query: nextQuery, scope: nextScope, limit: 50 }) : api("list", { scope: nextScope, allScopes: nextScope === "all" })
             ]);
+            if (sequence !== loadSeq.current) return;
             setStatus(state); setItems(rows || []);
             const details = state.workspaceDetails || [];
             setWorkspaceDetails(details);
             if (selectedId && !(rows || []).some((row) => row.id === selectedId)) setSelectedId(null);
-          } catch (failure) { setError(String(failure.message || failure)); }
-          finally { setLoading(false); }
+          } catch (failure) { if (sequence === loadSeq.current) setError(String(failure.message || failure)); }
+          finally { if (sequence === loadSeq.current) setLoading(false); }
         }, [selectedId]);
 
-        React.useEffect(() => { void load(apiScope, ""); }, [apiScope, load]);
-        const submitSearch = (event) => { event.preventDefault(); setOnlyConflicts(false); void load(apiScope, query.trim()); };
+        React.useEffect(() => {
+          const timer = setTimeout(() => {
+            const value = query.trim();
+            setDebouncedQuery(value);
+            setOnlyConflicts(false);
+          }, 260);
+          return () => clearTimeout(timer);
+        }, [query]);
+        React.useEffect(() => { void load(apiScope, debouncedQuery); }, [apiScope, debouncedQuery, load]);
+        const submitSearch = (event) => { event.preventDefault(); const value = query.trim(); setDebouncedQuery(value); setOnlyConflicts(false); void load(apiScope, value); };
         const refresh = () => { setOnlyConflicts(false); void load(apiScope, query.trim()); };
         const openClaudeImport = async () => {
           setClaudeOpen(true); setClaudeBusy(true); setClaudeError(""); setClaudeSummary(null);
@@ -436,8 +448,9 @@ window.__ModuleLoader__.load({
 
         const metric = (label, value) => h("span", { className: "dms_metric", key: label }, h("b", null, String(value == null ? "—" : value)), label);
         const toolbar = h("div", { className: "dms_toolbar" },
-          h("div", { className: "dms_search" }, textField({ value: query, placeholder: t("searchPlaceholder"), icon: icon("IconSearchOutlineRegular"), onChange: (event) => setQuery(event.target.value) })),
-          action(t("search"), { type: "submit", variant: "primary" }, "IconSearchOutlineRegular"),
+          h("div", { className: "dms_search" },
+            textField({ type: "search", value: query, placeholder: t("searchPlaceholder"), icon: icon("IconSearchOutlineRegular"), onChange: (event) => setQuery(event.target.value) }),
+            query ? h("button", { type: "button", className: "dms_searchClear", "aria-label": t("clearSearch"), title: t("clearSearch"), onClick: () => { setQuery(""); setDebouncedQuery(""); } }, icon("IconCloseOutlineRegular", 14)) : null),
           (status?.conflicts || 0) > 0 ? action(onlyConflicts ? t("allMemories") : t("conflictShort") + " " + status.conflicts, { type: "button", onClick: showConflicts, variant: onlyConflicts ? "primary" : "ghost" }, "IconInfoOutlineRegular") : null,
           h("div", { className: "dms_actions" },
             iconButton(t("claudeImport"), { type: "button", onClick: openClaudeImport }, "IconDownloadOutlineRegular"),
