@@ -43,7 +43,7 @@
 - **自动捕获**：完成轮次进入持久捕获队列；模型判断是否值得长期保存，并保留可核验的原话证据。
 - **冲突与更正**：<code>revision</code> / <code>expectedRevision</code> 防覆盖，<code>supersedes</code> 保留审计链，同一 fact key 的分歧显式标记为冲突。
 - **Claude Code 迁移**：从多个 Claude Code workspace 或 global memory 导入，支持预览、逐条编辑、选择导入。
-- **原生 Settings UI**：在 DSH 设置页内查看、搜索、创建、编辑、处理冲突和展开工具卡片，不另开 web 应用。
+- **原生侧栏面板**：从 DSH 左侧栏“记忆”入口打开，查看、搜索、创建、编辑、处理冲突和展开工具卡片，不另开 web 应用。
 
 ## 架构
 
@@ -67,7 +67,7 @@
 dsh plugin --profile <profile> add dsh-memory-service
 ~~~
 
-添加后重启 DSH。记忆页面会出现在 **Settings → Memory**。
+添加后重启 DSH。左侧栏会出现 **记忆** 一级入口。
 
 ### 从本地仓库安装
 
@@ -133,11 +133,11 @@ node src/cli.mjs list --scope workspace:demo
 | <code>memory_resolve</code> | 为冲突选择保留的版本。 |
 | <code>memory_stats</code> | 查看计数和存储位置。 |
 
-## 设置页
+## 记忆面板
 
-原生 Settings 页面覆盖完整生命周期：按 scope 浏览、新建/编辑/复制/遗忘、处理冲突，以及展开 <code>memory_*</code> 工具调用。
+左侧栏“记忆”打开独立主区页面，覆盖完整生命周期：按 scope 浏览、新建/编辑/复制/遗忘、处理冲突，以及展开 <code>memory_*</code> 工具调用。
 
-![Memory settings](docs/screenshots/memory-settings-list-final.png)
+![Memory panel](docs/screenshots/memory-panel-final.png)
 
 ## Claude Code 记忆迁移
 
@@ -213,7 +213,7 @@ node bench/e2e/run.mjs
 | [docs/retrieval.md](docs/retrieval.md) | 检索策略与 typed preference 写入。 |
 | [docs/conflict-resolution.md](docs/conflict-resolution.md) | 锁、CAS、supersede 和语义冲突。 |
 | [docs/operations.md](docs/operations.md) | 备份、恢复、重建、队列诊断。 |
-| [docs/ui.md](docs/ui.md) | Settings UI 和工具调用展示。 |
+| [docs/ui.md](docs/ui.md) | 侧栏记忆面板和工具调用展示。 |
 | [docs/claude-code-memory-current.md](docs/claude-code-memory-current.md) | Claude Code memory 格式说明。 |
 | [CHANGELOG.md](CHANGELOG.md) | 版本历史。 |
 

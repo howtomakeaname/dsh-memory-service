@@ -115,15 +115,15 @@ v1 root 初始化时自动迁移到 v2：legacy note 补 `description_auto`，�
 
 在 `bench-memt-web` profile、DSH web app 0.2.2-rc.3 中验证：
 
-- Settings → 记忆真实可见；
+- 左侧栏 → 记忆真实可见；
 - 列表、scope、详情 drill-down、复制 ID、编辑/遗忘；
 - 新建会话调用 `memory_save`，工具卡片和展开的 Arguments/Result 可见；
 - 冲突数据可筛选、打开详情并通过“保留此版本”解决；
-- Settings 表单新增记忆成功落盘；
+- 侧栏 panel 表单新增记忆成功落盘；
 - 类型/scope 使用 DSH `Menu` 下拉，工具栏筛选组/操作组分开，不再堆叠。
 
 截图见 [docs/ui.md](ui.md)。
 
 ## 12. Claude Code 导入 UI
 
-在隔离 HOME 的真实 Settings 中：临时 Claude memory fixture（两个项目 + global）→ 多选来源 → 预览 3 条 → 修改其中一条标题 → 导入选中 → 显示“新增 3”并刷新列表；验证后删除临时 HOME/fixture。API 只接受发现列表中的 source/file。
+在隔离 HOME 的真实侧栏 panel 中：临时 Claude memory fixture（两个项目 + global）→ 多选来源 → 预览 3 条 → 修改其中一条标题 → 导入选中 → 显示“新增 3”并刷新列表；验证后删除临时 HOME/fixture。API 只接受发现列表中的 source/file。

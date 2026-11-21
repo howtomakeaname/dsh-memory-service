@@ -1,10 +1,10 @@
-# UI：复用 DSH 设置页与工具调用
+# UI：DSH 侧栏记忆面板与工具调用
 
 ## 截图
 
-### Settings → 记忆
+### 侧栏 → 记忆
 
-![记忆设置页列表](screenshots/memory-settings-list-final.png)
+![侧栏记忆面板](screenshots/memory-panel-final.png)
 
 ### 单条记忆详情
 
@@ -18,10 +18,6 @@
 
 ![类型下拉复用 DSH Menu](screenshots/memory-dropdown-final.png)
 
-### 冲突详情
-
-![冲突详情与保留版本](screenshots/memory-conflict-final.png)
-
 ### Claude Code 导入
 
 ![从 Claude Code 导入记忆](screenshots/claude-import-final.png)
@@ -30,15 +26,15 @@
 
 - DSH web app `0.2.2-rc.3`
 - 测试 profile：`bench-memt-web`
-- 真实 Settings 弹层、真实会话，不是静态 mock。
+- 真实侧栏 panel、真实弹层和真实会话，不是静态 mock。
 
-公开截图只保留 Settings 内容区或对话内容区，已裁掉侧边栏里的工作区、会话标题和账号信息；原始全屏截图不放在仓库里。
+公开截图只保留侧栏 panel 主区内容区或对话内容区，已裁掉侧栏里的工作区、会话标题和账号信息；原始全屏截图不放在仓库里。
 
 ## 复用了什么
 
-### 设置页外壳
+### 侧栏面板外壳
 
-- slot：`settings.section`
+- slot：`sidebar.panellist`（图标 + 标签）+ root `main` keyed slot（主区页面，key = `memory-service`）
 - 客户端模块：`window.__ModuleLoader__.load({ id, factory(require) })`
 - locale：`ctx.locale.register` / `ctx.locale.bind`
 - 图标：官方 `Icon*OutlineRegular`
@@ -138,7 +134,7 @@ POST /memory-service/api/claudeImportEntries
 dsh --profile bench-memt-web --port 54123 --host 127.0.0.1 --no-open
 ~~~
 
-2. 浏览器打开打印出的 URL，侧边栏账号菜单 → 设置 → 记忆。
+2. 浏览器打开打印出的 URL，左侧栏 → 记忆。
 3. 验证列表、搜索、scope 切换、新增/编辑/遗忘、详情 drill-down。
 4. 新建会话，让模型调用 `memory_save`，展开“已完成 → 已调用工具”，确认自定义卡片和展开后的 Arguments / Result。
 
@@ -148,4 +144,4 @@ dsh --profile bench-memt-web --port 54123 --host 127.0.0.1 --no-open
 - 没有移动端/窄屏专门验证；
 - 冲突解决一次处理当前记录标记的冲突对象，不做三方合并。
 - textarea/select 仍是原生控件，因为 primitives 没有对应公开组件；
-- 没有独立路由页，详情是 Settings 内 drill-down。
+- 没有独立路由页，详情在侧栏 panel 主区内 drill-down。

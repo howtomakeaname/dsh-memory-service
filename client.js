@@ -110,7 +110,7 @@ window.__ModuleLoader__.load({
       const style = document.createElement("style");
       style.id = STYLE_ID;
       style.textContent = [
-        ".dms_page{display:flex;flex-direction:column;gap:14px;color:var(--dsw-alias-label-primary,#e6e6e6);}",
+        ".dms_page{display:flex;flex-direction:column;gap:14px;width:100%;max-width:1200px;margin:0 auto;padding:24px 28px 40px;box-sizing:border-box;color:var(--dsw-alias-label-primary,#e6e6e6);}",
         ".dms_head{display:flex;flex-direction:column;gap:4px;}.dms_title{font-size:19px;line-height:26px;font-weight:600;}.dms_desc{font-size:13px;line-height:20px;color:var(--dsw-alias-label-secondary,#aaa);}",
         ".dms_summary{display:flex;gap:14px;flex-wrap:wrap;align-items:center;padding:10px 12px;border:1px solid var(--dsw-alias-border-l2,#333);border-radius:8px;background:var(--dsw-alias-bg-layer-1,#181818);}",
         ".dms_metric{display:flex;gap:5px;align-items:baseline;font-size:12px;color:var(--dsw-alias-label-tertiary,#888);}.dms_metric b{font-size:14px;color:var(--dsw-alias-label-primary,#eee);font-weight:600;}",
@@ -447,9 +447,9 @@ window.__ModuleLoader__.load({
         const t = ctx.locale.bind(NS);
         const Page = createPage(t);
         const ToolRow = createToolRow(t);
-        ctx.slots.inject("settings.section", () => ctx.slots.register({ name: "settings.section", id: "memory-service", order: 70, label: () => t("section") }, Page));
         const MemoryIcon = ({ size }) => icon("IconContextInjectionOutlineRegular", size || 16);
-        ctx.slots.inject("settings.section.icon", () => ctx.slots.register({ name: "settings.section.icon", id: "memory-service", locale: NS }, MemoryIcon));
+        ctx.slots.inject("main", () => ctx.slots.register({ name: "main", key: "memory-service", locale: NS }, Page));
+        ctx.slots.inject("sidebar.panellist", () => ctx.slots.register({ name: "sidebar.panellist", id: "memory-service", order: 20, locale: NS, label: () => t("section") }, MemoryIcon));
         ctx.slots.inject("tool.call.toolview", function* () {
           for (const key of Object.keys(TOOL_LABELS)) yield ctx.slots.register({ name: "tool.call.toolview", key, locale: NS }, ToolRow);
         });

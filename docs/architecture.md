@@ -3,7 +3,7 @@
 目标是让“存储、索引、宿主适配、格式适配、CLI”分开，后续加后台队列或 web UI 时不需要继续往 `store.mjs` / `plugin.mjs` 里堆。
 
 ```text
-client.js                         # settings.section 页面（浏览器入口，无构建）
+client.js                         # sidebar.panellist + main 侧栏记忆面板（浏览器入口，无构建）
 src/
 ├── store.mjs                     # 兼容门面：re-export MemoryService
 ├── config.mjs                    # 配置规范化与范围校验
