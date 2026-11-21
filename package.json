@@ -1,6 +1,6 @@
 {
   "name": "dsh-memory-service",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "type": "module",
   "description": "File-native long-term memory for DeepSeek Harness, with Claude Code memory import/export and a rebuildable SQLite index.",
   "license": "MIT",
