@@ -17,11 +17,14 @@ export function humanText(messages) {
   return "";
 }
 
-export function workspaceIdOf(session) {
-  const cwd = session?.header?.cwd;
+export function workspaceIdForPath(cwd) {
   if (typeof cwd !== "string" || !cwd) return "default";
   const hash = createHash("sha1").update(cwd).digest("hex").slice(0, 8);
   return basename(cwd).replace(/[^a-zA-Z0-9._-]/g, "-") + "-" + hash;
+}
+
+export function workspaceIdOf(session) {
+  return workspaceIdForPath(session?.header?.cwd);
 }
 
 export function scopeOf(session) {

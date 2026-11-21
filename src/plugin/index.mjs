@@ -8,6 +8,7 @@ import { createCaptureHandler } from "./capture.mjs";
 import { createPreStepHandler } from "./inject.mjs";
 import { createTools } from "./tools.mjs";
 import { createSessionState } from "./state.mjs";
+import { workspaceIdForPath } from "./message.mjs";
 import { CaptureQueue } from "../capture/queue.mjs";
 import { createLlmClient } from "../capture/llm.mjs";
 import { createExtractor } from "../capture/extract.mjs";
@@ -113,6 +114,10 @@ export function apply(ctx, rawConfig = {}) {
             return [...merged.values()].slice(0, limit).map(serialize);
           }
           return service.search(query, { scope: payloadScope(payload), limit }).map(serialize);
+        },
+        workspaceIds: (payload) => {
+          const paths = Array.isArray(payload?.paths) ? payload.paths.map(String).slice(0, 500) : [];
+          return Object.fromEntries(paths.map((cwd) => [cwd, workspaceIdForPath(cwd)]));
         },
         get: (payload) => serialize(service.get(String(payload?.id || ""), { scope: payloadScope(payload) })),
         conflicts: (payload) => {

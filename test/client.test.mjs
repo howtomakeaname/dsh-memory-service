@@ -10,7 +10,7 @@ test("client: registers a sidebar panel and its main page", () => {
   assert.equal(spec.id, "dsh-memory-service");
   const react = { createElement() {}, useState() {}, useEffect() {}, useCallback(fn) { return fn; } };
   const plugin = spec.factory((name) => name === "react" ? react : {});
-  assert.deepEqual(Array.from(plugin.inject), ["slots", "locale"]);
+  assert.deepEqual(Array.from(plugin.inject), ["slots", "locale", "uiWorkspace"]);
   const registered = [];
   const ctx = {
     effect() {},

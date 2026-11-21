@@ -26,7 +26,7 @@
 
 - DSH web app `0.2.2-rc.3`
 - 测试 profile：`bench-memt-web`
-- 真实侧栏 panel、真实弹层和真实会话，不是静态 mock。
+- 真实侧栏 panel、真实弹层和真实会话，不是静态 mock；工作区树中的项目名已替换为演示用 workspace。
 
 公开截图只保留侧栏 panel 主区内容区或对话内容区，已裁掉侧栏里的工作区、会话标题和账号信息；原始全屏截图不放在仓库里。
 
@@ -47,7 +47,7 @@
 - `Button`：搜索、刷新、处理队列、新增、编辑、遗忘、返回、复制 ID
 - `Input`：搜索框、标题、描述
 - `Tag`：类型、scope、模型抽取状态
-- `SegmentedTabs`：工作区 / 全局 / 全部
+- 工作区树：原生 `button` 行 + 官方 folder/workspace 图标，复刻 DSH 侧栏的信息层级
 - `DisclosureRow`：工具调用折叠行
 - `Menu` / `MenuItemButton`：表单里的类型、scope 下拉
 - 图标：`IconSearchOutlineRegular`、`IconRefreshOutlineRegular`、`IconDatabaseOutlineRegular`、`IconPlusOutlineRegular`、`IconEditOutlineRegular`、`IconTrashOutlineRegular`、`IconChevronLeftOutlineRegular`、`IconCopyOutlineRegular`、`IconCheckOutlineRegular`、`IconInfoOutlineRegular`、`IconUserOutlineRegular`、`IconChecklistOutlineRegular`、`IconBrowseOutlineRegular`、`IconDataOutlineRegular`
@@ -64,9 +64,10 @@
 ### 列表
 
 - 顶部摘要：笔记/有效/冲突/待处理/失败 + 模型抽取状态；
-- 工作区 scope 右侧是实际 memory workspace 下拉，默认最近更新的 workspace；切换后列表和保存 scope 跟随；
+- 左侧工作区树：全部工作区 / 全局 / 已注册工作区 / 其他记忆工作区；从 Session 进入面板时自动选中该 Session 的 workspace；
+- 工作区树默认跟随当前 Session workspace，无法判断时回退到最近写入的 workspace；点击树节点切换列表和保存 scope；
 - 搜索单独一行；
-- 筛选组和操作组分开：scope + 冲突筛选在左，刷新/队列/新增图标在右，避免挤成一排；
+- 内容顶部搜索、冲突筛选和操作组分开：搜索/冲突在左，刷新/队列/新增图标在右；
 - 列表行显示类型图标、标题、描述、type/scope、更新时间；
 - 点击整行进入单条详情；
 - 有冲突时可切换“只看冲突”，列表只显示 `conflicted` 记忆。
@@ -106,6 +107,7 @@ POST /memory-service/api/state
 POST /memory-service/api/list
 POST /memory-service/api/search
 POST /memory-service/api/get
+POST /memory-service/api/workspaceIds
 POST /memory-service/api/save
 POST /memory-service/api/update
 POST /memory-service/api/forget

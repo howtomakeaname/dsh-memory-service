@@ -66,7 +66,7 @@ window.__ModuleLoader__.load({
     };
     const zh = {
       section: "记忆", title: "记忆服务", description: "管理 DeepSeek Harness 的各项记忆",
-      workspace: "当前工作区", workspaceShort: "工作区", allShort: "全部", global: "全局", all: "全部工作区", search: "搜索", searchPlaceholder: "搜索标题、描述或正文…",
+      workspace: "当前工作区", workspaceShort: "工作区", workspaceTree: "工作区树", otherWorkspaces: "其他记忆工作区", noWorkspaces: "暂无工作区", followsSession: "跟随当前会话", allShort: "全部", global: "全局", all: "全部工作区", search: "搜索", searchPlaceholder: "搜索标题、描述或正文…",
       refresh: "刷新", flush: "处理队列", newMemory: "新增记忆", loading: "加载中…", empty: "没有匹配的记忆。",
       emptyHint: "试试换一个作用域，或新增一条记忆。", formHint: "保存一条可跨会话复用的记忆。", edit: "编辑", delete: "遗忘", save: "保存", cancel: "取消",
       back: "返回列表", titleField: "标题", descriptionField: "一句话描述", bodyField: "正文", typeField: "类型", scopeField: "作用域",
@@ -81,7 +81,7 @@ window.__ModuleLoader__.load({
     };
     const en = {
       section: "Memory", title: "Memory service", description: "Manage DeepSeek Harness memories.",
-      workspace: "Current workspace", workspaceShort: "Workspace", allShort: "All", global: "Global", all: "All workspaces", search: "Search", searchPlaceholder: "Search title, description or body…",
+      workspace: "Current workspace", workspaceShort: "Workspace", workspaceTree: "Workspaces", otherWorkspaces: "Other memory workspaces", noWorkspaces: "No workspaces", followsSession: "Following current session", allShort: "All", global: "Global", all: "All workspaces", search: "Search", searchPlaceholder: "Search title, description or body…",
       refresh: "Refresh", flush: "Drain queue", newMemory: "New memory", loading: "Loading…", empty: "No matching memories.",
       emptyHint: "Try another scope, or create a memory.", formHint: "Save a durable memory for future sessions.", edit: "Edit", delete: "Forget", save: "Save", cancel: "Cancel",
       back: "Back to list", titleField: "Title", descriptionField: "One-line description", bodyField: "Body", typeField: "Type", scopeField: "Scope",
@@ -110,9 +110,19 @@ window.__ModuleLoader__.load({
       const style = document.createElement("style");
       style.id = STYLE_ID;
       style.textContent = [
-        ".dms_page{display:flex;flex-direction:column;gap:14px;width:100%;max-width:1200px;margin:0 auto;padding:24px 28px 40px;box-sizing:border-box;color:var(--dsw-alias-label-primary,#e6e6e6);}",
-        ".dms_head{display:flex;flex-direction:column;gap:4px;}.dms_title{font-size:19px;line-height:26px;font-weight:600;}.dms_desc{font-size:13px;line-height:20px;color:var(--dsw-alias-label-secondary,#aaa);}",
-        ".dms_summary{display:flex;gap:14px;flex-wrap:wrap;align-items:center;padding:10px 12px;border:1px solid var(--dsw-alias-border-l2,#333);border-radius:8px;background:var(--dsw-alias-bg-layer-1,#181818);}",
+        ".dms_page{display:flex;flex-direction:column;gap:20px;width:100%;height:100%;overflow:auto;padding:28px clamp(24px,4vw,48px) 48px;box-sizing:border-box;color:var(--dsw-alias-label-primary,#e6e6e6);}",
+        ".dms_page>*{width:100%;max-width:960px;margin-inline:auto;flex:none;box-sizing:border-box;}",
+        ".dms_pageHead{display:flex;flex-direction:column;gap:14px;}",
+        ".dms_head{display:flex;flex-direction:column;gap:4px;}.dms_title{font-size:20px;line-height:28px;font-weight:600;}.dms_desc{font-size:13px;line-height:20px;color:var(--dsw-alias-label-secondary,#aaa);}",
+        ".dms_summary{display:flex;gap:16px;flex-wrap:wrap;align-items:center;padding:11px 14px;border:1px solid var(--dsw-alias-border-l2,#333);border-radius:10px;background:var(--dsw-alias-bg-layer-1,#181818);}",
+        ".dms_layout{display:grid;grid-template-columns:238px minmax(0,1fr);gap:22px;align-items:start;}",
+        ".dms_content{display:flex;flex-direction:column;gap:14px;min-width:0;}",
+        ".dms_treePane{border:1px solid var(--dsw-alias-border-l2,#333);border-radius:10px;background:var(--dsw-alias-bg-layer-1,#181818);padding:8px;position:sticky;top:16px;max-height:calc(100vh - 230px);overflow:auto;box-sizing:border-box;}",
+        ".dms_treeHead{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:2px 8px 8px;font-size:12px;font-weight:600;color:var(--dsw-alias-label-primary,#eee);}.dms_treeHint{font-size:10px;font-weight:400;color:var(--dsw-alias-label-tertiary,#888);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}",
+        ".dms_treeList{display:flex;flex-direction:column;gap:1px;}.dms_treeSection{padding:10px 8px 4px;font-size:11px;font-weight:500;color:var(--dsw-alias-label-tertiary,#888);letter-spacing:.02em;}",
+        ".dms_treeRow{width:100%;min-height:30px;display:flex;align-items:center;gap:7px;padding:5px 8px;border:0;border-radius:6px;background:transparent;color:var(--dsw-alias-label-secondary,#bbb);font:inherit;font-size:13px;line-height:20px;text-align:left;cursor:pointer;box-sizing:border-box;}.dms_treeRow:hover{background:var(--dsw-alias-interactive-bg-hover,#242424);color:var(--dsw-alias-label-primary,#eee);}.dms_treeRowActive,.dms_treeRowActive:hover{background:var(--dsw-alias-interactive-bg-selected,#2a2a2a);color:var(--dsw-alias-label-primary,#fff);}.dms_treeRow:disabled{opacity:.5;cursor:default;}",
+        ".dms_treeIcon{display:flex;align-items:center;justify-content:center;flex:none;color:var(--dsw-alias-label-tertiary,#888);}.dms_treeRowActive .dms_treeIcon{color:var(--dsw-alias-label-primary,#fff);}.dms_treeTitle{min-width:0;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}.dms_treeCount{flex:none;font-size:11px;color:var(--dsw-alias-label-tertiary,#888);font-variant-numeric:tabular-nums;}",
+        ".dms_treeEmpty{padding:12px 8px;font-size:12px;color:var(--dsw-alias-label-tertiary,#888);}",
         ".dms_metric{display:flex;gap:5px;align-items:baseline;font-size:12px;color:var(--dsw-alias-label-tertiary,#888);}.dms_metric b{font-size:14px;color:var(--dsw-alias-label-primary,#eee);font-weight:600;}",
         ".dms_controls{display:flex;flex-direction:column;gap:10px;}",
         ".dms_toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}.dms_filters{display:flex;gap:8px;align-items:center;flex-wrap:wrap;min-width:0;}.dms_actions{margin-left:auto;display:flex;gap:4px;align-items:center;padding-left:10px;border-left:1px solid var(--dsw-alias-border-l2,#333);}.dms_scope{width:250px;flex:none;min-width:210px;}.dms_dropdownLabel{max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}",
@@ -138,7 +148,8 @@ window.__ModuleLoader__.load({
         ".dms_error{color:var(--dsw-alias-state-error-primary,#e74c3c);font-size:13px;line-height:19px;}.dms_empty{display:flex;flex-direction:column;gap:6px;align-items:center;padding:42px 12px;color:var(--dsw-alias-label-tertiary,#888);text-align:center;border:1px dashed var(--dsw-alias-border-l2,#333);border-radius:8px;}",
         ".dms_empty b{font-size:14px;color:var(--dsw-alias-label-secondary,#aaa);font-weight:500;}.dms_emptyIcon{opacity:.7;}",
         ".dms_toolBody{display:flex;flex-direction:column;gap:8px;padding:8px 0 2px 26px;}.dms_toolLabel{font-size:11px;color:var(--dsw-alias-label-tertiary,#888);}.dms_toolPre{margin:0;padding:8px 10px;border-radius:6px;background:var(--dsw-alias-bg-layer-3,#222);color:var(--dsw-alias-label-secondary,#ccc);font-size:11px;line-height:17px;white-space:pre-wrap;overflow-wrap:anywhere;max-height:260px;overflow:auto;}",
-        "@media (max-width:720px){.dms_scope{width:100%;min-width:0;}.dms_filters{width:100%;}.dms_actions{margin-left:0;border-left:none;padding-left:0;}.dms_detailTop{align-items:flex-start;flex-direction:column;}.dms_detailActions{flex-wrap:wrap;}.dms_summary{gap:10px 14px;}.dms_search{min-width:0;}}",
+        "@media (max-width:900px){.dms_layout{grid-template-columns:1fr;}.dms_treePane{position:static;max-height:240px;}}",
+        "@media (max-width:720px){.dms_filters{width:100%;}.dms_actions{margin-left:0;border-left:none;padding-left:0;}.dms_detailTop{align-items:flex-start;flex-direction:column;}.dms_detailActions{flex-wrap:wrap;}.dms_summary{gap:10px 14px;}.dms_search{min-width:0;}.dms_page{padding:20px 18px 32px;}.dms_treeHint{display:none;}}",
         ".dms_toolTitle{display:flex;gap:6px;align-items:center;min-width:0;}.dms_toolSummary{color:var(--dsw-alias-label-tertiary,#888);font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}"
       ].join("");
       document.head.appendChild(style);
@@ -156,6 +167,40 @@ window.__ModuleLoader__.load({
       const date = new Date(value);
       if (Number.isNaN(date.getTime())) return String(value);
       return date.toLocaleString(undefined, { month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit" });
+    }
+
+    function workspaceRowsOf(workspaces, pathIds, details) {
+      const items = Array.isArray(workspaces) ? workspaces : [];
+      const counts = new Map((details || []).map((entry) => [entry.id, entry.notes || 0]));
+      const mapped = new Set();
+      const depthOf = (path) => {
+        let depth = 0;
+        let current = path;
+        while (true) {
+          const parent = items.filter((candidate) => candidate.path !== current && path.startsWith(candidate.path.replace(/\/+$/, "") + "/"))
+            .sort((a, b) => b.path.length - a.path.length)[0];
+          if (!parent) return depth;
+          depth += 1;
+          current = parent.path;
+        }
+      };
+      const rows = items.map((workspace) => {
+        const memoryId = pathIds?.[workspace.path] || "";
+        if (memoryId) mapped.add(memoryId);
+        return {
+          key: "dsh:" + workspace.workspaceId,
+          title: workspace.title || workspace.path.split("/").filter(Boolean).pop() || workspace.path,
+          path: workspace.path,
+          count: counts.get(memoryId) || 0,
+          memoryId,
+          depth: depthOf(workspace.path),
+          sessionCount: workspace.sessionIds?.length || 0
+        };
+      });
+      const other = (details || []).filter((entry) => !mapped.has(entry.id)).map((entry) => ({
+        key: "memory:" + entry.id, title: entry.id, path: "", count: entry.notes || 0, memoryId: entry.id, depth: 0, sessionCount: 0
+      }));
+      return { rows, other };
     }
     function scopeLabel(value, t) { return value === "global" ? t("global") : value === "all" ? t("all") : t("workspace"); }
     function typeIcon(type) { return icon(TYPE_ICONS[type] || "IconDatabaseOutlineRegular", 14); }
@@ -199,13 +244,17 @@ window.__ModuleLoader__.load({
       };
     }
 
-    function createPage(t) {
-      return function MemoryPage() {
+    function createPage(t, currentSessionId) {
+      return function MemoryPage(props) {
         const [status, setStatus] = React.useState(null);
         const [items, setItems] = React.useState([]);
         const [scope, setScope] = React.useState("workspace");
         const [workspaceId, setWorkspaceId] = React.useState("");
         const [workspaceDetails, setWorkspaceDetails] = React.useState([]);
+        const [pathWorkspaceIds, setPathWorkspaceIds] = React.useState({});
+        const [pathIdsReady, setPathIdsReady] = React.useState(false);
+        const autoSelected = React.useRef(false);
+        const workspacesSnapshot = props.useWorkspaces ? props.useWorkspaces((snapshot) => snapshot) : null;
         const [query, setQuery] = React.useState("");
         const [loading, setLoading] = React.useState(true);
         const [error, setError] = React.useState("");
@@ -228,7 +277,34 @@ window.__ModuleLoader__.load({
         const activeWorkspace = workspaceId || "default";
         const apiScope = scope === "global" ? "global" : scope === "all" ? "all" : "workspace:" + activeWorkspace;
         const workspaceOptions = (workspaceDetails.length ? workspaceDetails : [{ id: "default", notes: 0, updatedAt: "" }]).map((item) => ({ value: item.id, label: item.id + (item.notes ? " · " + item.notes : "") }));
-        const scopeOptions = [...workspaceOptions.map((item) => ({ value: "workspace:" + item.value, label: t("workspace") + " " + item.value })), { value: "global", label: t("global") }];
+        const scopeIds = [...new Set([...workspaceOptions.map((item) => item.value), activeWorkspace, ...Object.values(pathWorkspaceIds)])].filter(Boolean);
+        const scopeOptions = [...scopeIds.map((id) => ({ value: "workspace:" + id, label: t("workspace") + " " + id })), { value: "global", label: t("global") }];
+
+        React.useEffect(() => {
+          const items = workspacesSnapshot?.items || [];
+          if (!items.length) { setPathWorkspaceIds({}); setPathIdsReady(true); return undefined; }
+          let live = true;
+          setPathIdsReady(false);
+          api("workspaceIds", { paths: items.map((workspace) => workspace.path) })
+            .then((map) => { if (live) { setPathWorkspaceIds(map || {}); setPathIdsReady(true); } })
+            .catch(() => { if (live) { setPathWorkspaceIds({}); setPathIdsReady(true); } });
+          return () => { live = false; };
+        }, [workspacesSnapshot]);
+
+        React.useEffect(() => {
+          if (autoSelected.current || !status || !pathIdsReady) return;
+          if (workspacesSnapshot && workspacesSnapshot.phase !== "ready") return;
+          const details = status.workspaceDetails || [];
+          const sessionId = currentSessionId?.();
+          const containing = sessionId
+            ? (workspacesSnapshot?.items || []).find((workspace) => (workspace.sessionIds || []).includes(sessionId))
+            : null;
+          let next = containing ? pathWorkspaceIds[containing.path] : "";
+          if (!next) next = [...details].sort((a, b) => String(b.updatedAt).localeCompare(String(a.updatedAt)))[0]?.id || "default";
+          setScope("workspace");
+          setWorkspaceId(next);
+          autoSelected.current = true;
+        }, [status, pathIdsReady, pathWorkspaceIds, workspacesSnapshot, currentSessionId]);
 
         const load = React.useCallback(async (nextScope, nextQuery) => {
           setLoading(true); setError("");
@@ -240,7 +316,6 @@ window.__ModuleLoader__.load({
             setStatus(state); setItems(rows || []);
             const details = state.workspaceDetails || [];
             setWorkspaceDetails(details);
-            setWorkspaceId((current) => current || ([...details].sort((a, b) => String(b.updatedAt).localeCompare(String(a.updatedAt)))[0]?.id || "default"));
             if (selectedId && !(rows || []).some((row) => row.id === selectedId)) setSelectedId(null);
           } catch (failure) { setError(String(failure.message || failure)); }
           finally { setLoading(false); }
@@ -341,8 +416,6 @@ window.__ModuleLoader__.load({
           action(t("search"), { type: "submit", variant: "primary" }, "IconSearchOutlineRegular"));
         const toolbar2 = h("div", { className: "dms_toolbar" },
           h("div", { className: "dms_filters" },
-            h("div", { className: "dms_scope" }, SegmentedTabs ? h(SegmentedTabs, { items: scopeItems, value: scope, onChange: (value) => { setScope(value); setSelectedId(null); }, label: t("scopeField"), size: "sm" }) : h("select", { className: "dms_select", value: scope, onChange: (event) => setScope(event.target.value) }, scopeItems.map((item) => h("option", { key: item.value, value: item.value }, item.label)))),
-            scope === "workspace" ? h("div", { className: "dms_workspace" }, h(Dropdown, { value: workspaceId || "default", options: workspaceOptions, onChange: (value) => { setWorkspaceId(value); setSelectedId(null); }, label: t("workspace") })) : null,
             (status?.conflicts || 0) > 0 ? action(onlyConflicts ? t("allMemories") : t("conflictShort") + " " + status.conflicts, { type: "button", onClick: showConflicts, variant: onlyConflicts ? "primary" : "ghost" }, "IconInfoOutlineRegular") : null),
           h("div", { className: "dms_actions" },
             iconButton(t("claudeImport"), { type: "button", onClick: openClaudeImport }, "IconDownloadOutlineRegular"),
@@ -354,6 +427,43 @@ window.__ModuleLoader__.load({
           metric(t("notes"), status.notes), metric(t("active"), status.active), metric(t("conflicts"), status.conflicts || 0),
           metric(t("pending"), status.capture?.pending || 0), metric(t("failed"), status.capture?.failed || 0),
           tag(t("extractor") + ": " + (status.extractor ? t("on") : t("off")), status.extractor ? "success" : "neutral")) : null;
+
+        const tree = workspaceRowsOf(workspacesSnapshot?.items, pathWorkspaceIds, pathIdsReady ? workspaceDetails : []);
+        const selectMemoryScope = (nextScope, nextWorkspace) => {
+          autoSelected.current = true;
+          setScope(nextScope);
+          if (nextWorkspace !== undefined) setWorkspaceId(nextWorkspace);
+          setSelectedId(null);
+          setOnlyConflicts(false);
+        };
+        const treeRow = (row) => h("button", {
+          key: row.key, type: "button", disabled: row.disabled === true,
+          className: "dms_treeRow" + (row.active ? " dms_treeRowActive" : ""),
+          style: row.depth ? { paddingLeft: 8 + row.depth * 14 } : undefined,
+          title: row.path || row.label,
+          onClick: row.onClick
+        },
+          h("span", { className: "dms_treeIcon" }, icon(row.icon, 14)),
+          h("span", { className: "dms_treeTitle" }, row.label),
+          row.count ? h("span", { className: "dms_treeCount" }, String(row.count)) : null);
+        const workspaceTree = h("aside", { className: "dms_treePane" },
+          h("div", { className: "dms_treeHead" }, h("span", null, t("workspaceTree")), h("span", { className: "dms_treeHint" }, t("followsSession"))),
+          h("div", { className: "dms_treeList" },
+            treeRow({ key: "scope:all", icon: "IconLayersOutlineRegular", label: t("all"), active: scope === "all", onClick: () => selectMemoryScope("all") }),
+            treeRow({ key: "scope:global", icon: "IconGlobeOutlineRegular", label: t("global"), active: scope === "global", onClick: () => selectMemoryScope("global") }),
+            tree.rows.length || tree.other.length ? h("div", { className: "dms_treeSection" }, t("workspaceShort")) : null,
+            tree.rows.map((row) => treeRow({
+              key: row.key, icon: row.depth ? "IconFolderOpenOutlineRegular" : "IconWorkspaceTreeOutlineRegular", label: row.title,
+              count: row.count, depth: row.depth, path: row.path, active: scope === "workspace" && workspaceId === row.memoryId,
+              disabled: !row.memoryId, onClick: () => selectMemoryScope("workspace", row.memoryId)
+            })),
+            tree.other.length ? h("div", { className: "dms_treeSection" }, t("otherWorkspaces")) : null,
+            tree.other.map((row) => treeRow({
+              key: row.key, icon: "IconDatabaseOutlineRegular", label: row.title, count: row.count,
+              active: scope === "workspace" && workspaceId === row.memoryId,
+              onClick: () => selectMemoryScope("workspace", row.memoryId)
+            })),
+            !tree.rows.length && !tree.other.length ? h("div", { className: "dms_treeEmpty" }, t("noWorkspaces")) : null));
 
         const visibleItems = onlyConflicts ? items : items.filter((item) => item.status === "active");
         const list = loading ? h("div", { className: "dms_desc" }, shimmer(t("loading"))) :
@@ -440,22 +550,36 @@ window.__ModuleLoader__.load({
               : action(t("claudeImportSelected"), { type: "button", onClick: runClaudeImport, variant: "primary", disabled: claudeBusy || !claudeEntries.some((entry) => entry.included) }, "IconDownloadOutlineRegular"))
         }, claudeImportBody) : h("div", { className: "dms_form" }, claudeImportBody)) : null;
         return h("div", { className: "dms_page" },
-          h("div", { className: "dms_head" }, h("div", { className: "dms_title" }, t("title")), h("div", { className: "dms_desc" }, t("description"))),
-          summary,
-          h("form", { className: "dms_controls", onSubmit: submitSearch }, toolbar, toolbar2),
+          h("div", { className: "dms_pageHead" },
+            h("div", { className: "dms_head" }, h("div", { className: "dms_title" }, t("title")), h("div", { className: "dms_desc" }, t("description"))),
+            summary),
           error ? h("div", { className: "dms_error" }, error) : null,
-          form || detail || list,
+          h("div", { className: "dms_layout" },
+            workspaceTree,
+            h("div", { className: "dms_content" },
+              h("form", { className: "dms_controls", onSubmit: submitSearch }, toolbar, toolbar2),
+              form || detail || list)),
           claudeDialog);
       };
     }
 
     installStyle();
     return {
-      inject: ["slots", "locale"],
+      inject: ["slots", "locale", "uiWorkspace"],
       apply(ctx) {
         ctx.effect(() => ctx.locale.register(NS, { zh, en }), "dsh-memory-service: dictionaries");
         const t = ctx.locale.bind(NS);
-        const Page = createPage(t);
+        const currentSessionId = () => {
+          try {
+            const selection = ctx.uiWorkspace?.selection?.getSnapshot?.();
+            if (selection?.sessionId) return selection.sessionId;
+          } catch { /* fall back to the persisted selection */ }
+          try {
+            const parsed = JSON.parse(window.localStorage.getItem("dsh.sessions.current") || "{}");
+            return parsed?.sessionId || parsed?.current?.sessionId;
+          } catch { return undefined; }
+        };
+        const Page = createPage(t, currentSessionId);
         const ToolRow = createToolRow(t);
         const MemoryIcon = ({ size }) => icon("IconContextInjectionOutlineRegular", size || 16);
         ctx.slots.inject("main", () => ctx.slots.register({ name: "main", key: "memory-service", locale: NS }, Page));
