@@ -8,6 +8,7 @@
 - Workspace scope now exposes real memory workspaces and sends explicit `workspace:<id>` scopes; it no longer falls back to `workspace:default` silently.
 - Memory page layout now follows the Plugins/Tasks page shell: 28px top inset, 48px inline inset, 960px content column, shared-width header/summary/content.
 - Workspace scope is now a DSH-style workspace tree; opening the panel from a Session follows that Session's workspace, with a latest-workspace fallback.
+- Refined the page toolbar to one compact row and replaced the tree card with a borderless sidebar-style rail.
 
 ## 0.2.0
 
