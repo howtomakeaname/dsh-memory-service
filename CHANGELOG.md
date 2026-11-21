@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Rebuilt the graph view as a force-directed relationship network driven by real conflict, supersede, shared-key, source and same-type links; added wheel zoom, drag pan and reset.
+
 ## 0.3.0
 
 - Memory manager promoted from a Settings section to a first-class left-sidebar panel: `sidebar.panellist` entry plus a `main` keyed page.
@@ -12,7 +16,7 @@
 - New/edit memory scope picker now shows workspace title, full path, and the selected check in a DSH-style Menu, matching the native workspace selector.
 - Search now runs as you type with a 260ms debounce and a clear button; the separate Search button is gone.
 - Forget confirmation now uses the shared DSH Modal with cancel/confirm actions and busy/error states.
-- Added a list/nebula toggle: the nebula view renders memories as a constellation with conflict, supersede, shared-key, source and cluster links, search highlighting, hover previews and click-through detail.
+- Added a list/graph toggle: the relationship graph is driven by conflict, supersede, shared-key, source and same-type links, with search highlighting, hover previews, click-through detail, zoom, pan and reset.
 
 ## 0.2.0
 
