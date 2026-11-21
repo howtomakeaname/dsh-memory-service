@@ -47,6 +47,30 @@ window.__ModuleLoader__.load({
         onSelect: () => { onChange(item.value); setOpen(false); }
       }, item.label)));
     }
+    function WorkspaceScopeDropdown({ value, options, onChange, label, emptyLabel }) {
+      const [open, setOpen] = React.useState(false);
+      const current = options.find((item) => item.value === value);
+      if (!ui.Menu || !ui.MenuItemButton || !Button) {
+        return h("select", { className: "dms_select", value, "aria-label": label, onChange: (event) => onChange(event.target.value) },
+          options.map((item) => h("option", { key: item.value, value: item.value }, item.title)));
+      }
+      return h(ui.Menu, {
+        open, onClose: () => setOpen(false), align: "start", portal: true, autoFocus: true,
+        listClassName: "dms_wsMenu",
+        anchor: h(Button, {
+          type: "button", size: "sm", variant: "outline", "aria-label": label, "aria-haspopup": "menu", "aria-expanded": open,
+          title: current?.path || undefined,
+          onClick: () => setOpen((next) => !next)
+        }, h("span", { className: "dms_workspacePickLabel" }, current ? current.title : emptyLabel), icon("IconChevronDownOutlineRegular", 12))
+      }, options.map((item) => h(ui.MenuItemButton, {
+        key: item.value,
+        onSelect: () => { onChange(item.value); setOpen(false); }
+      }, h("span", { className: "dms_wsOption" },
+        h("span", { className: "dms_wsOptionText" },
+          h("span", { className: "dms_wsOptionTitle" }, item.title),
+          item.path ? h("span", { className: "dms_wsOptionPath" }, item.path) : null),
+        item.value === value ? h("span", { className: "dms_wsOptionCheck" }, icon("IconCheckOutlineRegular", 14)) : null))));
+    }
     function textField(props) {
       const { icon: leading, ...rest } = props || {};
       if (Input) return h(Input, { ...rest, icon: leading });
@@ -142,7 +166,7 @@ window.__ModuleLoader__.load({
         ".dms_body{font-size:13px;line-height:21px;color:var(--dsw-alias-label-primary,#ddd);white-space:pre-wrap;overflow-wrap:anywhere;border-top:1px solid var(--dsw-alias-border-l2,#333);padding-top:12px;}",
         ".dms_detailFoot{font-size:11px;line-height:18px;color:var(--dsw-alias-label-tertiary,#888);word-break:break-all;}",
         ".dms_form{display:flex;flex-direction:column;gap:10px;border:1px solid var(--dsw-alias-border-l2,#333);border-radius:8px;padding:14px;background:var(--dsw-alias-bg-layer-1,#181818);}",
-        ".dms_field{display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--dsw-alias-label-secondary,#aaa);}.dms_formRow{display:flex;gap:10px;flex-wrap:wrap;}",
+        ".dms_field{display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--dsw-alias-label-secondary,#aaa);}.dms_formRow{display:flex;gap:10px;flex-wrap:wrap;}.dms_scopeChoice{display:flex;gap:12px;align-items:center;flex-wrap:wrap;}.dms_workspacePick{display:flex;align-items:center;gap:7px;min-width:240px;max-width:100%;border:1px solid var(--dsw-alias-border-l2,#333);border-radius:6px;background:var(--dsw-alias-bg-layer-3,#222);color:var(--dsw-alias-label-primary,#eee);padding:7px 9px;font:inherit;cursor:pointer;}.dms_workspacePick:hover{background:var(--dsw-alias-interactive-bg-hover,#242424);}.dms_workspacePickLabel{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}.dms_scopePicker{min-width:260px;max-width:100%;display:flex;}.dms_wsMenu{min-width:360px;max-width:min(520px,calc(100vw - 40px));}.dms_wsOption{display:flex;align-items:center;justify-content:space-between;gap:16px;width:100%;min-width:0;}.dms_wsOptionText{display:flex;flex-direction:column;gap:2px;min-width:0;}.dms_wsOptionTitle{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}.dms_wsOptionPath{font-size:12px;line-height:18px;color:var(--dsw-alias-label-tertiary,#888);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:420px;}.dms_wsOptionCheck{display:flex;flex:none;color:var(--dsw-alias-state-business-primary,#4d6bfe);}",
         ".dms_conflict{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;border:1px solid var(--dsw-alias-state-error-primary,#e74c3c);border-radius:6px;padding:9px 10px;background:var(--dsw-alias-bg-layer-3,#222);font-size:12px;line-height:18px;color:var(--dsw-alias-label-secondary,#bbb);}",
         ".dms_importDialog{width:min(760px,calc(100vw - 64px))!important;max-width:760px!important;}.dms_import{display:flex;flex-direction:column;gap:12px;}.dms_importSection{display:flex;flex-direction:column;gap:7px;border:1px solid var(--dsw-alias-border-l2,#333);border-radius:8px;padding:10px;}.dms_importSectionHead{display:flex;gap:8px;align-items:center;justify-content:space-between;font-size:12px;color:var(--dsw-alias-label-secondary,#bbb);}.dms_sourceGrid{display:grid;grid-template-columns:1fr;gap:6px;max-height:160px;overflow:auto;}.dms_importList{display:flex;flex-direction:column;gap:8px;max-height:320px;overflow:auto;}.dms_importEntry{border:1px solid var(--dsw-alias-border-l2,#333);border-radius:7px;padding:9px;display:flex;flex-direction:column;gap:6px;}.dms_importEntryHead{display:flex;gap:8px;align-items:center;justify-content:space-between;flex-wrap:wrap;}.dms_check{display:flex;gap:8px;align-items:center;font-size:12px;color:var(--dsw-alias-label-secondary,#aaa);}.dms_importSummary{display:flex;flex-direction:column;gap:7px;border-top:1px solid var(--dsw-alias-border-l2,#333);padding-top:10px;font-size:12px;color:var(--dsw-alias-label-secondary,#bbb);}",
         ".dms_error{color:var(--dsw-alias-state-error-primary,#e74c3c);font-size:13px;line-height:19px;}.dms_empty{display:flex;flex-direction:column;gap:6px;align-items:center;padding:42px 12px;color:var(--dsw-alias-label-tertiary,#888);text-align:center;border:1px dashed var(--dsw-alias-border-l2,#333);border-radius:8px;}",
@@ -463,6 +487,23 @@ window.__ModuleLoader__.load({
             })),
             !tree.rows.length && !tree.other.length ? h("div", { className: "dms_treeEmpty" }, t("noWorkspaces")) : null));
 
+        const workspaceChoices = [
+          ...tree.rows.filter((row) => row.memoryId).map((row) => ({ value: "workspace:" + row.memoryId, title: row.title, path: row.path })),
+          ...tree.other.map((row) => ({ value: "workspace:" + row.memoryId, title: row.title, path: row.title }))
+        ];
+        if (draft && String(draft.scope || "").startsWith("workspace:") && !workspaceChoices.some((choice) => choice.value === draft.scope)) {
+          workspaceChoices.push({ value: draft.scope, title: String(draft.scope).replace(/^workspace:/, ""), path: "" });
+        }
+        const scopeControl = draft ? h("div", { className: "dms_scopeChoice" },
+          h("div", { className: "dms_scopePicker" }, h(WorkspaceScopeDropdown, {
+            value: draft.scope, options: workspaceChoices, label: t("scopeField"), emptyLabel: draft.scope === "global" ? t("global") : t("workspace"),
+            onChange: (value) => setDraft({ ...draft, scope: value })
+          })),
+          h(Checkbox, {
+            label: t("global"), checked: draft?.scope === "global",
+            onChange: (checked) => setDraft({ ...draft, scope: checked ? "global" : "workspace:" + activeWorkspace })
+          })) : null;
+
         const visibleItems = onlyConflicts ? items : items.filter((item) => item.status === "active");
         const list = loading ? h("div", { className: "dms_desc" }, shimmer(t("loading"))) :
           visibleItems.length === 0 ? h("div", { className: "dms_empty" }, h("span", { className: "dms_emptyIcon" }, icon("IconDatabaseOutlineRegular", 24)), h("b", null, onlyConflicts ? t("resolved") : t("empty")), h("span", null, onlyConflicts ? t("emptyHint") : t("emptyHint"))) :
@@ -494,8 +535,9 @@ window.__ModuleLoader__.load({
           h("label", { className: "dms_field" }, t("bodyField"), h("textarea", { className: "dms_textarea", value: draft.body, onChange: (event) => setDraft({ ...draft, body: event.target.value }) })),
           h("div", { className: "dms_formRow" },
             h("label", { className: "dms_field" }, t("typeField"), h(Dropdown, { value: draft.type, options: TYPES.map((type) => ({ value: type, label: type })), onChange: (value) => setDraft({ ...draft, type: value }), label: t("typeField") })),
-            h("label", { className: "dms_field" }, t("scopeField"), h(Dropdown, { value: draft.scope, options: scopeOptions, onChange: (value) => setDraft({ ...draft, scope: value }), label: t("scopeField") }))),
-          h("div", { className: "dms_toolbar" }, action(t("save"), { type: "button", onClick: save, variant: "primary", icon: icon("IconCheckOutlineRegular") }), action(t("cancel"), { type: "button", onClick: () => setDraft(null), variant: "ghost" }))) : null;
+            h("div", { className: "dms_field" }, t("scopeField"), scopeControl)),
+          h("div", { className: "dms_toolbar" }, action(t("save"), { type: "button", onClick: save, variant: "primary", icon: icon("IconCheckOutlineRegular") }), action(t("cancel"), { type: "button", onClick: () => setDraft(null), variant: "ghost" })),
+          ) : null;
 
         const claudeSourceRows = claudeSources.map((source) => h(Checkbox, {
           key: source.source,
